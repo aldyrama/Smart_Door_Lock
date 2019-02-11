@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">SmartDoorLock</string>
+    <string name="sign_up_now">Sign Up Now</string>
+    <string name="find_password">Find Password</string>
+    <string name="minimum_password">Password too short, enter minimum 6 characters!</string>
+    <string name="auth_failed">Authentication failed, check your email and password or sign up</string>
+    <string name="Play">Play Stream</string>
+    <array name="spinnerGender">
+        <item>Male</item>
+        <item>Female</item>
+    </array>
+
+
+    <string name="angle_value">Angle: %1$.2f</string>
+    <string name="offset_value">%1$.2f :Offset</string>
+    <string name="angle_value_none">Angle: none</string>
+    <string name="offset_value_none">none :Offset</string>
+
+</resources>

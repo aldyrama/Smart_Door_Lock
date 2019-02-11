@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:foreground="?attr/selectableItemBackgroundBorderless"
+    card_view:cardCornerRadius="8dp"
+    card_view:cardElevation="10dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:dividerHeight="0.0px"
+    android:clipToPadding="false"
+    android:clipChildren="false"
+    android:elevation="8dp"
+    android:divider="@android:color/transparent"
+    card_view:cardPreventCornerOverlap="false"
+    android:background="?attr/selectableItemBackgroundBorderless"
+    android:layout_marginBottom="15dp"
+    android:layout_height="230dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_margin="6dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="House Name"
+                android:drawablePadding="6dp"
+                android:id="@+id/houseName"
+                android:textStyle="bold"
+                android:textSize="28sp"
+                android:padding="5dp"
+                android:drawableLeft="@drawable/ic_action_home"
+                android:textColor="@color/blackk" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:layout_marginTop="30dp">
+
+                <TextView
+                    android:id="@+id/guest"
+                    android:layout_width="0dp"
+                    android:layout_weight="1.5"
+                    android:layout_height="wrap_content"
+                    android:text="Guest"
+                    android:drawablePadding="6dp"
+                    android:padding="5dp"
+                    android:layout_marginLeft="30dp"
+                    android:drawableLeft="@drawable/ic_action_user"/>
+
+                    <ImageView
+                        android:id="@+id/doo_status"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_clean"
+                        android:drawablePadding="6dp"
+                        android:textSize="16sp"/>
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/date"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="2019"
+                    android:textSize="12dp"
+                    android:textStyle="italic"
+                    android:textColor="@color/blackk"
+                    android:layout_gravity="center"
+                    android:gravity="center"/>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:gravity="right">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/lock"
+                    android:layout_margin="6dp"/>
+
+                <View
+                    android:layout_width="20dp"
+                    android:layout_height="10dp"
+                    android:layout_gravity="center"/>
+
+                <ImageView
+                    android:id="@+id/stream_action"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:onClick="onClickView"
+                    android:src="@drawable/ic_streaming"
+                    android:layout_margin="6dp"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

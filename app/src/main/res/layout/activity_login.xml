@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AccountActivity.LoginActivity"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="190dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/cardview"
+        android:layout_marginRight="30dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorWhite"
+            android:text="LOG-IN"
+            android:textSize="30sp"
+            android:layout_centerInParent="true"/>
+
+    </RelativeLayout>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        app:cardCornerRadius="75dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="120dp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profile_image"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@drawable/logo_lock"
+        android:layout_gravity="center"
+        app:civ_border_width="0dp" />
+    </android.support.v7.widget.CardView>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/email_login"
+                android:layout_width="320dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_edittext"
+                android:drawableLeft="@drawable/ic_action_email"
+                android:drawablePadding="8dp"
+                android:ems="10"
+                android:hint="Your email"
+                android:imeOptions="actionNext"
+                android:inputType="textEmailAddress"
+                android:lines="1"
+                android:paddingLeft="12dp"
+                android:textSize="12sp" />
+
+            <EditText
+                android:id="@+id/pass_login"
+                android:layout_width="320dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/bg_edittext"
+                android:drawableLeft="@drawable/ic_action_lock"
+                android:drawablePadding="8dp"
+                android:ems="10"
+                android:hint="Your password"
+                android:imeOptions="actionDone"
+                android:inputType="textPassword"
+                android:lines="1"
+                android:paddingLeft="12dp"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="45dp"
+        android:gravity="center">
+
+    <Button
+        android:id="@+id/submit_login"
+        android:layout_width="320dp"
+        android:layout_height="40dp"
+        android:layout_gravity="bottom"
+        android:background="@drawable/transparent_bg_bordered"
+        android:text="Log In"
+        android:textSize="14sp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackgroundBorderless"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="5dp">
+
+    <TextView
+        android:id="@+id/signup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/sign_up_now"
+        android:textColor="#B0BEC5"
+        android:layout_marginRight="10dp"
+        android:layout_gravity="center"
+        android:gravity="center"/>
+
+        <LinearLayout
+            android:layout_width="1dp"
+            android:layout_height="fill_parent"
+            android:background="@color/colorGrey"/>
+
+        <TextView
+            android:id="@+id/find_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/find_password"
+            android:textColor="#B0BEC5"
+            android:layout_marginLeft="10dp"
+            android:layout_gravity="center"
+            android:gravity="center"/>
+    </LinearLayout>
+
+</RelativeLayout>

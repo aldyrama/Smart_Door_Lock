@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "554694664421",
+    "firebase_url": "https://smartdoor-7d0e6.firebaseio.com",
+    "project_id": "smartdoor-7d0e6",
+    "storage_bucket": "smartdoor-7d0e6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:554694664421:android:7d6feba0e90a668a",
+        "android_client_info": {
+          "package_name": "org.d3ifcool.smart"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "554694664421-k5e1il5ek9vu7eokevb29lg4um36q66c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.d3ifcool.smart",
+            "certificate_hash": "830bb175c290d2f7ae2ae85656641d357291c4fc"
+          }
+        },
+        {
+          "client_id": "554694664421-vb5qks67ccqphb8lfpdqvrg4l22mclq9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDxP3caAYGfwKQVTdDxuAHyys18F51dL0U"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "554694664421-vb5qks67ccqphb8lfpdqvrg4l22mclq9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

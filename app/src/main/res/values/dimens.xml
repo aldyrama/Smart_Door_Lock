@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="circle_inside_margin">10dp</dimen>
+
+    <dimen name="square_size">35dp</dimen>
+    <dimen name="view_margin">5dp</dimen>
+    <dimen name="corner_radius">1dp</dimen>
+    <dimen name="margin">5dp</dimen>
+
+    <dimen name="default_margin">16dp</dimen>
+    <dimen name="stick_size">60dp</dimen>
+</resources>

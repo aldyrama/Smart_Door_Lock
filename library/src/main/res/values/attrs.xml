@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+	<declare-styleable houseName="NavigationBar">
+		<attr houseName="tab_indicator_color" format="color|reference"/>
+		<!--<attr houseName="base_text_color" format="color|reference"/>-->
+		<!--<attr houseName="base_text" format="string|reference"/>-->
+		<!--   <attr houseName="tab_border_color" format="color|reference"/>-->
+		<attr houseName="tab_strok_width" format="dimension|reference"/>
+		<!--<attr houseName="base_text_stze" format="dimension|reference"/>-->
+		<!--<attr houseName="base_radius" format="dimension|reference"/>-->
+
+		<!--<attr houseName="item_text_color" format="color|reference"/>-->
+		<attr houseName="central_line_color" format="color|reference"/>
+		<attr houseName="central_line_height" format="dimension|reference"/>
+		<attr houseName="tab_padding" format="dimension|reference"/>
+		<attr houseName="tab_text_size" format="dimension|reference"/>
+		<!--<attr houseName="item_text_color_array" format="reference"/>-->
+		<!--<attr houseName="item_text_array" format="reference"/>-->
+		<attr houseName="tab_color_array" format="reference"/>
+		<attr houseName="only_border" format="boolean"/>
+		<attr houseName="enable_border" format="boolean"/>
+		<attr houseName="tab_border_color_array" format="reference"/>
+		<attr houseName="tab_text_color_array" format="reference"/>
+		<!--<attr houseName="item_radius" format="dimension|reference"/>-->
+
+	</declare-styleable>
+
+
+</resources>
+ 
