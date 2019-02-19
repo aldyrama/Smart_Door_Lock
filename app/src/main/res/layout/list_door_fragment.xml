@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="@color/blue_gray">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:background="@color/blue_gray">
 
         <ProgressBar
             android:id="@+id/myDataLoaderProgressBarDoor"
@@ -23,8 +20,63 @@
             android:layout_weight="0.5"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="8dp"/>
+            android:padding="8dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
 
+
+
+    <RelativeLayout
+        android:layout_below="@+id/topBar"
+        android:layout_above="@+id/bottomBar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cardAddDoor"
+            android:layout_width="380dp"
+            android:layout_height="550dp"
+            app:cardCornerRadius="35dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="onClick"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            android:elevation="8dp"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="0.0px"
+            android:clipToPadding="false"
+            android:clipChildren="false"
+            android:visibility="visible"
+            card_view:cardElevation="10dp"
+            card_view:cardPreventCornerOverlap="false">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profile_image"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:src="@drawable/ck"
+                android:layout_gravity="center"
+                app:civ_border_width="0dp" />
+
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/ic_action_add_white"
+                android:layout_gravity="center" />
+
+        </android.support.v7.widget.CardView>
     </RelativeLayout>
 
-</LinearLayout>
+
+        <at.markushi.ui.CircleButton
+            android:id="@+id/addDoor_floating"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="16dp"
+            android:backgroundTint="@color/blackk"
+            android:src="@drawable/ic_action_add_white"/>
+
+    </RelativeLayout>

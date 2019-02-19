@@ -1,5 +1,7 @@
 package org.d3ifcool.smart.AccountActivity;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +27,7 @@ public class FindPassword extends AppCompatActivity {
     EditText email;
     //Firebase
     FirebaseAuth auth;
+    ProgressDialog pd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,13 +48,16 @@ public class FindPassword extends AppCompatActivity {
 
 
                 if (TextUtils.isEmpty(emailInput)){
-                    Toast.makeText(FindPassword.this, "Enter your password", Toast.LENGTH_SHORT).show();
+                    email.setError("Email required!");
                 }
                 else {
+                    pd.setMessage("Please wait");
+                    pd.show();
                     auth.sendPasswordResetEmail(email.getText().toString())
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
+                                    pd.hide();
                                     if (task.isSuccessful()){
                                         Toast.makeText(FindPassword.this, "Password send to your email", Toast.LENGTH_SHORT).show();
                                     }
@@ -84,4 +90,20 @@ public class FindPassword extends AppCompatActivity {
 
         }
     };
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(FindPassword.this, LoginActivity.class));
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+
+    }
+
+    public void onClickView(View view) {
+        switch (view.getId()){
+            case R.id.btn_prev :
+                startActivity(new Intent(FindPassword.this, LoginActivity.class));
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+
+        }
+    }
 }

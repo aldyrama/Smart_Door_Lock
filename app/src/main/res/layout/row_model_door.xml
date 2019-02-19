@@ -51,9 +51,11 @@
                         android:drawablePadding="6dp"
                         android:id="@+id/doorName"
                         android:textStyle="bold"
-                        android:textSize="32sp"
+                        android:textSize="20sp"
                         android:padding="5dp"
-                        android:drawableLeft="@drawable/ic_action_home"
+                        android:layout_gravity="center"
+                        android:gravity="center|left"
+                        android:drawableLeft="@drawable/ic_doorr"
                         android:textColor="@color/blackk" />
 
                 </LinearLayout>
@@ -66,8 +68,10 @@
                     android:layout_marginTop="20dp">
 
                  <ImageView
+                     android:id="@+id/lockDoor"
                      android:layout_width="80dp"
                      android:layout_height="80dp"
+                     android:onClick="onClickView"
                      android:src="@drawable/lock"/>
 
                 </LinearLayout>

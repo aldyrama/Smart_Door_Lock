@@ -44,6 +44,7 @@ public class LoginActivity extends AppCompatActivity {
     //Firebase
     FirebaseAuth auth;
     FirebaseUser firebaseUser;
+    ProgressDialog pd;
 
 
     @Override
@@ -69,6 +70,8 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(LoginActivity.this, RegistActivity.class));
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+
             }
         });
 
@@ -79,14 +82,22 @@ public class LoginActivity extends AppCompatActivity {
                 final ProgressDialog pd = new ProgressDialog(LoginActivity.this);
                 pd.setMessage("Please wait...");
                 pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                pd.setCanceledOnTouchOutside(false);
+                pd.setCancelable(false);
                 pd.show();
 
                 final String str_email = email.getText().toString();
                 String str_password = password.getText().toString();
 
-                if (TextUtils.isEmpty(str_email) || TextUtils.isEmpty(str_password)){
-                    Toast.makeText(LoginActivity.this, "All fields are required!", Toast.LENGTH_SHORT).show();
+                if (TextUtils.isEmpty(str_email)) {
+                    email.setError("Email required!");
                     pd.hide();
+                }
+
+                else if (TextUtils.isEmpty(str_password)){
+                        password.setError("Password required!");
+                        pd.hide();
+
                 } else {
 
                     auth.signInWithEmailAndPassword(str_email, str_password)
@@ -108,6 +119,7 @@ public class LoginActivity extends AppCompatActivity {
                                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                                 startActivity(intent);
+                                                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                                                 finish();
                                             }
 
@@ -159,6 +171,8 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(LoginActivity.this, FindPassword.class));
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+
             }
         });
     }

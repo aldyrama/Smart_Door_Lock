@@ -3,12 +3,9 @@ package org.d3ifcool.smart.FirebaseDatabase;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-
 import org.d3ifcool.smart.Account.Account;
 import org.d3ifcool.smart.Model.Door;
 import org.d3ifcool.smart.Model.House;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class DatabaseAdapter {
@@ -129,36 +126,6 @@ public class DatabaseAdapter {
         return houseList;
     }
 
-//    public ArrayList<Door> getDoor(){
-//
-//        ArrayList<Door> doorList = new ArrayList<Door>();
-//        String[] projection= {
-//                SmartContract.DoorEntry.KEY_DOORNAME,
-//                SmartContract.DoorEntry.KEY_DOOR_MADE_DATE
-//        };
-//
-//        Cursor cursor = mContext.getContentResolver().query(SmartContract.DoorEntry.CONTENT_URI, projection,
-//                null,null,null);
-//
-//        int indexColumnDoorName = cursor.getColumnIndex(SmartContract.DoorEntry.KEY_DOORNAME);
-//        int indexColumnMadeDate = cursor.getColumnIndex(SmartContract.DoorEntry.KEY_DOOR_MADE_DATE);
-//
-//        if (cursor.moveToFirst()){
-//            do {
-//                Door door = new Door(
-//                        cursor.getString(indexColumnDoorName),
-//                        cursor.getString(indexColumnMadeDate)
-//                );
-//                doorList.add(door);
-//
-//            }
-//
-//            while (cursor.moveToNext());
-//        }
-//
-//        cursor.close();
-//        return doorList;
-//    }
 
     public int updateAccount(Account account, String curremtUsername) {
         ContentValues values = new ContentValues();

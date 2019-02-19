@@ -46,11 +46,11 @@
                         android:textStyle="bold" />
 
                     <ImageView
-                        android:id="@+id/btn_prev"
+                        android:id="@+id/btn_prev_change"
                         android:layout_width="30dp"
                         android:layout_height="50dp"
                         android:onClick="onClickView"
-                        android:src="@drawable/ic_action_arrow_left"
+                        android:src="@drawable/ic_backarrow"
                         android:layout_alignParentLeft="true" />
                 </RelativeLayout>
             </LinearLayout>

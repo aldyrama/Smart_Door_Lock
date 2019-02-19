@@ -10,10 +10,10 @@
         android:id="@+id/carProfile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginBottom="100dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
         app:cardCornerRadius="6dp">
 
         <LinearLayout
@@ -27,12 +27,18 @@
              android:layout_height="wrap_content"
              android:layout_gravity="center"
              android:orientation="vertical"
-            android:gravity="center"
-             android:layout_marginTop="20dp">
+            android:gravity="center">
 
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:background="@drawable/banner_iot">
+
+                </LinearLayout>
 
                 <ProgressBar
                     android:id="@+id/load_pic"
@@ -42,20 +48,24 @@
                     android:layout_centerInParent="true"/>
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="120dp"
-                android:layout_height="120dp"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_marginTop="90dp"
                 android:layout_centerInParent="true"
                 android:id="@+id/image_profile" />
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Change Photo"
+                    android:textSize="16dp"
+                    android:textColor="@color/blue"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:drawableRight="@drawable/ic_pen_changeimg"/>
+
             </RelativeLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Change Photo"
-                android:textSize="16dp"
-                android:textColor="@color/blue"
-                android:drawableRight="@drawable/ic_pen_changeimg"/>
 
     </LinearLayout>
 
@@ -182,8 +192,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:layout_marginTop="55dp"
-                android:layout_marginBottom="30dp"
+                android:background="@color/gray_50"
+                android:layout_marginTop="20dp"
                 android:gravity="center">
 
                 <Button
@@ -191,7 +201,7 @@
                     android:layout_width="320dp"
                     android:layout_height="40dp"
                     android:background="@drawable/bg_edittext"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="50dp"
                     android:layout_gravity="center"
                     android:backgroundTint="@color/colorGrey"
                     android:gravity="center"

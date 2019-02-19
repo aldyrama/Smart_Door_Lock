@@ -41,7 +41,7 @@
                         android:gravity="center"
                         android:text="Setting"
                         android:textColor="@color/colorPrimaryDark"
-                        android:textSize="20sp"
+                        android:textSize="15sp"
                         android:textStyle="bold" />
 
                 </RelativeLayout>
@@ -57,13 +57,6 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
-            <!--<ListView-->
-                <!--android:id="@+id/listview_setting"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content">-->
-
-            <!--</ListView>-->
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -117,6 +110,34 @@
                     android:layout_gravity="center"
                     android:src="@drawable/switch_on"/>
             </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorGrey"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:text="Auto lock"
+                        android:layout_gravity="center"/>
+
+                    <ImageView
+                        android:id="@+id/autolock"
+                        android:layout_width="0dp"
+                        android:layout_weight="0.2"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/switch_on"/>
+                </LinearLayout>
+
             </LinearLayout>
 
 
@@ -133,7 +154,8 @@
                     android:background="@drawable/white_grey_border_top"
                     app:menu="@menu/bottom_navigation_menu"
                     app:itemIconTint="@color/tab_color"
-                    app:itemTextColor="@color/black">
+                    app:itemTextColor="@color/black"
+                    app:labelVisibilityMode="labeled">
 
                 </android.support.design.widget.BottomNavigationView>
             </RelativeLayout>

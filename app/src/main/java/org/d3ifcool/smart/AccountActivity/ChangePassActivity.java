@@ -131,14 +131,6 @@ public class ChangePassActivity extends AppCompatActivity implements View.OnClic
         }
     };
 
-    private void loadComponent(){
-        repass = (EditText) findViewById(R.id.pass);
-        submit = (Button) findViewById(R.id.submit_pass);
-        submit.setOnClickListener(this);
-
-
-        repass.addTextChangedListener(nextRegistWatcher);
-    }
 
     FirebaseAuth.AuthStateListener authListener = new FirebaseAuth.AuthStateListener() {
         @SuppressLint("SetTextI18n")
@@ -158,7 +150,7 @@ public class ChangePassActivity extends AppCompatActivity implements View.OnClic
     //Action Onclick using ID
     public void onClickView(View view) {
         switch (view.getId()){
-            case R.id.btn_prev :
+            case R.id.btn_prev_change :
                 Intent intent = new Intent(ChangePassActivity.this, FamilyActivity.class);
                startActivity(intent);
                break;

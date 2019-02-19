@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".Activity.ActivityFeature"
-    android:background="@color/blue_gray">
+    android:background="@color/colorWhite">
 
             <android.support.design.widget.AppBarLayout
                 android:layout_width="match_parent"
@@ -38,6 +38,18 @@
                 android:layout_height="match_parent"
                 android:id="@+id/frame_layout_main">
 
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                <ProgressBar
+                    android:id="@+id/myDataLoaderProgressBarHistory"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:indeterminate="true"
+                    android:indeterminateBehavior="cycle"
+                    android:visibility="gone" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recycler_view_history"
@@ -49,27 +61,27 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
 
+                </RelativeLayout>
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="55dp"
+                        android:id="@+id/bottomBar"
+                        android:layout_alignParentBottom="true">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:id="@+id/bottomBar"
-            android:layout_alignParentBottom="true">
-
-            <android.support.design.widget.BottomNavigationView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/bottomNavView_Bar"
-                android:background="@drawable/white_grey_border_top"
-                app:menu="@menu/bottom_navigation_menu"
-                app:itemIconTint="@color/tab_color"
-                app:itemTextColor="@color/black">
-            </android.support.design.widget.BottomNavigationView>
-
+                        <android.support.design.widget.BottomNavigationView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:id="@+id/bottomNavView_Bar_house"
+                            android:background="@drawable/white_grey_border_top"
+                            app:menu="@menu/bottom_navigation_menu1"
+                            app:itemIconTint="@color/tab_color"
+                            app:itemTextColor="@color/black"
+                            app:labelVisibilityMode="labeled">
+                        </android.support.design.widget.BottomNavigationView>
                     </RelativeLayout>
                 </RelativeLayout>
             </FrameLayout>

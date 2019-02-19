@@ -16,13 +16,11 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -32,11 +30,9 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -56,9 +52,6 @@ import org.d3ifcool.smart.Model.User;
 import org.d3ifcool.smart.R;
 
 import java.util.HashMap;
-import java.util.List;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
@@ -72,15 +65,16 @@ public class FragmentProfile extends Fragment {
     private FirebaseAuth.AuthStateListener authListener;
     private DatabaseReference myRef;
     private FirebaseDatabase database;
+    ProgressDialog pd;
     ProgressBar load_pic;
-    ImageView image_profile;
+    ImageView image_profile, menu;
     static int PReqCode = 1 ;
     static int REQUESCODE = 1 ;
 
     FirebaseUser firebaseUser;
     String profileid;
     private Uri mImageUri;
-    private StorageTask uploadTask;
+    private StorageTask<UploadTask.TaskSnapshot> uploadTask;
     StorageReference storageRef;
 
 
@@ -121,6 +115,7 @@ public class FragmentProfile extends Fragment {
                     checkAndRequestForPermission();
 
                 }
+
                 else {
 
                     cropImage();
@@ -154,6 +149,7 @@ public class FragmentProfile extends Fragment {
                 public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                     FirebaseUser user = firebaseAuth.getCurrentUser();
                     if (user == null) {
+                        pd.hide();
                         startActivity(new Intent(getActivity(), LoginActivity.class));
                         getActivity().finish();
 
@@ -187,16 +183,20 @@ public class FragmentProfile extends Fragment {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,
                                                 int which) {
+                                pd.setMessage("Please wait");
+                                pd.show();
                                 if (firebaseUser != null) {
                                     firebaseUser.delete()
                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
+                                                    pd.hide();
                                                     if (task.isSuccessful()) {
                                                         Toast.makeText(getActivity(), "Your profile is deleted:( Create a account now!", Toast.LENGTH_SHORT).show();
                                                         startActivity(new Intent(getActivity(), RegistActivity.class));
                                                         getActivity().finish();
                                                     } else {
+                                                        pd.hide();
                                                         Toast.makeText(getActivity(), "Failed to delete your account!", Toast.LENGTH_SHORT).show();
 
                                                     }
@@ -223,7 +223,8 @@ public class FragmentProfile extends Fragment {
     }
 
     private void userInfo(){
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid()).child(Data.user);
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid()).
+                child("Email_" + firebaseUser.getEmail().replace(".", ","));
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -288,12 +289,14 @@ public class FragmentProfile extends Fragment {
                         Uri downloadUri = task.getResult();
                         String miUrlOk = downloadUri.toString();
 
-                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid()).child(Data.user);
+                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid()).
+                                child("Email_" + firebaseUser.getEmail().replace(".", ","));
                         HashMap<String, Object> map1 = new HashMap<>();
                         map1.put("imageurl", ""+miUrlOk);
                         reference.updateChildren(map1);
 
                         pd.dismiss();
+                        getActivity().finishAfterTransition();
 
                     } else {
                         Toast.makeText(getActivity(), "Failed", Toast.LENGTH_SHORT).show();
@@ -318,7 +321,6 @@ public class FragmentProfile extends Fragment {
         galleryIntent.setType("image/*");
         startActivityForResult(galleryIntent,REQUESCODE);
     }
-
 
 
 

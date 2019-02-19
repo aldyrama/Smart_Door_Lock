@@ -3,34 +3,44 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/blue_gray">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/empty_member"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No members"
+        android:layout_centerInParent="true"
+        android:drawableTop="@drawable/empty"/>
+
+    <ProgressBar
+        android:id="@+id/myDataUserLoaderProgressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:indeterminateBehavior="cycle"
+        android:visibility="gone" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view_controls"
+        android:id="@+id/recycler_view_invite"
         android:clipToPadding="false"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
+        android:padding="6dp"
+        android:background="@color/colorWhite"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <at.markushi.ui.CircleButton
-        android:id="@+id/invite"
-        android:layout_width="65dip"
-        android:layout_height="65dip"
-        android:layout_gravity="center|bottom"
-        android:src="@drawable/ic_action_add"
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/invite_btn_user"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:layout_centerInParent="true"
-        android:clickable="true"
-        android:focusable="true"
-        app:cb_color="@color/blackk"
-        app:cb_pressedRingWidth="8dip"/>
+        android:layout_margin="16dp"
+        android:backgroundTint="@color/blackk"
+        android:src="@drawable/ic_user_white"/>
 
     </RelativeLayout>
-</RelativeLayout>

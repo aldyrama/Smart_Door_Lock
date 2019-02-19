@@ -39,14 +39,14 @@
                         android:gravity="center"
                         android:text="Sign Up"
                         android:textColor="@color/colorPrimaryDark"
-                        android:textSize="20sp"
+                        android:textSize="15sp"
                         android:textStyle="bold" />
 
                     <ImageView
-                        android:id="@+id/btn_prev"
+                        android:id="@+id/btn_prev_regist"
                         android:layout_width="30dp"
                         android:layout_height="50dp"
-                        android:src="@drawable/ic_action_arrow_left"
+                        android:src="@drawable/ic_backarrow"
                         android:layout_alignParentLeft="true"
                         android:layout_marginRight="5dp"/>
                 </RelativeLayout>
@@ -67,7 +67,7 @@
                     android:layout_height="wrap_content"
                     android:text="Smart Door Lock"
                     android:layout_gravity="center"
-                    android:textSize="48sp"
+                    android:textSize="32sp"
                     android:textColor="@color/black"/>
 
                 <EditText

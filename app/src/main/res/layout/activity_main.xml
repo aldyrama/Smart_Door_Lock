@@ -40,18 +40,18 @@
                     android:layout_marginTop="0dp"
                     android:gravity="center"
                     android:text="Home"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textSize="20sp"
+                    android:textColor="@color/blackk"
+                    android:textSize="15sp"
                     android:textStyle="bold" />
 
             <ImageView
                 android:id="@+id/tool_add_home"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:onClick="onClickView"
                 android:src="@drawable/ic_action_add_black"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="5dp"/>
+                android:layout_marginRight="10dp"/>
             </RelativeLayout>
         </LinearLayout>
     </android.support.v7.widget.Toolbar>
@@ -66,6 +66,15 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/empty_device"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No Device"
+            android:visibility="gone"
+            android:layout_centerInParent="true"
+            android:drawableTop="@drawable/empty"/>
 
         <ProgressBar
             android:id="@+id/myDataLoaderProgressBar"
@@ -139,7 +148,8 @@
                 android:background="@drawable/white_grey_border_top"
                 app:menu="@menu/bottom_navigation_menu"
                 app:itemIconTint="@color/tab_color"
-                app:itemTextColor="@color/black">
+                app:itemTextColor="@color/black"
+                app:labelVisibilityMode="labeled">
             </android.support.design.widget.BottomNavigationView>
         </RelativeLayout>
     </RelativeLayout>

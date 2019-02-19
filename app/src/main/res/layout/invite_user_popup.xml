@@ -42,7 +42,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Invite User"
+                    android:text="Add member"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="@color/colorPrimaryDark"/>
@@ -55,14 +55,15 @@
                     android:layout_marginTop="20dp">
 
                     <EditText
-                        android:id="@+id/username_member"
+                        android:id="@+id/email_member"
                         android:layout_width="match_parent"
                         android:layout_height="45dp"
-                        android:hint="Username member"
+                        android:hint="Email member"
                         android:padding="10dp"
                         android:layout_gravity="center"
+                        android:textSize="14sp"
                         android:background="@drawable/bg_change"
-                        android:inputType="text"
+                        android:inputType="textEmailAddress"
                         android:singleLine="true" />
 
                 </LinearLayout>
@@ -78,8 +79,7 @@
                         android:layout_width="100dp"
                         android:layout_height="35dp"
                         android:background="@drawable/transparent_bg_bordered"
-                        android:text="Send"
-                        android:enabled="false"
+                        android:text="Add"
                         android:layout_alignParentRight="true"
                         android:layout_marginRight="45dp"
                         android:textSize="14sp"

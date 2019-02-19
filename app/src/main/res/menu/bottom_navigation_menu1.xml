@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_door"
+        android:icon="@drawable/ic_door"
+        android:title="Door"
+        android:orderInCategory="3"/>
+
+    <item
+        android:id="@+id/nav_member"
+        android:icon="@drawable/ic_action_user"
+        android:title="Member"
+        android:orderInCategory="3"/>
+
+    <item
+        android:id="@+id/nav_activity_house"
+        android:icon="@drawable/ic_history"
+        android:title="History"
+        android:orderInCategory="3"/>
+
+</menu>

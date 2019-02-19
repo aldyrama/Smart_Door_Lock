@@ -16,4 +16,7 @@
     <string name="angle_value_none">Angle: none</string>
     <string name="offset_value_none">none :Offset</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

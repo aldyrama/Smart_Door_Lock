@@ -8,6 +8,8 @@
     <color name="black">#424242</color>
     <color name="blue_gray">#ECEFF1</color>
     <color name="transparent">#00000000</color>
+    <color name="gray400">#BDBDBD</color>
+    <color name="transp">#33000000</color>
 
     <color name="navigationBarColorAttempted">#777</color>
     <color name="navigationBarColorSkipped">#063e8b</color>
@@ -19,5 +21,6 @@
     <color name="red">#D50000</color>
     <color name="gray_50">#FAFAFA</color>
     <color name="blue">#455cde</color>
+    <color name="gray100">#EEEEEE</color>
 
 </resources>

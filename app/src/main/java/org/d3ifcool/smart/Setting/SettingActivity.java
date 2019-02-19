@@ -52,7 +52,7 @@ public class SettingActivity extends AppCompatActivity {
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavView_Bar);
         BottomNavigationViewHelper.disableShiftMode(bottomNavigationView);
         Menu menu = bottomNavigationView.getMenu();
-        MenuItem menuItem = menu.getItem(3);
+        MenuItem menuItem = menu.getItem(2);
         menuItem.setChecked(true);
 
 
@@ -66,11 +66,11 @@ public class SettingActivity extends AppCompatActivity {
                         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                         break;
 
-                    case R.id.nav_activity:
-                        Intent intent2 = new Intent(SettingActivity.this, ActivityFeature.class);
-                        startActivity(intent2);
-                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                        break;
+//                    case R.id.nav_activity:
+//                        Intent intent2 = new Intent(SettingActivity.this, ActivityFeature.class);
+//                        startActivity(intent2);
+//                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+//                        break;
 
                     case R.id.nav_user:
                         Intent intent3 = new Intent(SettingActivity.this, FamilyActivity.class);

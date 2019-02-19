@@ -15,6 +15,10 @@ public class History {
         this.imageurl = imageurl;
     }
 
+    public History() {
+
+    }
+
     public String getId() {
         return id;
     }
