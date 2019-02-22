@@ -19,29 +19,33 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/logo_lock"
+        android:icon="@mipmap/ic_logo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_logo_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".Setting.SettingActivity"></activity>
-        <activity android:name=".Home.ConnectIp" />
-        <activity android:name=".AccountActivity.StartActivity">
+        <activity android:name=".AccountActivity.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".Setting.SettingActivity" />
+        <activity android:name=".Home.ConnectIp" />
+        <activity android:name=".AccountActivity.StartActivity">
+
+        </activity>
         <activity android:name=".AccountActivity.LoginActivity" />
         <activity android:name=".AccountActivity.FindPassword" />
         <activity android:name=".Activity.ActivityFeature" />
         <activity android:name=".Family.FamilyActivity" />
-        <activity android:name=".Home.DetailUser"
-            android:theme="@style/AppTheme.CustomTheme"/>
-        <activity android:name=".Home.HouseDetail"/>
-        <activity android:name=".Home.HousesDetail"/>
+        <activity
+            android:name=".Home.DetailUser"
+            android:theme="@style/AppTheme.CustomTheme" />
+        <activity android:name=".Home.HouseDetail" />
+        <activity android:name=".Home.HousesDetail" />
         <activity android:name=".Home.MainActivity">
             <intent-filter>
                 <action android:name="android.media.action.DISPLAY_NOTIFICATION" />

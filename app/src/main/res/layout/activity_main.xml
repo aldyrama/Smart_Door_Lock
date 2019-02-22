@@ -102,8 +102,8 @@
 
             <android.support.v7.widget.CardView
                 android:id="@+id/cards_add_home"
-                android:layout_width="380dp"
-                android:layout_height="550dp"
+                android:layout_width="360dp"
+                android:layout_height="530dp"
                 app:cardCornerRadius="35dp"
                 android:clickable="true"
                 android:focusable="true"

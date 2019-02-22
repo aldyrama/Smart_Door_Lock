@@ -1,17 +1,23 @@
 package org.d3ifcool.smart.Family;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.Build;
+import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
 import org.d3ifcool.smart.AccountActivity.ChangePassActivity;
@@ -39,6 +45,7 @@ public class FamilyActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_family);
+        setStatustBarColor(R.color.colorWhite);
 
         loadFragmentValue();
         mSectionsPageAdapter = new SectionsPageAdapter(getSupportFragmentManager());
@@ -129,6 +136,18 @@ public class FamilyActivity extends AppCompatActivity {
                 break;
 
 
+        }
+    }
+
+    @SuppressLint("ResourceAsColor")
+    private void setStatustBarColor(@ColorRes int statustBarColor) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            int color = ContextCompat.getColor(this, statustBarColor);
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(color);
+            window.setTitleColor(R.color.black);
         }
     }
 

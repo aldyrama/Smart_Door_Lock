@@ -1,16 +1,20 @@
 package org.d3ifcool.smart.Home;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,6 +26,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -146,6 +152,7 @@ public class HouseDetail extends AppCompatActivity implements  View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detail_house);
+        setStatustBarColor(R.color.colorWhite);
 
         auth = FirebaseAuth.getInstance();
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -202,8 +209,8 @@ public class HouseDetail extends AppCompatActivity implements  View.OnClickListe
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.nav_door:
-                        break;
+//                    case R.id.nav_door:
+//                        break;
 
                     case R.id.nav_member:
                         Intent intent1 = new Intent(HouseDetail.this, ActivityFeature.class);
@@ -449,6 +456,18 @@ public class HouseDetail extends AppCompatActivity implements  View.OnClickListe
             }
         });
 
+    }
+
+    @SuppressLint("ResourceAsColor")
+    private void setStatustBarColor(@ColorRes int statustBarColor) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            int color = ContextCompat.getColor(this, statustBarColor);
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(color);
+            window.setTitleColor(R.color.black);
+        }
     }
 
 

@@ -164,8 +164,8 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
 
     //check account login
     private void checkAccount() {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid()).
-                child("Email_" + firebaseUser.getEmail().replace(".",","));
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").
+                child(firebaseUser.getEmail().replace(".",","));
         reference.addValueEventListener(new ValueEventListener() {
             @SuppressLint("RestrictedApi")
             @Override
@@ -276,12 +276,6 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
 
 
     private void showDialogPhoneNumber() {
-        final ProgressDialog pd = new ProgressDialog(getActivity());
-        pd.setMessage("Please wait...");
-        pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        pd.setCanceledOnTouchOutside(false);
-        pd.setCancelable(false);
-        pd.show();
         dialog.setContentView(R.layout.invite_user_popup);
         phoneNumber = (EditText) dialog.findViewById(R.id.email_member);
         closePopup = (ImageView) dialog.findViewById(R.id.close_popup_phone);
@@ -303,34 +297,73 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
         sendInvite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Intent i = getActivity().getIntent();
-                String deviceCode =i.getExtras().getString("DEVICECODE_KEY");
-
-                String str_invite = phoneNumber.getText().toString();
-                reference = FirebaseDatabase.getInstance().getReference("Devices").child(deviceCode).child("Member");
-
-                Connect user = new Connect(phoneNumber.getText().toString().trim());
+                final ProgressDialog pd = new ProgressDialog(getActivity());
+                pd.setMessage("Please wait...");
+                pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                pd.setCanceledOnTouchOutside(false);
+                pd.setCancelable(false);
+                pd.show();
+                final String str_invite = phoneNumber.getText().toString();
 
                 if (str_invite.isEmpty()){
                     phoneNumber.setError("Email required");
+                    pd.hide();
+                    return;
+                }
+
+                reference = FirebaseDatabase.getInstance().getReference("Users").child(str_invite.replace(".",","));
+                    reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            Intent i = getActivity().getIntent();
+                            String deviceCode = i.getExtras().getString("DEVICECODE_KEY");
+
+                            reference = FirebaseDatabase.getInstance().getReference("Devices").child(deviceCode).child("Member");
+                            DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference().child("Users").
+                                    child(str_invite.replace(".", ",")).child("Houses");
+                            Connect user = new Connect(phoneNumber.getText().toString().trim());
+
+                            if (dataSnapshot.exists()) {
+
+                                String uploadId = reference.push().getKey();
+                                reference.child(uploadId).setValue(user);
+                                reference1.child(uploadId).setValue(deviceCode);
+                                Data.usernameConnect = str_invite;
+                                Toast.makeText(getActivity(), str_invite + "added", Toast.LENGTH_SHORT).show();
+
+                                dialog.dismiss();
+                                pd.hide();
+                                return;
+                            }
+
+                            else {
+                                pd.hide();
+                                Toast.makeText(getActivity(), str_invite + " Not found ", Toast.LENGTH_SHORT).show();
+
+                            }
+
+                        }
+
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            pd.hide();
+                            Toast.makeText(getActivity(), str_invite + " Not found ", Toast.LENGTH_SHORT).show();
+
+
+                        }
+                    });
 
                 }
 
-                else {
-                    String uploadId = mDatabaseRef.push().getKey();
-                    reference.child(uploadId).setValue(user);
-                    Data.usernameConnect = str_invite;
-                    Toast.makeText(getActivity(), str_invite + "added", Toast.LENGTH_SHORT).show();
-
-                    dialog.dismiss();
 
 
-                }
 
-                pd.hide();
 
-            }
+
+//                pd.hide();
+
+
 
         });
 

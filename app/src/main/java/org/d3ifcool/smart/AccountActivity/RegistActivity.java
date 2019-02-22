@@ -1,5 +1,6 @@
 package org.d3ifcool.smart.AccountActivity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -8,13 +9,18 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.Build;
+import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -86,6 +92,7 @@ public class RegistActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_regist);
+        setStatustBarColor(R.color.colorWhite);
         view();
         mActivity = this;
 
@@ -173,10 +180,8 @@ public class RegistActivity extends AppCompatActivity {
         txt_regist = findViewById(R.id.text_regist);
 
 
-        Typeface typeface = Typeface.createFromAsset(getAssets(), "font/Aaargh.ttf");
+        Typeface typeface = Typeface.createFromAsset(getAssets(), "font/Fontspring_DEMO_microsquare_bold.ttf");
         txt_regist.setTypeface(typeface);
-        txt_regist.setTypeface(null, Typeface.BOLD);
-
 
     }
 
@@ -190,8 +195,7 @@ public class RegistActivity extends AppCompatActivity {
                             FirebaseUser firebaseUser = auth.getCurrentUser();
                             String userID = firebaseUser.getUid();
 
-                            reference = FirebaseDatabase.getInstance().getReference().child("Users").child(firebaseUser.getUid()).
-                                    child("Email_" + email.replace(".",","));
+                            reference = FirebaseDatabase.getInstance().getReference().child("Users").child(email.replace(".",","));
                             HashMap<String, Object> map = new HashMap<>();
                             map.put("email", email);
                             map.put("username", username.toLowerCase());
@@ -204,6 +208,7 @@ public class RegistActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()){
+//                                        sendEmailVerification();
                                         SharedPreferences sharedpreferences = getSharedPreferences(mypreference,
                                                 Context.MODE_PRIVATE);
 
@@ -214,6 +219,7 @@ public class RegistActivity extends AppCompatActivity {
 
                                         Data.user = username;
                                         pd.dismiss();
+//                                        auth.signOut();
                                         Intent intent = new Intent(RegistActivity.this, MainActivity.class);
                                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                         startActivity(intent);
@@ -254,6 +260,22 @@ public class RegistActivity extends AppCompatActivity {
     }
 
 
+    private void sendEmailVerification() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user!=null){
+            user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()){
+                        Toast.makeText(RegistActivity.this,"Check your Email for verification",Toast.LENGTH_SHORT).show();
+                        FirebaseAuth.getInstance().signOut();
+                    }
+                }
+            });
+        }
+    }
+
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -265,7 +287,19 @@ public class RegistActivity extends AppCompatActivity {
        startActivity(new Intent(RegistActivity.this, LoginActivity.class));
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
+    }
 
+
+    @SuppressLint("ResourceAsColor")
+    private void setStatustBarColor(@ColorRes int statustBarColor) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            int color = ContextCompat.getColor(this, statustBarColor);
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(color);
+            window.setTitleColor(R.color.black);
+        }
     }
 
 

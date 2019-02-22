@@ -47,6 +47,7 @@ dependencies {
     implementation 'com.github.markushi:circlebutton:1.1'
     implementation 'com.andretietz.android:gamecontroller:1.1.1'
     implementation 'com.jmedeisis:bugstick:0.2.2'
+    implementation 'com.tomer:fadingtextview:2.5'
     implementation 'com.github.arturogutierrez:badges:1.0.5@aar'
     implementation('com.google.apis:google-api-services-youtube:v3-rev206-1.25.0') {
         exclude group: 'org.apache.httpcomponents'

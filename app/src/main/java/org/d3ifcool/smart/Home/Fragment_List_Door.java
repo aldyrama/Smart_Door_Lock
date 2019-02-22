@@ -223,6 +223,7 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
 
     @Override
     public void onShowItemClick(int position) {
+        Toast.makeText(getActivity(), "Item test", Toast.LENGTH_SHORT).show();
 //        Door clickedTeacher= mDoor.get(position);
 //        String[] teacherData={clickedTeacher.getDoorName()};
 //        openDetailActivity(teacherData);
@@ -230,19 +231,23 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
 
     @Override
     public void onDeleteItemClick(int position) {
+        Intent i = getActivity().getIntent();
+        String deviceCode = i.getExtras().getString("DEVICECODE_KEY");
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Devices").child(deviceCode).child("Doors");
         Door selectedItem = mDoor.get(position);
-        final String selectedKey = selectedItem.getKey();
+        final String selectedKey = selectedItem.getDoorName();
 
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference(selectedItem.getDoorName());
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference(selectedKey);
         reference.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                mDatabaseRef.child(selectedKey).removeValue();
+                mDatabaseRef.removeValue();
                 Toast.makeText(getActivity(), "Item deleted", Toast.LENGTH_SHORT).show();
             }
         });
 
     }
+
     public void onDestroy() {
         super.onDestroy();
         mDatabaseRef.removeEventListener(mDBListener);

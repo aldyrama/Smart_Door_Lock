@@ -35,8 +35,8 @@
 
         <android.support.v7.widget.CardView
             android:id="@+id/cardAddDoor"
-            android:layout_width="380dp"
-            android:layout_height="550dp"
+            android:layout_width="360dp"
+            android:layout_height="530dp"
             app:cardCornerRadius="35dp"
             android:clickable="true"
             android:focusable="true"
@@ -47,7 +47,7 @@
             android:dividerHeight="0.0px"
             android:clipToPadding="false"
             android:clipChildren="false"
-            android:visibility="visible"
+            android:visibility="gone"
             card_view:cardElevation="10dp"
             card_view:cardPreventCornerOverlap="false">
 

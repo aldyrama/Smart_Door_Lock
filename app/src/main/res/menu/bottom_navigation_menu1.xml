@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item
-        android:id="@+id/nav_door"
-        android:icon="@drawable/ic_door"
-        android:title="Door"
-        android:orderInCategory="3"/>
+    <!--<item-->
+        <!--android:id="@+id/nav_door"-->
+        <!--android:icon="@drawable/ic_door"-->
+        <!--android:title="Door"-->
+        <!--android:orderInCategory="3"/>-->
 
     <item
         android:id="@+id/nav_member"

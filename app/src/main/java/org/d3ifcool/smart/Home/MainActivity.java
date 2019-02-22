@@ -1,5 +1,6 @@
 package org.d3ifcool.smart.Home;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -11,9 +12,12 @@ import android.graphics.drawable.ColorDrawable;
 import android.media.MediaRecorder;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -27,6 +31,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -131,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        getUsername();
+        setStatustBarColor(R.color.colorWhite);
 
         startService(new Intent(this, MyFirebaseMessagingService.class));
         SharedPreferences prefs = getSharedPreferences("PREFS", MODE_PRIVATE);
@@ -262,8 +268,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //check account login
     private void checkAccount() {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid()).
-                child("Email_" + firebaseUser.getEmail().replace(".",","));
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getEmail().replace(".",","));
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -324,14 +329,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mHouses.clear();
-                for(DataSnapshot kodedeviceSnapshot : dataSnapshot.child("Users").child(firebaseUser.getUid()).child("Email_"+firebaseUser.getEmail().replace(".", ","))
-                        .child("Houses").getChildren()){
-                    String kode_device = kodedeviceSnapshot.getValue(String.class);
-                    Log.d(TAG, "onDataChange: " + kode_device);
-                    House house = dataSnapshot.child("Devices").child(kode_device).getValue(House.class);
-                    Log.d(TAG, "onDataChange: " + house.getName());
-                    mHouses.add(house);
+                try {
 
+                    for (DataSnapshot kodedeviceSnapshot : dataSnapshot.child("Users").child(firebaseUser.getEmail().replace(".", ","))
+                            .child("Houses").getChildren()) {
+                        String kode_device = kodedeviceSnapshot.getValue(String.class);
+                        Log.d(TAG, "onDataChange: " + kode_device);
+                        House house = dataSnapshot.child("Devices").child(kode_device).getValue(House.class);
+                        Log.d(TAG, "onDataChange: " + house.getName());
+                        mHouses.add(house);
+
+                    }
+                }catch (Exception e){}
 
 //                for (DataSnapshot houseSnapshot : dataSnapshot.getChildren()) {
 //                    GenericTypeIndicator<Map<String, Object>> genericTypeIndicator = new GenericTypeIndicator<Map<String, Object>>() {};
@@ -341,8 +350,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                    upload.setName( (String) map.get("name"));
 //                    mHouses.add(upload);
 //                    Data.checkRecyler = upload;
-
-                }
 
                 mAdapter.notifyDataSetChanged();
                 mProgressBar.setVisibility(View.GONE);
@@ -397,7 +404,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //house information
     private void houseInfo() {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -422,7 +429,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //Edit house name
     public void insertHouseName(String houseName){
 
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users").child(firebaseUser.getUid());
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users");
         HashMap<String, Object> map = new HashMap<>();
         map.put("house_Name", houseName);
 
@@ -435,16 +442,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     public void obserVationHouse(){
-        reference = FirebaseDatabase.getInstance().getReference().child("Device").child(firebaseUser.getUid()).child(Data.user).
+        reference = FirebaseDatabase.getInstance().getReference().child("Device").child(Data.user).
                 child("house_" + Data.user);
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot data: dataSnapshot.getChildren()) {
                     if (data.child("house" + Data.housenameid).exists()) {
-                        //do ur stuff
+
                     } else {
-                        //do something if not exists
+
                     }
 
                 }
@@ -475,6 +482,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.stream_action :
                 startActivity(new Intent(MainActivity.this, StreamingActivity.class));
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                 break;
 
             case R.id.cards_add_home :
@@ -517,16 +525,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onDeleteItemClick(int position) {
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Devices").child(firebaseUser.getUid()).child(Data.user);
+        Intent i = this.getIntent();
+        String deviceCode =i.getExtras().getString("DEVICECODE_KEY");
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Devices").child(deviceCode);
         House selectedItem = mHouses.get(position);
         final String selectedKey = selectedItem.getName();
         Data.housenameid = selectedKey;
 
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("house_" + Data.housenameid);
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Devices").child(deviceCode);
         reference.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                mDatabaseRef.child("house_" + Data.housenameid).removeValue();
+                mDatabaseRef.removeValue();
                 Toast.makeText(MainActivity.this, "Item deleted" + selectedKey, Toast.LENGTH_SHORT).show();
             }
         });
@@ -537,6 +547,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
 
+    }
+
+
+    @SuppressLint("ResourceAsColor")
+    private void setStatustBarColor(@ColorRes int statustBarColor) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            int color = ContextCompat.getColor(this, statustBarColor);
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(color);
+            window.setTitleColor(R.color.black);
+        }
     }
 
 
@@ -575,8 +598,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 String str_house = houseNameEditTxt.getText().toString();
                 String str_device = deviceCode.getText().toString();
                 reference = FirebaseDatabase.getInstance().getReference().child("Devices").child(str_device);
-                DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference().child("Users").child(firebaseUser.getUid()).
-                        child("Email_" + firebaseUser.getEmail().replace(".", ",")).child("Houses");
+                DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference().child("Users").
+                        child(firebaseUser.getEmail().replace(".", ",")).child("Houses");
 
                 String made_date = Data.madeDateHouse;
 //                House house1 = new House(houseNameEditTxt, deviceCode.getText().toString().trim());

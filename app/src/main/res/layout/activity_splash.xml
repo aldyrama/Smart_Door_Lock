@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:background="@color/colorWhite"
+    android:id="@+id/lr"
+    tools:context=".AccountActivity.SplashActivity">
+
+    <TextView
+        android:id="@+id/prolockname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="PROLOCK"
+        android:textColor="@color/blackk"
+        android:textSize="32sp"
+        android:textStyle="bold"/>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/power"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="made in by "
+        android:layout_marginLeft="20sp"
+        android:textSize="10sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Processor"
+        android:textColor="@color/blackk"
+        android:layout_toRightOf="@+id/power"
+        android:textStyle="bold"
+        android:textSize="12sp"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp">
+
+    <TextView
+        android:id="@+id/checking"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Checking"/>
+
+    <com.tomer.fadingtextview.FadingTextView
+        android:layout_width="20dp"
+        android:layout_height="wrap_content"
+        android:gravity="center|left"
+        android:layout_marginLeft="2dp"
+        app:timeout="200"
+        app:texts="@array/text_demo"
+        android:layout_toRightOf="@+id/checking"/>
+    </RelativeLayout>
+</LinearLayout>

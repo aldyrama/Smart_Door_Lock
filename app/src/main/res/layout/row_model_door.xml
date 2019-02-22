@@ -1,21 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:foreground="?attr/selectableItemBackgroundBorderless"
-    card_view:cardCornerRadius="8dp"
-    card_view:cardElevation="10dp"
+    card_view:cardCornerRadius="6dp"
     android:clickable="true"
     android:focusable="true"
-    android:dividerHeight="0.0px"
-    android:clipToPadding="false"
-    android:clipChildren="false"
-    android:elevation="8dp"
-    android:divider="@android:color/transparent"
-    card_view:cardPreventCornerOverlap="false"
     android:background="?attr/selectableItemBackgroundBorderless"
     android:layout_marginBottom="15dp"
     android:layout_height="230dp">
@@ -50,13 +41,12 @@
                         android:text="Door Name"
                         android:drawablePadding="6dp"
                         android:id="@+id/doorName"
-                        android:textStyle="bold"
                         android:textSize="20sp"
                         android:padding="5dp"
                         android:layout_gravity="center"
                         android:gravity="center|left"
                         android:drawableLeft="@drawable/ic_doorr"
-                        android:textColor="@color/blackk" />
+                        android:textColor="@color/black" />
 
                 </LinearLayout>
 

@@ -168,7 +168,8 @@ public class FragmentProfile extends Fragment {
             @Override
             public void onClick(View v) {
 
-                final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
+                final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").
+                        child(firebaseUser.getEmail().replace(".",","));
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle("DELETE ACCOUNT");
@@ -223,8 +224,7 @@ public class FragmentProfile extends Fragment {
     }
 
     private void userInfo(){
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid()).
-                child("Email_" + firebaseUser.getEmail().replace(".", ","));
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getEmail().replace(".", ","));
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -289,14 +289,13 @@ public class FragmentProfile extends Fragment {
                         Uri downloadUri = task.getResult();
                         String miUrlOk = downloadUri.toString();
 
-                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid()).
-                                child("Email_" + firebaseUser.getEmail().replace(".", ","));
+                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").
+                                child(firebaseUser.getEmail().replace(".", ","));
                         HashMap<String, Object> map1 = new HashMap<>();
                         map1.put("imageurl", ""+miUrlOk);
                         reference.updateChildren(map1);
 
                         pd.dismiss();
-                        getActivity().finishAfterTransition();
 
                     } else {
                         Toast.makeText(getActivity(), "Failed", Toast.LENGTH_SHORT).show();

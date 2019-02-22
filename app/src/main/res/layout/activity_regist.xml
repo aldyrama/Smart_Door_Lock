@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorWhite"
     tools:context=".AccountActivity.RegistActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -65,10 +66,11 @@
                     android:id="@+id/text_regist"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Smart Door Lock"
+                    android:text="PROLOCK"
                     android:layout_gravity="center"
                     android:textSize="32sp"
-                    android:textColor="@color/black"/>
+                    android:textStyle="bold"
+                    android:textColor="@color/blackk"/>
 
                 <EditText
                     android:id="@+id/username_edittxt"

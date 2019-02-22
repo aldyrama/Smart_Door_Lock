@@ -22,5 +22,6 @@
     <color name="gray_50">#FAFAFA</color>
     <color name="blue">#455cde</color>
     <color name="gray100">#EEEEEE</color>
+    <color name="bluesamsung">#00ACC1</color>
 
 </resources>

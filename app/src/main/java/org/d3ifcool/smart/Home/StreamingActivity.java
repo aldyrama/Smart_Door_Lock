@@ -2,6 +2,7 @@ package org.d3ifcool.smart.Home;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -238,4 +239,11 @@ public class StreamingActivity extends YouTubeBaseActivity implements YouTubePla
         public void onVideoStarted() {
         }
     };
+
+    @Override
+    public void onBackPressed() {
+       startActivity(new Intent(StreamingActivity.this, MainActivity.class));
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+
+    }
 }
