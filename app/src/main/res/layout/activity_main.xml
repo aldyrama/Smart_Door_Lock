@@ -74,16 +74,7 @@
             android:text="No Device"
             android:visibility="gone"
             android:layout_centerInParent="true"
-            android:drawableTop="@drawable/empty"/>
-
-        <ProgressBar
-            android:id="@+id/myDataLoaderProgressBar"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:indeterminateBehavior="cycle"
-            android:visibility="gone" />
+            android:drawableTop="@drawable/emptyy"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/mRecyclerView"
@@ -102,8 +93,12 @@
 
             <android.support.v7.widget.CardView
                 android:id="@+id/cards_add_home"
-                android:layout_width="360dp"
-                android:layout_height="530dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="48dp"
+                android:layout_marginBottom="48dp"
+                android:layout_marginRight="23dp"
+                android:layout_marginLeft="23dp"
                 app:cardCornerRadius="35dp"
                 android:clickable="true"
                 android:focusable="true"
@@ -134,6 +129,15 @@
 
             </android.support.v7.widget.CardView>
         </RelativeLayout>
+
+        <ProgressBar
+            android:id="@+id/myDataLoaderProgressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:indeterminateBehavior="cycle"
+            android:visibility="visible" />
 
         <RelativeLayout
             android:layout_width="match_parent"

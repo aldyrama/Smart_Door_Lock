@@ -3,7 +3,7 @@ package org.d3ifcool.smart.Model;
 public class Door {
     private String doorName;
     private String key;
-    private boolean doorLock;
+    private int doorLock;
     private String madeDate;
     private String doorPin;
     private int position;
@@ -60,11 +60,11 @@ public class Door {
         this.doorPin = doorPin;
     }
 
-    public boolean isDoorLock() {
+    public int getDoorLock() {
         return doorLock;
     }
 
-    public void setDoorLock(boolean doorLock) {
+    public void setDoorLock(int doorLock) {
         this.doorLock = doorLock;
     }
 }

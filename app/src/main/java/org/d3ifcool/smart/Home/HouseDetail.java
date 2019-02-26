@@ -104,11 +104,11 @@ public class HouseDetail extends AppCompatActivity implements  View.OnClickListe
     private void initializeWidgets(){
         houseName_detail = findViewById(R.id.myhouse_detail);
         detal_date = findViewById(R.id.date_detail);
-        streaming_cam = findViewById(R.id.stream_cam);
+//        streaming_cam = findViewById(R.id.stream_cam);
         dialog_Door = new Dialog(this);
 
         closePoupUpDoor = (ImageView) findViewById(R.id.close_popup_door);
-        lock = (ImageView) findViewById(R.id.lockDoor);
+//        lock = (ImageView) findViewById(R.id.lockDoor);
         commitDoor = (Button) findViewById(R.id.add_door_btn);
         addDoorEdtxt = (EditText) findViewById(R.id.door_name_txt);
         addDoor_btn = (ImageView) findViewById(R.id.add_door_tool);
@@ -376,9 +376,9 @@ public class HouseDetail extends AppCompatActivity implements  View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.stream_cam :
-                startActivity(new Intent(HouseDetail.this, StreamingActivity.class));
-                break;
+//            case R.id.stream_cam :
+//                startActivity(new Intent(HouseDetail.this, StreamingActivity.class));
+//                break;
 
             case R.id.cardAddDoor :
                 showDialogAddDoor();

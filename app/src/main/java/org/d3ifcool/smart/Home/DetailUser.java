@@ -16,18 +16,31 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import org.d3ifcool.smart.Adapter.RecylerViewAdapterUserInvite;
 import org.d3ifcool.smart.Family.FamilyActivity;
 import org.d3ifcool.smart.R;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class DetailUser extends AppCompatActivity implements  View.OnClickListener, RecylerViewAdapterUserInvite.OnItemClickListener {
 
-    TextView nameDetailTextView,descriptionDetailTextView,dateDetailTextView,categoryDetailTextView;
+    TextView emailDetailTextView,detailNameTextView,detailTypeAccount, deviceCode;
     ImageView close;
+    CircleImageView photo;
 
     private void initializeWidgets(){
-        nameDetailTextView= findViewById(R.id.usernameuser);
+//        emailDetailTextView = findViewById(R.id.emailuser);
+        deviceCode = findViewById(R.id.devicecodedetail);
         close = findViewById(R.id.close_detail);
+        photo = findViewById(R.id.imgUser);
+        detailNameTextView = findViewById(R.id.detailNameUser);
+        detailTypeAccount = findViewById(R.id.typeaccount);
 
 
     }
@@ -46,18 +59,31 @@ public class DetailUser extends AppCompatActivity implements  View.OnClickListen
         int width = mt.widthPixels;
         int hight = mt.heightPixels;
 
-        getWindow().setLayout((int)(width *.8), (int)(hight *.6));
+        getWindow().setLayout((int)(width *.9), (int)(hight *.6));
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         Intent i=this.getIntent();
-        String name=i.getExtras().getString("NAME_KEY");
+        String name = i.getExtras().getString("NAME_KEY");
+        String email = i.getExtras().getString("EMAIL_KEY");
+        String image =i.getExtras().getString("IMAGE_KEY");
+        String typeaccount = i.getExtras().getString("TYPEACCOUNT_KEY");
+        String device =i.getExtras().getString("DEVICECODE_KEY");
 
-        nameDetailTextView.setText(name);
+
+        detailNameTextView.setText(name);
+        deviceCode.setText(device);
+        detailTypeAccount.setText(typeaccount);
+        Picasso.with(this)
+                .load(image)
+                .placeholder(R.drawable.userphoto)
+                .fit()
+                .centerCrop()
+                .into(photo);
 
         close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(DetailUser.this, FamilyActivity.class));
+                startActivity(new Intent(DetailUser.this, FragmentUser.class));
                 overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
             }
@@ -98,4 +124,12 @@ public class DetailUser extends AppCompatActivity implements  View.OnClickListen
             window.setTitleColor(R.color.black);
         }
     }
+
+    private String getDateToday(){
+        DateFormat dateFormat=new SimpleDateFormat("yyyy/MM/dd");
+        Date date = new Date();
+        String today= dateFormat.format(date);
+        return today;
+    }
+
 }

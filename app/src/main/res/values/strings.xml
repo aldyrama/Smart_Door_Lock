@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SmartDoorLock</string>
+    <string name="app_name">PROLOCK</string>
     <string name="sign_up_now">Sign Up Now</string>
     <string name="find_password">Find Password</string>
     <string name="minimum_password">Password too short, enter minimum 6 characters!</string>

@@ -25,7 +25,7 @@ import org.d3ifcool.smart.R;
 public class SplashActivity extends AppCompatActivity implements View.OnClickListener {
 
     TextView protxt;
-    private long ms = 0, splashTime = 900;
+    private long ms = 0, splashTime = 1600;
     private boolean splashActiv = true, paused = false;
     Dialog dialog;
     TextView retryapp, exitapp, check;

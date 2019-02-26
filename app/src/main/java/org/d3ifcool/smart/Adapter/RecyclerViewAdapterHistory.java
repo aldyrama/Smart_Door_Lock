@@ -23,7 +23,10 @@ import java.util.List;
 public class RecyclerViewAdapterHistory extends RecyclerView.Adapter<RecyclerViewAdapterHistory.MyViewHolder> {
     private Context mContext;
     private List<History> mData;
+    private RecyclerView.Orientation mOrientation;
+    private boolean mWithLinePadding;
     private OnItemClickListener mListener;
+    private LayoutInflater mLayoutInflater;
 
 
     public RecyclerViewAdapterHistory(ActivityFeature mContext, List<History> mData) {

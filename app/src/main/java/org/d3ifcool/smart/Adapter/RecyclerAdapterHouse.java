@@ -1,6 +1,12 @@
 package org.d3ifcool.smart.Adapter;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.Build;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -9,9 +15,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 //import com.squareup.picasso.Picasso;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import org.d3ifcool.smart.Data;
 import org.d3ifcool.smart.Model.House;
@@ -22,10 +38,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterHouse.RecyclerViewHolder>{
+public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterHouse.RecyclerViewHolder> implements View.OnClickListener {
     private Context mContext;
     private List<House> houses;
     private OnItemClickListener mListener;
+    private boolean status = false;
 
     public RecyclerAdapterHouse (Context context, List<House> uploads) {
         mContext = context;
@@ -39,11 +56,109 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
     }
 
     @Override
-    public void onBindViewHolder(RecyclerViewHolder holder, int position) {
-        House currentHouse = houses.get(position);
+    public void onBindViewHolder(final RecyclerViewHolder holder, int position) {
+        final House currentHouse = houses.get(position);
         holder.name_house.setText(currentHouse.getName());
         currentHouse.getDeviceCode();
         holder.dateTextView.setText(Data.madeDateHouse);
+        holder.allLock.setOnClickListener(this);
+        holder.mProgressbar.setVisibility(View.VISIBLE);
+        holder.mProgressbar.setSecondaryProgress(50000);
+        holder.v = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
+
+        final String url = "https://firebasestorage.googleapis.com/v0/b/smartdoor-7d0e6.appspot.com/o/lock_door.png?alt=media&token=2a903126-fc6e-4f87-b62c-9ccb7e9f5383";
+        final String url1 = "https://firebasestorage.googleapis.com/v0/b/smartdoor-7d0e6.appspot.com/o/unlock_door.png?alt=media&token=15c98219-2c31-49db-9338-968e35cced71";
+
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Devices").child(currentHouse.getDeviceCode());
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                House house = dataSnapshot.getValue(House.class);
+                boolean lock = house.isHouse_lock();
+                boolean guestDetect = house.isGuest();
+
+                if (lock == false){
+                    Picasso.with(mContext)
+                            .load(url)
+                            .into(holder.allLock, new Callback() {
+                                @Override
+                                public void onSuccess() {
+
+                                    holder.mProgressbar.setVisibility(View.INVISIBLE);
+
+
+                                }
+
+                                @Override
+                                public void onError() {
+
+                                }
+                            });
+                }
+
+                else {
+                    Picasso.with(mContext)
+                            .load(url1)
+                            .into(holder.allLock, new Callback() {
+                                @Override
+                                public void onSuccess() {
+
+                                    holder.mProgressbar.setVisibility(View.INVISIBLE);
+
+                                }
+
+                                @Override
+                                public void onError() {
+
+                                }
+                            });
+
+                }
+
+                if (guestDetect == false){
+
+                    holder.isGuest.setImageResource(R.drawable.ic_bell_black);
+
+                }
+
+                else {
+
+                    holder.isGuest.setImageResource(R.drawable.ic_bell_red);
+
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        holder.allLock.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Devices").child(currentHouse.getDeviceCode());
+
+                if (status == false){
+                    status = true;
+                    reference.child("house_lock").setValue(status);
+                    Toast.makeText(mContext, "House unlocked", Toast.LENGTH_SHORT).show();
+
+
+                }
+
+                else {
+                    status = false;
+                    reference.child("house_lock").setValue(status);
+                    Toast.makeText(mContext, "House locked", Toast.LENGTH_SHORT).show();
+
+                }
+
+            }
+        });
 
     }
 
@@ -52,17 +167,30 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
         return houses.size();
     }
 
+    @Override
+    public void onClick(View v) {
+
+    }
+
     public class RecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
             View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
 
         public TextView name_house, dateTextView;
-        public ImageView doorView;
+        public ImageView doorView, allLock, isGuest;
+        ProgressBar mProgressbar;
+        Vibrator v;
 
         public RecyclerViewHolder(View itemView) {
             super(itemView);
             name_house =itemView.findViewById ( R.id.houseName );
             doorView = itemView.findViewById(R.id.doo_status);
             dateTextView = itemView.findViewById(R.id.date);
+            allLock = itemView.findViewById(R.id.all_lockHouse);
+            isGuest = itemView.findViewById(R.id.guest);
+            mProgressbar = itemView.findViewById(R.id.progress_lock);
+            mProgressbar.setSecondaryProgress(50000);
+            v = (Vibrator) itemView.getContext().getSystemService(Context.VIBRATOR_SERVICE);
+
 
             Typeface typeface = Typeface.createFromAsset(itemView.getContext().getAssets(), "font/Aaargh.ttf");
             name_house.setTypeface(typeface);
@@ -117,6 +245,7 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
         void onItemClick(int position);
         void onShowItemClick(int position);
         void onDeleteItemClick(int position);
+
     }
 
 

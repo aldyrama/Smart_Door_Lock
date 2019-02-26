@@ -13,46 +13,89 @@
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:background="@color/gray100"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="25dp"
         android:layout_gravity="bottom|center"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="5dp">
+            android:layout_margin="5dp"
+            android:orientation="horizontal">
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/imageAccount"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
+        android:id="@+id/imageMember"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
         android:layout_marginLeft="6dp"
         android:src="@drawable/userphoto" />
 
-    <TextView
+    <LinearLayout
         android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center|left"
+        android:layout_marginLeft="20dp"
+        android:orientation="vertical">
+
+    <TextView
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textSize="16sp"
         tools:text="Aldy ramadhan"
         android:id="@+id/username"
         android:textColor="@color/blackk"
-        android:layout_marginLeft="10dp"
+        android:layout_gravity="center|left"/>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="10sp"
+            tools:text="aldy.ramadhan012@gmail.com"
+            android:id="@+id/email_member"
+            android:textColor="@color/blackk"
+            android:layout_gravity="center|left"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="0.5"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_weight="1"
-        android:padding="10dp"/>
+        android:orientation="vertical"
+        android:gravity="center">
 
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
+                android:textSize="8sp"
                 tools:text="2019/03/20"
-                android:id="@+id/time_access"
+                android:id="@+id/start_access"
                 android:gravity="center"
                 android:textColor="@color/blackk"
                 android:layout_gravity="center"
-                android:layout_weight="0.5"
-                android:padding="10dp"/>
+                android:layout_weight="0.5"/>
 
+        <ImageView
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_bottom_black"/>
 
-
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="8sp"
+            tools:text="2019/03/20"
+            android:id="@+id/long_access"
+            android:gravity="center"
+            android:textColor="@color/blackk"
+            android:layout_gravity="center"
+            android:layout_weight="0.5"/>
+    </LinearLayout>
         </LinearLayout>
     </FrameLayout>

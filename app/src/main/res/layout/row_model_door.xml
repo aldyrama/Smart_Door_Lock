@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/tools"
     android:foreground="?attr/selectableItemBackgroundBorderless"
     card_view:cardCornerRadius="6dp"
     android:clickable="true"
+    android:layout_centerInParent="true"
     android:focusable="true"
+    android:layout_gravity="center"
     android:background="?attr/selectableItemBackgroundBorderless"
-    android:layout_marginBottom="15dp"
-    android:layout_height="230dp">
+    android:layout_marginBottom="6dp"
+    android:layout_height="match_parent"
+    app:ignore="NamespaceTypo">
 
     <LinearLayout
         android:orientation="vertical"
@@ -21,49 +24,132 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_margin="6dp">
+            android:layout_height="match_parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
+                android:layout_gravity="center"
+                android:gravity="center"
                 android:orientation="vertical">
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_height="wrap_content">
 
                     <TextView
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Door Name"
-                        android:drawablePadding="6dp"
                         android:id="@+id/doorName"
                         android:textSize="20sp"
                         android:padding="5dp"
-                        android:layout_gravity="center"
-                        android:gravity="center|left"
-                        android:drawableLeft="@drawable/ic_doorr"
-                        android:textColor="@color/black" />
+                        android:textAllCaps="true"
+                        android:textStyle="bold"
+                        android:layout_centerInParent="true" />
 
-                </LinearLayout>
+                    <ImageView
+                        android:id="@+id/connect_device"
+                        android:layout_width="18dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/ic_connect"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="15dp"/>
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/gray_50"/>
+
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:gravity="center"
-                    android:layout_marginTop="20dp">
+                    android:orientation="vertical"
+                    android:gravity="center">
 
-                 <ImageView
-                     android:id="@+id/lockDoor"
-                     android:layout_width="80dp"
-                     android:layout_height="80dp"
-                     android:onClick="onClickView"
-                     android:src="@drawable/lock"/>
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
 
+                        <ImageView
+                            android:id="@+id/lockDoor"
+                            android:layout_width="225dp"
+                            android:layout_height="225dp"
+                            android:onClick="onClickView"
+                            android:layout_gravity="center"
+                            android:layout_centerInParent="true"
+                            android:src="@drawable/lock_door"/>
+
+                        <!--<ImageView-->
+                            <!--android:id="@+id/lockDoor"-->
+                            <!--android:layout_width="200dp"-->
+                            <!--android:layout_height="200dp"-->
+                            <!--android:src="@drawable/lock_door"-->
+                            <!--app:avvy_border_color="@color/grey400"-->
+                            <!--app:avvy_border_highlight_color="#ff5900"-->
+                            <!--app:avvy_border_highlight_color_end="#bf15bc"-->
+                            <!--app:avvy_border_thickness="2dp"-->
+                            <!--app:avvy_border_thickness_highlight="3dp"-->
+                            <!--app:avvy_distance_to_border="5dp"-->
+                            <!--android:layout_centerInParent="true"-->
+                            <!--app:avvy_highlighted="true"-->
+                            <!--app:avvy_loading_arches="5"-->
+                            <!--app:avvy_loading_arches_degree_area="90"/>-->
+
+                        <ProgressBar
+                            android:id="@+id/prog_lock"
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:layout_centerInParent="true"
+                            android:visibility="invisible"/>
+
+                    </RelativeLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="200dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="50dp"
+                        android:gravity="center">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_gravity="center"
+                        android:gravity="center|right"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:text="Closed"/>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="16dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_marginLeft="5dp"
+                            android:background="@color/gray400"/>
+
+                        <TextView
+                            android:id="@+id/status_lock"
+                            android:layout_width="0dp"
+                            android:layout_weight="1.2"
+                            android:layout_gravity="center"
+                            android:gravity="center|left"
+                            android:textStyle="bold"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp"
+                            android:text="Locket"/>
+
+                </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
 
@@ -74,32 +160,18 @@
                 android:layout_gravity="center"
                 android:gravity="center">
 
-                <TextView
-                    android:id="@+id/date_door"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:text="2019"
-                    android:textSize="12dp"
-                    android:textStyle="italic"
-                    android:textColor="@color/blackk"
-                    android:layout_gravity="center"
-                    android:gravity="center"/>
+                <!--<TextView-->
+                    <!--android:id="@+id/date_door"-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="2019"-->
+                    <!--android:textSize="12dp"-->
+                    <!--android:textStyle="italic"-->
+                    <!--android:textColor="@color/blackk"-->
+                    <!--android:layout_gravity="center"-->
+                    <!--android:gravity="center"/>-->
 
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="10dp"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"/>
-
-                <ImageView
-                    android:id="@+id/stream_cam"
-                    android:layout_width="0dp"
-                    android:layout_height="30dp"
-                    android:layout_weight="1"
-                    android:onClick="onClick"
-                    android:src="@drawable/ic_streaming"
-                    android:layout_gravity="right" />
 
             </LinearLayout>
         </LinearLayout>

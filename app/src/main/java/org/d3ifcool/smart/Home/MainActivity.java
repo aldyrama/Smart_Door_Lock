@@ -311,12 +311,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (mAdapter.getItemCount() !=  0){
             addHome.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
+            emptyInMemer.setVisibility(View.GONE);
 
         }
 
         else {
+
             addHome.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
+            checkAccount();
 
         }
 
@@ -354,9 +357,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mAdapter.notifyDataSetChanged();
                 mProgressBar.setVisibility(View.GONE);
 
-                checkAccount();
                 checkHouse();
-                allUnlock();
+//                checkAccount();
+
 
             }
 

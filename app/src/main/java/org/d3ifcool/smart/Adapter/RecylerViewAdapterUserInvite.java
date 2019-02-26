@@ -12,24 +12,28 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.squareup.picasso.Picasso;
 
-import org.d3ifcool.smart.Model.Connect;
+import org.d3ifcool.smart.Model.User;
 import org.d3ifcool.smart.R;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class RecylerViewAdapterUserInvite extends RecyclerView.Adapter<RecylerViewAdapterUserInvite.MyViewHolder> {
     private Context mContext;
-    private List<Connect> mConnect;
+    private List<User> mConnect;
     private OnItemClickListener mListener;
     Dialog myDialog;
 
-    public RecylerViewAdapterUserInvite(FragmentActivity activity, List<Connect> mConnectlist) {
+    public RecylerViewAdapterUserInvite(FragmentActivity activity, List<User> mConnectlist) {
         mContext = activity;
         mConnect = mConnectlist;
     }
@@ -41,13 +45,13 @@ public class RecylerViewAdapterUserInvite extends RecyclerView.Adapter<RecylerVi
         View v = LayoutInflater.from(mContext).inflate(R.layout.list_member, parent, false);
         final MyViewHolder viewHolder = new MyViewHolder(v);
 
-        myDialog = new Dialog(mContext);
-        myDialog.setContentView(R.layout.popup_detail_user);
-        TextView dialog_username = (TextView) myDialog.findViewById(R.id.usernameuser);
-        TextView dialog_member = (TextView) myDialog.findViewById(R.id.account);
-        ImageView dialog_imgUser = (ImageView) myDialog.findViewById(R.id.imgtUser);
-
-//        dialog_username.setText(mConnect.get(viewHolder.getAdapterPosition()).getUsers());
+//        myDialog = new Dialog(mContext);
+//        myDialog.setContentView(R.layout.popup_detail_user);
+//        TextView dialog_username = (TextView) myDialog.findViewById(R.id.emailuser);
+//        TextView dialog_member = (TextView) myDialog.findViewById(R.id.account);
+////        ImageView dialog_imgUser = (ImageView) myDialog.findViewById(R.id.imgtUser);
+//
+////        dialog_username.setText(mConnect.get(viewHolder.getAdapterPosition()).getUsers());
 
         viewHolder.item_user.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,8 +68,17 @@ public class RecylerViewAdapterUserInvite extends RecyclerView.Adapter<RecylerVi
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        Connect currentUser = mConnect.get(position);
-        holder.username.setText(currentUser.getUsers());
+        User currentUser = mConnect.get(position);
+        holder.username.setText(currentUser.getFullname());
+        holder.email.setText(currentUser.getEmail());
+        holder.start.setText(getDateToday());
+        holder.end.setText(getDateToday());
+        Picasso.with(mContext)
+                .load(currentUser.getImageurl())
+                .placeholder(R.drawable.userphoto)
+                .fit()
+                .centerCrop()
+                .into(holder.photo);
 
     }
 
@@ -73,6 +86,13 @@ public class RecylerViewAdapterUserInvite extends RecyclerView.Adapter<RecylerVi
     @Override
     public int getItemCount() {
         return mConnect.size();
+    }
+
+    private String getDateToday(){
+        DateFormat dateFormat=new SimpleDateFormat("yyyy/MM/dd");
+        Date date = new Date();
+        String today= dateFormat.format(date);
+        return today;
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -91,13 +111,17 @@ public class RecylerViewAdapterUserInvite extends RecyclerView.Adapter<RecylerVi
             View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
 
         private FrameLayout item_user;
-        private TextView fullname, username;
-        private ImageView photo;
+        private TextView fullname, username, email, start, end;
+        private CircleImageView photo;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
             item_user = (FrameLayout) itemView.findViewById(R.id.item_user);
             username = itemView.findViewById(R.id.username);
+            email = itemView.findViewById(R.id.email_member);
+            start = itemView.findViewById(R.id.start_access);
+            end = itemView.findViewById(R.id.long_access);
+            photo = itemView.findViewById(R.id.imageMember);
 
             itemView.setOnClickListener(this);
             itemView.setOnCreateContextMenuListener(this);
@@ -142,5 +166,6 @@ public class RecylerViewAdapterUserInvite extends RecyclerView.Adapter<RecylerVi
             }
             return false;
         }
+
     }
 }

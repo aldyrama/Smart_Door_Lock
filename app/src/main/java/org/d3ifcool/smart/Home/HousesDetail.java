@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.annotation.ColorRes;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
@@ -15,14 +14,12 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
+import org.d3ifcool.smart.Activity.FragmentHistory;
 import org.d3ifcool.smart.BottomNavigation.SectionsPageAdapter;
 import org.d3ifcool.smart.Family.ZoomAnimation;
-import org.d3ifcool.smart.Model.House;
 import org.d3ifcool.smart.R;
 
 public class HousesDetail extends AppCompatActivity implements  View.OnClickListener {
@@ -38,7 +35,7 @@ public class HousesDetail extends AppCompatActivity implements  View.OnClickList
     private void initializeWidgets() {
         houseName_detail = findViewById(R.id.houseName_key);
         deviceCodetxt = findViewById(R.id.deviceCode_key);
-        lock = (ImageView) findViewById(R.id.lockDoor);
+//        lock = (ImageView) findViewById(R.id.lockDoor);
 
     }
 

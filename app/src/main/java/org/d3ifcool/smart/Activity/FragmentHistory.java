@@ -1,4 +1,4 @@
-package org.d3ifcool.smart.Home;
+package org.d3ifcool.smart.Activity;
 
 import android.content.Context;
 import android.net.Uri;
