@@ -38,10 +38,14 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_splash);
         setStatustBarColor(R.color.colorWhite);
 
+        getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+        );
+
         final LinearLayout lr = findViewById(R.id.lr);
 
         protxt = findViewById(R.id.prolockname);
-
 
 
         Typeface font = Typeface.createFromAsset(getAssets(), "font/Fontspring_DEMO_microsquare_bold.ttf");

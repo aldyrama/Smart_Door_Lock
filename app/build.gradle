@@ -39,14 +39,11 @@ dependencies {
     //noinspection GradleDynamicVersion
     implementation 'de.hdodenhof:circleimageview:2.2.0'
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.7.+'
-    implementation 'com.devlomi.record-view:record-view:2.0.1'
     implementation 'com.pusher:push-notifications-android:1.0.2'
-    implementation 'de.hdodenhof:circleimageview:2.2.0'
     implementation 'com.ashutosh.progress-nevigation-bar:library:1.0.0'
     implementation 'com.hbb20:ccp:2.1.9'
     implementation 'com.github.markushi:circlebutton:1.1'
     implementation 'com.andretietz.android:gamecontroller:1.1.1'
-    implementation 'com.jmedeisis:bugstick:0.2.2'
     implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'com.github.vipulasri:timelineview:1.1.0'
     implementation "xyz.schwaab:avvylib:0.0.1"
@@ -55,11 +52,14 @@ dependencies {
     implementation('com.google.apis:google-api-services-youtube:v3-rev206-1.25.0') {
         exclude group: 'org.apache.httpcomponents'
     }
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
+
 }
+
 apply plugin: 'com.google.gms.google-services'

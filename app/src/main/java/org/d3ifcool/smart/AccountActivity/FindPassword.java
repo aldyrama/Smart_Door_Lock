@@ -39,7 +39,12 @@ public class FindPassword extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_find_password);
-        setStatustBarColor(R.color.colorWhite);
+//        setStatustBarColor(R.color.colorWhite);
+        getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+        );
+
 
         //Initial Widget
         findPass = findViewById(R.id.find_pass);

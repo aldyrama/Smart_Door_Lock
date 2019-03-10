@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.MediaController;
 import android.widget.TextView;
@@ -18,11 +19,6 @@ import android.widget.VideoView;
 import com.andretietz.android.controller.ActionView;
 import com.andretietz.android.controller.DirectionView;
 import com.andretietz.android.controller.InputView;
-import com.devlomi.record_view.OnBasketAnimationEnd;
-import com.devlomi.record_view.OnRecordClickListener;
-import com.devlomi.record_view.OnRecordListener;
-import com.devlomi.record_view.RecordButton;
-import com.devlomi.record_view.RecordView;
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
@@ -30,8 +26,6 @@ import com.google.android.youtube.player.YouTubePlayerView;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.jmedeisis.bugstick.Joystick;
-import com.jmedeisis.bugstick.JoystickListener;
 
 import org.d3ifcool.smart.R;
 
@@ -64,10 +58,10 @@ public class StreamingActivity extends YouTubeBaseActivity implements YouTubePla
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_streaming);
 
-        final String angleNoneString = getString(R.string.angle_value_none);
-        final String angleValueString = getString(R.string.angle_value);
-        final String offsetNoneString = getString(R.string.offset_value_none);
-        final String offsetValueString = getString(R.string.offset_value);
+        getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+        );
 
         YouTubePlayerView youTubePlayerView = (YouTubePlayerView) findViewById(R.id.videoView);
         youTubePlayerView.initialize(API_KEY, this);
@@ -196,10 +190,6 @@ public class StreamingActivity extends YouTubeBaseActivity implements YouTubePla
         }
     }
 
-    private String getHumanTimeText(long recordTime) {
-
-        return null;
-    }
 
     private YouTubePlayer.PlaybackEventListener playbackEventListener = new YouTubePlayer.PlaybackEventListener() {
         @Override

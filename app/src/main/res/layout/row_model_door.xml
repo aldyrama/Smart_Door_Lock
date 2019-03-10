@@ -7,18 +7,19 @@
     card_view:cardCornerRadius="6dp"
     android:clickable="true"
     android:layout_centerInParent="true"
+    android:layout_alignParentTop="true"
     android:focusable="true"
-    android:layout_gravity="center"
+    android:layout_gravity="center|top"
     android:background="?attr/selectableItemBackgroundBorderless"
-    android:layout_marginBottom="6dp"
-    android:layout_height="match_parent"
+    android:layout_marginBottom="3dp"
+    android:layout_height="572dp"
     app:ignore="NamespaceTypo">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center"
+        android:layout_gravity="top"
         android:gravity="center">
 
         <LinearLayout
@@ -43,7 +44,7 @@
                         android:layout_height="wrap_content"
                         android:text="Door Name"
                         android:id="@+id/doorName"
-                        android:textSize="20sp"
+                        android:textSize="18sp"
                         android:padding="5dp"
                         android:textAllCaps="true"
                         android:textStyle="bold"
@@ -102,10 +103,13 @@
                             <!--app:avvy_loading_arches="5"-->
                             <!--app:avvy_loading_arches_degree_area="90"/>-->
 
+
                         <ProgressBar
                             android:id="@+id/prog_lock"
                             android:layout_width="60dp"
                             android:layout_height="60dp"
+                            android:layout_gravity="center"
+                            android:indeterminateDrawable="@drawable/progress"
                             android:layout_centerInParent="true"
                             android:visibility="invisible"/>
 

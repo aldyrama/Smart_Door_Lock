@@ -4,10 +4,6 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-/**
- * Created by cool on 11/8/2018.
- */
-
 public class CheckConnection {
 
     Context mContext;

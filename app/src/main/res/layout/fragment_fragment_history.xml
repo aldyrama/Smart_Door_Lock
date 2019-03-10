@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
-        android:id="@+id/empty_member"
+        android:id="@+id/empty_history"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="No activity"
@@ -14,7 +14,7 @@
         android:drawableTop="@drawable/emptyy" />
 
     <ProgressBar
-        android:id="@+id/myDataUserLoaderProgressBar"
+        android:id="@+id/myHistoryLoaderProgressBar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -28,20 +28,14 @@
         android:clipToPadding="false"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingBottom="12dp"
+        android:paddingLeft="12dp"
+        android:paddingTop="12dp"
         android:scrollbars="vertical"
         android:background="@color/colorWhite"
         android:padding="6dp"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <com.github.vipulasri.timelineview.TimelineView
-        android:id="@+id/timeline"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        app:markerSize="20dp"
-        app:lineWidth="2dp"
-        app:startLineColor="@color/colorPrimary"
-        app:endLineColor="@color/colorPrimary"/>
 
 </RelativeLayout>

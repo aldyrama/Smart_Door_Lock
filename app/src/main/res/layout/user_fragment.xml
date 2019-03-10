@@ -22,6 +22,36 @@
         android:indeterminateBehavior="cycle"
         android:visibility="gone" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/lr_invite"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:background="@color/colorWhite">
+
+        <Button
+            android:id="@+id/invite_btn_user"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="add a new member"
+            android:textSize="12sp"
+            android:textColor="@color/colorWhite"
+            android:background="@drawable/color_bg"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"/>
+
+        </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view_invite"
         android:clipToPadding="false"
@@ -29,18 +59,21 @@
         android:layout_height="match_parent"
         android:scrollbars="vertical"
         android:padding="6dp"
+        android:visibility="gone"
         android:background="@color/colorWhite"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/invite_btn_user"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="16dp"
-        android:backgroundTint="@color/blackk"
-        android:src="@drawable/ic_user_white"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!--<android.support.design.widget.FloatingActionButton-->
+        <!--android:layout_width="60dp"-->
+        <!--android:layout_height="60dp"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_margin="16dp"-->
+        <!--android:backgroundTint="@color/blackk"-->
+        <!--android:src="@drawable/ic_user_white"/>-->
 
     </RelativeLayout>

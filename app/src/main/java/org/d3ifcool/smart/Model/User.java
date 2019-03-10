@@ -9,6 +9,11 @@ public class User {
     private String password;
     private String typeAccount;
     private String houseName;
+    private String expired;
+    private int age;
+    private String lock;
+    private String lockImage;
+    private String key;
 
     public User(String id, String username, String fullname, String imageurl, String typeAccount, String houseName, String password) {
         this.id = id;
@@ -23,13 +28,6 @@ public class User {
     public User(){
 
     }
-
-//    public User(String username, String password, String UUID, String accountType) {
-//        this.username = username;
-//        this.password = password;
-//        this.imageurl = UUID;
-//        this.typeAccount = accountType;
-//    }
 
     public User(String username, String password, String email, String accountType) {
         this.username = username;
@@ -102,5 +100,45 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getExpired() {
+        return expired;
+    }
+
+    public void setExpired(String expired) {
+        this.expired = expired;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public String getLock() {
+        return lock;
+    }
+
+    public void setLock(String lock) {
+        this.lock = lock;
+    }
+
+    public String getLockImage() {
+        return lockImage;
+    }
+
+    public void setLockImage(String lockImage) {
+        this.lockImage = lockImage;
     }
 }

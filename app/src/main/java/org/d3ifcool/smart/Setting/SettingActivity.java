@@ -20,7 +20,6 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 
-import org.d3ifcool.smart.Activity.ActivityFeature;
 import org.d3ifcool.smart.Adapter.SettingAdapter;
 import org.d3ifcool.smart.BottomNavigation.BottomNavigationViewHelper;
 import org.d3ifcool.smart.Family.FamilyActivity;
@@ -43,7 +42,12 @@ public class SettingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
-        setStatustBarColor(R.color.colorWhite);
+//        setStatustBarColor(R.color.colorWhite);
+
+        getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+        );
 
         doorNotif = findViewById(R.id.doo_notif);
         guestNotif = findViewById(R.id.guest_notif);

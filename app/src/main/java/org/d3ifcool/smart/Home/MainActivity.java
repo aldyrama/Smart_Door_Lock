@@ -12,6 +12,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.media.MediaRecorder;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.opengl.Visibility;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.ColorRes;
@@ -40,8 +41,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.devlomi.record_view.RecordButton;
-import com.devlomi.record_view.RecordView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -86,58 +85,45 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private FirebaseDatabase database;
     private FirebaseStorage mStorage;
     private StorageReference Storage;
-    private DatabaseReference mDatabaseRef, mDatabaseDoor;
+    private DatabaseReference mDatabaseRef;
     private RecyclerView recyclerView;
     private RecyclerAdapterHouse mAdapter;
     private ValueEventListener mDBListener;
     private List<House> mHouses;
     FirebaseAuth auth;
     FirebaseUser firebaseUser;
-    DatabaseReference reference;
-    private ProgressBar uploadProgressBar;
-    private View view;
-    private MediaRecorder mRecorder;
+    DatabaseReference reference, reference0;
     private ProgressBar mProgressBar;
-    private StorageTask mUploadTask;
-    private List<User> mUser;
-    private boolean isLock;
 
     String profileid;
     ProgressDialog pd;
-    Context context;
-    CardView addHome;
-    RecordView recordView;
-    RecordButton recordButton;
-    Button commitHome, commitInvitation, editHouseName;
-    Dialog dialog, dialogJoin, dialogHouseName, dialogUser;
-    ImageView closePoupUp, closePoupUpJoin, toolAddHome, allLock, closeEditHouseName, action_stream;
-    CircleButton streaming;
-    EditText invitation, deviceCode, housnameEdittxt, houseNameEditTxt;
+    CardView addHome, loadning;
+    Button commitHome;
+    Dialog dialog, dialogJoin, dialogHouseName;
+    ImageView closePoupUp, toolAddHome, allLock, action_stream;
+    EditText  deviceCode, housnameEdittxt, houseNameEditTxt;
     TextView  emptyInMemer;
-    Context mContext;
-    int status;
-    String[] data;
 
-    private static String mFileName = null;
-    private static final String LOG_TAG = "AudioRecordTest";
-    private int REQUEST_ID_MULTIPLE_PERMISSIONS;
 
     public void openDetailActivity(String[] data) {
         Intent intent = new Intent(this, HousesDetail.class);
         intent.putExtra("NAME_KEY", data[0]);
         intent.putExtra("DEVICECODE_KEY", data[1]);
-//        intent.putExtra("IMAGE_KEY", data[2]);
         startActivity(intent);
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setStatustBarColor(R.color.colorWhite);
+//        setStatustBarColor(R.color.colorWhite);
+
+        getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+        );
 
         startService(new Intent(this, MyFirebaseMessagingService.class));
         SharedPreferences prefs = getSharedPreferences("PREFS", MODE_PRIVATE);
@@ -152,13 +138,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mSectionsPageAdapter = new SectionsPageAdapter(getSupportFragmentManager());
         Storage = FirebaseStorage.getInstance().getReference();
 
-        mDatabaseDoor = FirebaseDatabase.getInstance().getReference("Door").child(firebaseUser.getUid());
-
         //get method
         viewWidget();
         getHouse();
-        houseInfo();
-
 
         Data.madeDateHouse = getDateToday();
 
@@ -228,47 +210,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    public void allUnlock(){
-        reference = FirebaseDatabase.getInstance().getReference().child("Devices");
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot houseSnapshot : dataSnapshot.getChildren()) {
-                    GenericTypeIndicator<Map<String, Object>> genericTypeIndicator = new GenericTypeIndicator<Map<String, Object>>() {
-                    };
-                    Map<String, Object> map = houseSnapshot.getValue(genericTypeIndicator);
-
-                    House Lock = houseSnapshot.getValue(House.class);
-                    boolean checkLock = Lock.isHouse_lock();
-
-                    if (checkLock == true){
-
-//                      allLock.setImageResource(R.drawable.lock);
-                        Toast.makeText(MainActivity.this, "Lock" + checkLock, Toast.LENGTH_SHORT).show();
-
-                    }
-
-                    else {
-
-//                      allLock.setImageResource(R.drawable.unlock);
-                    }
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-
-    }
-
-
     //check account login
     private void checkAccount() {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getEmail().replace(".",","));
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getEmail()
+                .replace(".",","));
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -312,6 +257,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             addHome.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
             emptyInMemer.setVisibility(View.GONE);
+            toolAddHome.setVisibility(View.VISIBLE);
 
         }
 
@@ -319,6 +265,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             addHome.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
+            toolAddHome.setVisibility(View.GONE);
             checkAccount();
 
         }
@@ -327,15 +274,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     public void getHouse(){
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference();
+        mDatabaseRef = database.getInstance().getReference();
+        mDatabaseRef.keepSynced(true);
         mDBListener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                if (mDatabaseRef == null) {
+                    database = FirebaseDatabase.getInstance();
+                    database.setPersistenceEnabled(true);
+                    mDatabaseRef = database.getReference();
+                }
                 mHouses.clear();
                 try {
 
-                    for (DataSnapshot kodedeviceSnapshot : dataSnapshot.child("Users").child(firebaseUser.getEmail().replace(".", ","))
-                            .child("Houses").getChildren()) {
+                    for (DataSnapshot kodedeviceSnapshot : dataSnapshot.child("Users").child(firebaseUser.getEmail()
+                            .replace(".", ",")).child("Houses").getChildren()) {
                         String kode_device = kodedeviceSnapshot.getValue(String.class);
                         Log.d(TAG, "onDataChange: " + kode_device);
                         House house = dataSnapshot.child("Devices").child(kode_device).getValue(House.class);
@@ -355,10 +308,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                    Data.checkRecyler = upload;
 
                 mAdapter.notifyDataSetChanged();
-                mProgressBar.setVisibility(View.GONE);
+                loadning.setVisibility(View.INVISIBLE);
+                mProgressBar.setVisibility(View.INVISIBLE);
 
                 checkHouse();
-//                checkAccount();
+                checkAccount();
 
 
             }
@@ -405,70 +359,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    //house information
-    private void houseInfo() {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users");
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (getContext() == null) {
-                    return;
-                }
-                User user = dataSnapshot.getValue(User.class);
-
-//                house_Name.setText(user.getHouseName());
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-
-        });
-
-    }
-
-
-    //Edit house name
-    public void insertHouseName(String houseName){
-
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users");
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("house_Name", houseName);
-
-        reference.updateChildren(map);
-
-        Toast.makeText(MainActivity.this, "Successfully updated!", Toast.LENGTH_SHORT).show();
-        pd.hide();
-
-    }
-
-
-    public void obserVationHouse(){
-        reference = FirebaseDatabase.getInstance().getReference().child("Device").child(Data.user).
-                child("house_" + Data.user);
-        reference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot data: dataSnapshot.getChildren()) {
-                    if (data.child("house" + Data.housenameid).exists()) {
-
-                    } else {
-
-                    }
-
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-
     @Override
     public void onClick(View v) {
 
@@ -479,7 +369,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClickView(View view) {
         switch (view.getId()) {
 
-            case R.id.tool_add_home :
+            case R.id.action_add_home :
                 showDialogAddHome();
                 break;
 
@@ -528,19 +418,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onDeleteItemClick(int position) {
-        Intent i = this.getIntent();
-        String deviceCode =i.getExtras().getString("DEVICECODE_KEY");
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Devices").child(deviceCode);
         House selectedItem = mHouses.get(position);
-        final String selectedKey = selectedItem.getName();
-        Data.housenameid = selectedKey;
+        final String selectedKey = selectedItem.getDeviceCode();
 
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Devices").child(deviceCode);
-        reference.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+        reference = FirebaseDatabase.getInstance().getReference().child("Devices");
+//        reference0 = FirebaseDatabase.getInstance().getReference().child("User")
+//                .child("Houses").child(firebaseUser.getEmail().replace(".", ","));
+        reference.child(selectedKey).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                mDatabaseRef.removeValue();
-                Toast.makeText(MainActivity.this, "Item deleted" + selectedKey, Toast.LENGTH_SHORT).show();
+//                reference0.removeValue();
+                Toast.makeText(MainActivity.this, "Item deleted " + selectedKey, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -575,11 +463,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         deviceCode = (EditText) dialog.findViewById(R.id.code_device);
         commitHome.setOnClickListener(this);
 
-//        houseNameEditTxt.addTextChangedListener(textWatcheradd);
-//        deviceCode.addTextChangedListener(textWatcheradd);
-//        homeAddress.addTextChangedListener(textWatcheradd);
-
-
         closePoupUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -601,11 +484,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 String str_house = houseNameEditTxt.getText().toString();
                 String str_device = deviceCode.getText().toString();
                 reference = FirebaseDatabase.getInstance().getReference().child("Devices").child(str_device);
-                DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference().child("Users").
+                reference0 = FirebaseDatabase.getInstance().getReference().child("Users").
                         child(firebaseUser.getEmail().replace(".", ",")).child("Houses");
 
                 String made_date = Data.madeDateHouse;
-//                House house1 = new House(houseNameEditTxt, deviceCode.getText().toString().trim());
                 House house = new House(str_house, str_device);
 
                 if (TextUtils.isEmpty(str_house)){
@@ -621,11 +503,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     String uploadId = reference.push().getKey();
                     reference.setValue(house);
-                    reference1.child(uploadId).setValue(str_device);
+                    reference0.child(uploadId).setValue(str_device);
                     reference.child("madeDate").setValue(made_date);
-                    Data.keyhouse = uploadId;
-                    Data.housenameid = str_house;
-                    Data.deviceCode = str_device;
+
                     Toast.makeText(MainActivity.this, str_house + " added", Toast.LENGTH_SHORT).show();
 
                     dialog.dismiss();
@@ -640,64 +520,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    //Textwatcher addhome
-    private TextWatcher textWatcheradd = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            String houseNameInput = housnameEdittxt.getText().toString().trim();
-
-            commitHome.setEnabled(!houseNameInput.isEmpty());
-
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-
-        }
-
-    };
-
-
-    //Textwatcher invite user
-    private TextWatcher textWatcherjoin = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            String invitationInput = invitation.getText().toString().trim();
-
-            commitInvitation.setEnabled(!invitationInput.isEmpty());
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-
-        }
-
-    };
-
-
     public void viewWidget(){
         //find object with id
-        toolAddHome = (ImageView) findViewById(R.id.tool_add_home);
-        allLock = (ImageView) findViewById(R.id.all_lockHouse);
-        action_stream = (ImageView) findViewById(R.id.stream_action);
-        closePoupUp = (ImageView) findViewById(R.id.close_popup_home);
-        addHome = (CardView) findViewById(R.id.cards_add_home);
-        emptyInMemer = (TextView) findViewById(R.id.empty_device);
-        commitHome = (Button) findViewById(R.id.add_home_code);
-        housnameEdittxt = (EditText) findViewById(R.id.house_name);
-        deviceCode = (EditText) findViewById(R.id.code_device);
+        toolAddHome =  findViewById(R.id.action_add_home);
+        allLock =  findViewById(R.id.all_lockHouse);
+        action_stream =  findViewById(R.id.stream_action);
+        closePoupUp =  findViewById(R.id.close_popup_home);
+        addHome =  findViewById(R.id.cards_add_home);
+        emptyInMemer =  findViewById(R.id.empty_device);
+        commitHome =  findViewById(R.id.add_home_code);
+        housnameEdittxt = findViewById(R.id.house_name);
+        deviceCode = findViewById(R.id.code_device);
         mProgressBar = findViewById(R.id.myDataLoaderProgressBar);
+        loadning = findViewById(R.id.card_loading);
+        loadning.setVisibility(View.VISIBLE);
         mProgressBar.setVisibility(View.VISIBLE);
+
 
         dialog = new Dialog(this);
         dialogJoin = new Dialog(this);
@@ -705,7 +543,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         recyclerView = findViewById(R.id.mRecyclerView);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         mHouses = new ArrayList<> ();
         mAdapter = new RecyclerAdapterHouse (MainActivity.this, mHouses);
         recyclerView.setAdapter(mAdapter);

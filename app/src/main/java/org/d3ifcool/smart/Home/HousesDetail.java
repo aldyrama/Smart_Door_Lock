@@ -44,7 +44,12 @@ public class HousesDetail extends AppCompatActivity implements  View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detail_houses);
-        setStatustBarColor(R.color.colorWhite);
+//        setStatustBarColor(R.color.colorWhite);
+
+        getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+        );
 
         initializeWidgets();
 

@@ -5,6 +5,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowTranslucentStatus">true</item>
     </style>
 
     <style name="editTextEntryName">
@@ -15,6 +16,10 @@
 
     <style name="BottomNavigationView" parent="Widget.Design.BottomNavigationView">
         <item name="colorPrimary">#aaf255</item>
+    </style>
+
+    <style name="DialogTheme" >
+        <item name="colorAccent">@color/bluesamsung</item>
     </style>
 
     <style name="AppTheme.CustomTheme">

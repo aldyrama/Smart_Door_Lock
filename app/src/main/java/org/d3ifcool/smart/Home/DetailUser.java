@@ -19,7 +19,6 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import org.d3ifcool.smart.Adapter.RecylerViewAdapterUserInvite;
-import org.d3ifcool.smart.Family.FamilyActivity;
 import org.d3ifcool.smart.R;
 
 import java.text.DateFormat;
@@ -50,7 +49,13 @@ public class DetailUser extends AppCompatActivity implements  View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.popup_detail_user);
-        setStatustBarColor(R.color.colorWhite);
+//        setStatustBarColor(R.color.colorWhite);
+
+        getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+        );
+
         initializeWidgets();
 
         DisplayMetrics mt = new DisplayMetrics();

@@ -2,6 +2,7 @@ package org.d3ifcool.smart.Adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -12,9 +13,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.d3ifcool.smart.Activity.ActivityFeature;
+import com.squareup.picasso.Picasso;
+
+import org.d3ifcool.smart.Activity.TimeLineMarker;
 import org.d3ifcool.smart.Model.Connect;
 import org.d3ifcool.smart.Model.History;
+import org.d3ifcool.smart.Model.User;
 import org.d3ifcool.smart.R;
 
 import java.util.List;
@@ -22,35 +26,70 @@ import java.util.List;
 
 public class RecyclerViewAdapterHistory extends RecyclerView.Adapter<RecyclerViewAdapterHistory.MyViewHolder> {
     private Context mContext;
-    private List<History> mData;
+    private List<User> mData;
     private RecyclerView.Orientation mOrientation;
     private boolean mWithLinePadding;
     private OnItemClickListener mListener;
     private LayoutInflater mLayoutInflater;
 
 
-    public RecyclerViewAdapterHistory(ActivityFeature mContext, List<History> mData) {
-        this.mContext = mContext;
-        this.mData = mData;
+    public RecyclerViewAdapterHistory(FragmentActivity activity, List<User> mHistory) {
+        this.mContext = activity;
+        this.mData = mHistory;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        final int size = mData.size() - 1;
+        if (size == 0)
+            return ItemType.ATOM;
+        else if (position == 0)
+            return ItemType.START;
+        else if (position == size)
+            return ItemType.END;
+        else return ItemType.NORMAL;
     }
 
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
-        View v = LayoutInflater.from(mContext).inflate(R.layout.list_history, parent, false);
-        return new MyViewHolder(v);
+//        View v = LayoutInflater.from(mContext).inflate(R.layout.list_history, parent, false);
+        return new MyViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.list_history, parent, false), i);
     }
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        History currentUser = mData.get(position);
-        holder.username.setText(currentUser.getUsernamse());
+        User currentUser = mData.get(position);
+        holder.username.setText(currentUser.getFullname());
+        holder.lock.setText(currentUser.getLock());
+        Picasso.with(mContext)
+                .load(currentUser.getLockImage())
+                .placeholder(R.drawable.lock_door)
+                .fit()
+                .into(holder.status);
+        Picasso.with(mContext)
+                .load(currentUser.getImageurl())
+                .placeholder(R.drawable.ic_male)
+                .fit()
+                .centerCrop()
+                .into(holder.photo);
 
     }
 
     @Override
     public int getItemCount() {
         return mData.size();
+    }
+
+    public class ItemType {
+        public final static int NORMAL = 0;
+
+        public final static int HEADER = 1;
+        public final static int FOOTER = 2;
+
+        public final static int START = 4;
+        public final static int END = 8;
+        public final static int ATOM = 16;
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -66,12 +105,27 @@ public class RecyclerViewAdapterHistory extends RecyclerView.Adapter<RecyclerVie
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
     View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
 
-        private TextView fullname, username;
-        private ImageView photo;
-        public MyViewHolder(@NonNull View itemView) {
+        private TextView lock, username;
+        private ImageView photo, status;
+
+        public MyViewHolder(@NonNull View itemView, int type) {
             super(itemView);
 
             username = itemView.findViewById(R.id.name_history);
+            photo = itemView.findViewById(R.id.imageAccount_history);
+            lock = itemView.findViewById(R.id.by);
+            status = itemView.findViewById(R.id.status_activity);
+
+            TimeLineMarker mMarker = (TimeLineMarker) itemView.findViewById(R.id.item_time_line_mark);
+            if (type == ItemType.ATOM) {
+                mMarker.setBeginLine(null);
+                mMarker.setEndLine(null);
+            } else if (type == ItemType.START) {
+                mMarker.setBeginLine(null);
+            } else if (type == ItemType.END) {
+                mMarker.setEndLine(null);
+            }
+
 
             itemView.setOnClickListener(this);
             itemView.setOnCreateContextMenuListener(this);
@@ -111,10 +165,10 @@ public class RecyclerViewAdapterHistory extends RecyclerView.Adapter<RecyclerVie
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
             menu.setHeaderTitle("Select Action");
-            MenuItem showItem = menu.add( Menu.NONE, 1, 1, "Show");
+//            MenuItem showItem = menu.add( Menu.NONE, 1, 1, "Show");
             MenuItem deleteItem = menu.add(Menu.NONE, 2, 2, "Delete");
 
-            showItem.setOnMenuItemClickListener(this);
+//            showItem.setOnMenuItemClickListener(this);
             deleteItem.setOnMenuItemClickListener(this);
         }
     }

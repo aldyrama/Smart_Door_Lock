@@ -10,6 +10,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -55,7 +57,6 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
     private RecyclerView mRecyclerView;
     private RecyclerAdapterDoor mAdapter;
     private ProgressBar mProgressBar;
-    private FirebaseStorage mStorage;
     private DatabaseReference mDatabaseRef;
     private ValueEventListener mDBListener;
     private List<Door> mDoor;
@@ -67,19 +68,25 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
     private CardView addDoorCard;
     private  ImageView closePoupUpDoor;
     private ProgressDialog pd;
+    private CardView loading_card;
 
 
     public Fragment_List_Door() {
 
     }
-//
+
 //    private void openDetailActivity(String[] data){
-//        Intent intent = new Intent(this, DetailsActivity.class);
-//        intent.putExtra("NAME_KEY",data[0]);
-//        intent.putExtra("DESCRIPTION_KEY",data[1]);
-//        intent.putExtra("IMAGE_KEY",data[2]);
-//        startActivity(intent);
-    //    }
+//        Fragment fragment = new Fragment_Detail_Doors();
+//        Bundle bundle = new Bundle();
+//        bundle.putString("NAMEDOOR_KEY",data[0]);
+//        bundle.putString("DOORLOCK_KEY",data[1]);
+////        intent.putExtra("IMAGE_KEY",data[2]);
+//        fragment.setArguments(bundle);
+//        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+//        fragmentManager.beginTransaction().replace(R.id.frameContainerDoors, fragment).addToBackStack(null).commit();
+////        startActivity(fragment);
+//    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -90,10 +97,12 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
 
         mRecyclerView = view.findViewById(R.id.mRecyclerView_detail);
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        dialog_Door = new Dialog(getActivity());
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        dialog_Door = new Dialog(getContext());
 
         mProgressBar = view.findViewById(R.id.myDataLoaderProgressBarDoor);
+        loading_card = view.findViewById(R.id.card_loading_door);
+        loading_card.setVisibility(View.VISIBLE);
         mProgressBar.setVisibility(View.VISIBLE);
 
         addDoor = view.findViewById(R.id.addDoor_floating);
@@ -104,7 +113,8 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
         mDoor = new ArrayList<>();
         mAdapter = new RecyclerAdapterDoor (getActivity(), mDoor);
         mRecyclerView.setAdapter(mAdapter);
-//        mAdapter.setOnItemClickListener(getActivity());
+        mRecyclerView.setNestedScrollingEnabled(false);
+        mAdapter.setOnItemClickListener(this);
 
         getDoor();
 
@@ -132,11 +142,7 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
             }
         });
 
-
-
         return view;
-
-
     }
 
 
@@ -159,6 +165,7 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
 
     }
 
+
     public void getDoor() {
         Intent i = getActivity().getIntent();
         String deviceCode = i.getExtras().getString("DEVICECODE_KEY");
@@ -178,26 +185,13 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
                     uploadDoor.setDoorName((String) map.get("doorName"));
 
                     Door door = doorSnapshot.getValue(Door.class);
-//                    Log.d(TAG, "onDataChange: " + door.getDoorName());
                     mDoor.add(uploadDoor);
-//                for (DataSnapshot doorSnapshot : dataSnapshot.getChildren()) {
-//                    try{
-//                        GenericTypeIndicator<Map<String, Object>> genericTypeIndicator = new GenericTypeIndicator<Map<String, Object>>() {};
-//                        Map<String,Object> map =  doorSnapshot.getValue(genericTypeIndicator);
-//
-//                        Door uploadDoor = new Door();
-//                        uploadDoor.setDoorName( (String) map.get("doorName"));
-//                        //Toast.makeText(HouseDetail.this, (String) map.get("name"), Toast.LENGTH_SHORT).show();
-////                    Door upload = houseSnapshot.getValue(Door.class);
-////                    upload.setKey(houseSnapshot.getKey());
-//                        mDoor.add(uploadDoor);
-//                        Data.checkRecyclerDoor = uploadDoor;
-
 
                 }
 
                 mAdapter.notifyDataSetChanged();
                 mProgressBar.setVisibility(View.GONE);
+                loading_card.setVisibility(View.GONE);
 
                 checkDoor();
 
@@ -216,37 +210,38 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
 
 
     public void onItemClick(int position) {
-//        Door clickedTeacher= mDoor.get(position);
-//        String[] teacherData={clickedTeacher.getDoorName()};
-//        openDetailActivity(teacherData);
+//        Door clickedDoors= mDoor.get(position);
+//        String[] doorsData={clickedDoors.getDoorName(), String.valueOf(clickedDoors.getDoorLock())};
+//        Toast.makeText(getActivity(),clickedDoors.getDoorName(), Toast.LENGTH_SHORT).show();
+////        openDetailActivity(doorsData);
     }
+
 
     @Override
     public void onShowItemClick(int position) {
-        Toast.makeText(getActivity(), "Item test", Toast.LENGTH_SHORT).show();
-//        Door clickedTeacher= mDoor.get(position);
-//        String[] teacherData={clickedTeacher.getDoorName()};
-//        openDetailActivity(teacherData);
+//        Door clickedDoors= mDoor.get(position);
+//        String[] doorsData={clickedDoors.getDoorName(), String.valueOf(clickedDoors.getDoorLock())};
+////        openDetailActivity(doorsData);
     }
+
 
     @Override
     public void onDeleteItemClick(int position) {
-        Intent i = getActivity().getIntent();
-        String deviceCode = i.getExtras().getString("DEVICECODE_KEY");
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Devices").child(deviceCode).child("Doors");
         Door selectedItem = mDoor.get(position);
         final String selectedKey = selectedItem.getDoorName();
 
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference(selectedKey);
-        reference.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+        Intent i = getActivity().getIntent();
+        String deviceCode = i.getExtras().getString("DEVICECODE_KEY");
+
+        reference = FirebaseDatabase.getInstance().getReference().child("Devices").child(deviceCode).child("Doors");
+        reference.child(selectedKey).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                mDatabaseRef.removeValue();
                 Toast.makeText(getActivity(), "Item deleted", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
+
 
     public void onDestroy() {
         super.onDestroy();
@@ -266,6 +261,7 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
         }
 
     }
+
 
     public void showDialogAddDoor(){
         dialog_Door.setContentView(R.layout.add_door_popup);
@@ -325,7 +321,6 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
                 }
 
                 pd.hide();
-
 
             }
         });

@@ -16,8 +16,8 @@
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolregist"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:background="@drawable/white_grey_border_bottom"
+            android:layout_height="90dp"
+            android:background="@drawable/bann"
             android:gravity="center"
             style="@style/AppTheme.AppBarOverlay">
 
@@ -34,22 +34,23 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
                         android:layout_centerHorizontal="true"
+                        android:layout_centerInParent="true"
                         android:layout_marginTop="0dp"
-                        android:gravity="center"
-                        android:text="Sign Up"
-                        android:textColor="@color/colorPrimaryDark"
-                        android:textSize="15sp"
+                        android:gravity="center|bottom"
+                        android:text="Sing Up"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="18sp"
                         android:textStyle="bold" />
 
                     <ImageView
                         android:id="@+id/btn_prev_regist"
                         android:layout_width="30dp"
                         android:layout_height="50dp"
-                        android:src="@drawable/ic_backarrow"
+                        android:src="@drawable/ic_left"
                         android:layout_alignParentLeft="true"
                         android:layout_marginRight="5dp"/>
+
                 </RelativeLayout>
             </LinearLayout>
         </android.support.v7.widget.Toolbar>
@@ -204,6 +205,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="#B0BEC5"
                 android:text="Already have an sccount? Log in"
                 android:id="@+id/txt_login"
                 android:layout_marginTop="10dp"/>

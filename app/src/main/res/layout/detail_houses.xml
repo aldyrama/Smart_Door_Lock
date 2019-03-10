@@ -5,7 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Family.FamilyActivity"
     android:background="@color/blue_gray">
 
     <RelativeLayout
@@ -14,7 +13,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="90dp"
+            android:layout_height="125dp"
             android:id="@+id/topBar">
 
             <android.support.design.widget.AppBarLayout
@@ -24,8 +23,8 @@
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/toolsetting"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:background="@drawable/white_grey_border_bottom"
+                    android:layout_height="90dp"
+                    android:background="@drawable/bann"
                     android:gravity="center"
                     android:layout_gravity="center"
                     app:layout_scrollFlags="scroll|enterAlways|snap">
@@ -41,10 +40,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="House name"
-                            android:textSize="18sp"
+                            android:textSize="20sp"
                             android:textStyle="bold"
                             android:layout_centerInParent="true"
-                            android:textColor="@color/colorPrimaryDark"
+                            android:textColor="@color/colorWhite"
                             android:gravity="center"/>
 
                         <TextView
@@ -54,6 +53,7 @@
                             android:text="121212"
                             android:textSize="12sp"
                             android:textStyle="bold"
+                            android:visibility="gone"
                             android:layout_centerInParent="true"
                             android:textColor="@color/colorPrimaryDark"
                             android:gravity="center"/>
@@ -66,6 +66,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/tabsHouses"
+                    app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
+                    app:tabTextColor="@color/black"
+                    app:tabSelectedTextColor="@color/blackk"
                     android:background="@drawable/white_grey_border_bottom">
                 </android.support.design.widget.TabLayout>
             </android.support.design.widget.AppBarLayout>
@@ -79,9 +82,9 @@
             android:layout_height="match_parent">
 
             <android.support.v4.view.ViewPager
+                android:id="@+id/container"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/container"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             </android.support.v4.view.ViewPager>

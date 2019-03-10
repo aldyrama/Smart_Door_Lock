@@ -1,46 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:gravity="center"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="?android:attr/selectableItemBackground">
 
-
-    <View
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@color/gray100"
-        android:layout_gravity="bottom|center"/>
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="03/04/2019 12:00"
+            android:textSize="11sp"
+            android:layout_marginBottom="7dp"/>
+
+    <org.d3ifcool.smart.Activity.TimeLineMarker
+        android:id="@+id/item_time_line_mark"
+        android:layout_width="30dp"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/activity_horizontal_margin"
+        android:paddingLeft="4dp"
+        android:layout_gravity="center"
+        android:paddingRight="4dp"
+        android:paddingTop="@dimen/activity_horizontal_margin"
+        app:beginLine="@color/colorAccent"
+        app:endLine="@color/colorAccent"
+        app:lineSize="2dp"
+        app:marker="@drawable/ic_timeline_default_marker"
+        app:markerSize="24dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:layout_margin="5dp"
+            android:layout_margin="8dp"
             android:layout_gravity="center">
 
             <ImageView
-                android:id="@+id/status_accsess"
+                android:id="@+id/status_activity"
                 android:layout_width="0dp"
-                android:layout_weight="0.4"
-                android:layout_height="40dp"
+                android:layout_weight="0.2"
+                android:layout_height="33dp"
                 android:layout_gravity="center"
-                android:src="@drawable/lock"/>
+                android:src="@drawable/activity_lock"/>
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/imageAccount"
+                android:id="@+id/imageAccount_history"
                 android:layout_width="0dp"
-                android:layout_weight="0.5"
-                android:layout_height="55dp"
+                android:layout_weight="0.4"
+                android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:src="@drawable/userphoto" />
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_weight="2"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_gravity="center"
@@ -56,14 +78,22 @@
                     android:id="@+id/name_history"/>
 
                 <TextView
+                    android:id="@+id/by"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="10sp"
-                    tools:text="12:00 AM 01/Januari/2019"
-                    android:inputType="datetime"
-                    android:textStyle="italic"
-                    android:id="@+id/time_history"/>
+                    tools:text="Lock by app"/>
 
             </LinearLayout>
         </LinearLayout>
-</FrameLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="0.5dp"
+        android:layout_marginRight="10dp"
+        android:background="@color/gray100"
+        android:layout_marginLeft="90dp"
+        android:layout_gravity="bottom|center"/>
+
+</LinearLayout>

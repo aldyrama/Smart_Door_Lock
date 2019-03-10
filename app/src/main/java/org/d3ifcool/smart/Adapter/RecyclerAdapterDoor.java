@@ -1,5 +1,6 @@
 package org.d3ifcool.smart.Adapter;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -8,7 +9,9 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -33,8 +36,10 @@ import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import org.d3ifcool.smart.Data;
 import org.d3ifcool.smart.Model.Door;
 import org.d3ifcool.smart.Model.House;
+import org.d3ifcool.smart.Model.User;
 import org.d3ifcool.smart.R;
 
 import java.text.DateFormat;
@@ -42,24 +47,23 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import xyz.schwaab.avvylib.Animation;
-import xyz.schwaab.avvylib.AvatarView;
 
 public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoor.RecyclerViewHolder> implements View.OnClickListener {
     private Context mContext;
-    private List<Door> door;
+    private List<Door> mDoor;
     private OnItemClickListener mListener;
     FirebaseUser firebaseUser;
     FirebaseAuth auth;
     private Uri mImageUri;
     StorageReference storageRef;
+    DatabaseReference referencee;
     ProgressDialog pd;
     int status = 0;
 
 
-    public RecyclerAdapterDoor (Context context, List<Door> uploads) {
-        mContext = context;
-        door = uploads;
+    public RecyclerAdapterDoor (FragmentActivity activity, List<Door> uploads) {
+        mContext = activity;
+        mDoor = uploads;
     }
 
     @Override
@@ -68,11 +72,9 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
         return new RecyclerViewHolder(v);
     }
 
-
-
     @Override
     public void onBindViewHolder(@NonNull final RecyclerViewHolder holder, int position) {
-        final Door currentDoor = door.get(position);
+        final Door currentDoor = mDoor.get(position);
         holder.name_door.setText(currentDoor.getDoorName());
 //        holder.dateTextView.setText(getDateToday());
         holder.lockImageView.setOnClickListener(this);
@@ -92,6 +94,8 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 Door door = dataSnapshot.getValue(Door.class);
+                try {
+
                 int lock = door.getDoorLock();
 
                 if (lock == 0){
@@ -128,8 +132,11 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
                             });
                     holder.status.setText("Unlocked");
 
+                    }
 
 
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
 
             }
@@ -144,58 +151,84 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
         holder.lockImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = ((Activity) mContext).getIntent();
-                String name =i.getExtras().getString("NAME_KEY");
-                String deviceCode =i.getExtras().getString("DEVICECODE_KEY");
-                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Devices").child(deviceCode).child("Doors")
-                        .child(currentDoor.getDoorName());
+                final String url = "https://firebasestorage.googleapis.com/v0/b/smartdoor-7d0e6.appspot.com/o/lock_door.png?alt=media&token=2a903126-fc6e-4f87-b62c-9ccb7e9f5383";
+                final String url1 = "https://firebasestorage.googleapis.com/v0/b/smartdoor-7d0e6.appspot.com/o/unlock_door.png?alt=media&token=15c98219-2c31-49db-9338-968e35cced71";
 
-                if (status == 0){
-                    status = 1;
+                final DatabaseReference reference0 = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getEmail().replace(".",","));
 
-                    reference.child("doorLock").setValue(status);
+                reference0.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        Intent i = ((Activity) mContext).getIntent();
+                        String name = i.getExtras().getString("NAME_KEY");
+                        String deviceCode = i.getExtras().getString("DEVICECODE_KEY");
 
-//                    holder.lockImageView.setAnimating(true);
-//                    holder.lockImageView.setBorderThickness(18); //Currently px
-//                    holder.lockImageView.setHighlightBorderColor(Color.GREEN);
-//                    holder.lockImageView.setHighlightBorderColorEnd(Color.CYAN);
-//                    holder.lockImageView.setNumberOfArches(0);
-//                    holder.lockImageView.setImageResource(R.drawable.lock_door);
-//                    holder.lockImageView.setTotalArchesDegreeArea(80);
-//                    mProgressbar.setVisibility(View.INVISIBLE);
+                        final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Devices").child(deviceCode).child("Doors")
+                                .child(currentDoor.getDoorName());
+                        final DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference().child("Devices").child(deviceCode).child("History");
+
+                        User getUser = dataSnapshot.getValue(User.class);
+                        String lock;
+                        String uploadId = reference1.push().getKey();
+
+                        if (status == 0) {
+                            status = 1;
+                            lock = "Unlock by app";
+                            reference.child("doorLock").setValue(status);
+                            reference1.child(uploadId).setValue(getUser);
+                            reference1.child(uploadId).child("lock").setValue(lock);
+                            reference1.child(uploadId).child("lockImage").setValue(url1);
 
 
-                }
+                        } else {
+                            status = 0;
+                            lock = "Lock by app";
+                            reference.child("doorLock").setValue(status);
+                            reference1.child(uploadId).setValue(getUser);
+                            reference1.child(uploadId).child("lock").setValue(lock);
+                            reference1.child(uploadId).child("lockImage").setValue(url);
 
-                else {
-                    status = 0;
-                    reference.child("doorLock").setValue(status);
 
-//                    mProgressbar.setVisibility(View.INVISIBLE);
 
-//                    holder.lockImageView.setAnimating(true);
-//                    holder.lockImageView.setBorderThickness(18); //Currently px
-//                    holder.lockImageView.setHighlightBorderColor(Color.GREEN);
-//                    holder.lockImageView.setHighlightBorderColorEnd(Color.CYAN);
-//                    holder.lockImageView.setNumberOfArches(0);
-//                    holder.lockImageView.setImageResource(R.drawable.unlock_door);
-//                    holder.lockImageView.setTotalArchesDegreeArea(80);
+                        }
+                    }
 
-                }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
 
             }
+
         });
     }
 
+
     @Override
     public int getItemCount() {
-        return door.size();
+        return mDoor.size();
     }
+
+
+    public interface OnItemClickListener {
+        void onItemClick(int position);
+        void onShowItemClick(int position);
+        void onDeleteItemClick(int position);
+    }
+
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        mListener = listener;
+
+    }
+
 
     @Override
     public void onClick(View v) {
 
     }
+
 
     public class RecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
             View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
@@ -215,13 +248,19 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
             status = itemView.findViewById(R.id.status_lock);
             imagesAnimation = (AnimationDrawable) lockImageView.getBackground();
 
-//
-//            Typeface typeface = Typeface.createFromAsset(itemView.getContext().getAssets(), "font/Fontspring_DEMO_microsquare_bold.ttf");
-//            name_door.setTypeface(typeface);
+            firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
             itemView.setOnClickListener(this);
             itemView.setOnCreateContextMenuListener(this);
         }
+
+
+    private String getDateToday(){
+        DateFormat dateFormat=new SimpleDateFormat("yyyy/MM/dd");
+        Date date=new Date();
+        String today= dateFormat.format(date);
+        return today;
+    }
 
         @Override
         public void onClick(View v) {
@@ -233,15 +272,16 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
             }
         }
 
+
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
             menu.setHeaderTitle("Select Action");
-            MenuItem showItem = menu.add( Menu.NONE, 1, 1, "Show");
-            MenuItem deleteItem = menu.add(Menu.NONE, 2, 2, "Delete");
+            MenuItem deleteItem = menu.add(Menu.NONE, 1, 1, "Delete");
 
-            showItem.setOnMenuItemClickListener(this);
+
             deleteItem.setOnMenuItemClickListener(this);
         }
+
 
         @Override
         public boolean onMenuItemClick(MenuItem item) {
@@ -250,10 +290,10 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
                 if (position != RecyclerView.NO_POSITION) {
 
                     switch (item.getItemId()) {
-                        case 1:
+                        case 2:
                             mListener.onShowItemClick(position);
                             return true;
-                        case 2:
+                        case 1:
                             mListener.onDeleteItemClick(position);
                             return true;
                     }
@@ -261,26 +301,5 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
             }
             return false;
         }
-    }
-
-    public interface OnItemClickListener {
-        void onItemClick(int position);
-        void onShowItemClick(int position);
-        void onDeleteItemClick(int position);
-    }
-
-    public void setOnItemClickListener(OnItemClickListener listener) {
-        mListener = listener;
-    }
-
-//    public void setOnItemClickListener(FragmentActivity activity) {
-//        mListener = (OnItemClickListener) activity;
-//    }
-
-    private String getDateToday(){
-        DateFormat dateFormat=new SimpleDateFormat("yyyy/MM/dd");
-        Date date=new Date();
-        String today= dateFormat.format(date);
-        return today;
     }
 }

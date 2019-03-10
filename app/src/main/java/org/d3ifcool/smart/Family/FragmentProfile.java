@@ -66,7 +66,7 @@ public class FragmentProfile extends Fragment {
     private DatabaseReference myRef;
     private FirebaseDatabase database;
     ProgressDialog pd;
-    ProgressBar load_pic;
+    ProgressBar load_pict;
     ImageView image_profile, menu;
     static int PReqCode = 1 ;
     static int REQUESCODE = 1 ;
@@ -89,7 +89,8 @@ public class FragmentProfile extends Fragment {
         email = view.findViewById(R.id.setemail);
         account = view.findViewById(R.id.setaccount);
         password = view.findViewById(R.id.value_password);
-        load_pic = view.findViewById(R.id.load_pic);
+        load_pict = view.findViewById(R.id.load_pic);
+        load_pict.setVisibility(View.VISIBLE);
 
         removeAccount = view.findViewById(R.id.delete_acoun);
         logOut = view.findViewById(R.id.btn_logout);
@@ -184,7 +185,10 @@ public class FragmentProfile extends Fragment {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,
                                                 int which) {
-                                pd.setMessage("Please wait");
+                                pd = new ProgressDialog(getActivity());
+                                pd.setMessage("Please wait...");
+                                pd.setCancelable(false);
+                                pd.setCanceledOnTouchOutside(false);
                                 pd.show();
                                 if (firebaseUser != null) {
                                     firebaseUser.delete()
@@ -239,6 +243,7 @@ public class FragmentProfile extends Fragment {
                 username.setText(user.getUsername());
                 email.setText(showEmail);
                 account.setText(user.getTypeAccount());
+                load_pict.setVisibility(View.INVISIBLE);
 
             }
 

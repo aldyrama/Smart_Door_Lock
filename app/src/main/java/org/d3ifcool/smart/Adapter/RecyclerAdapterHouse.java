@@ -60,7 +60,6 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
         final House currentHouse = houses.get(position);
         holder.name_house.setText(currentHouse.getName());
         currentHouse.getDeviceCode();
-        holder.dateTextView.setText(Data.madeDateHouse);
         holder.allLock.setOnClickListener(this);
         holder.mProgressbar.setVisibility(View.VISIBLE);
         holder.mProgressbar.setSecondaryProgress(50000);
@@ -76,57 +75,58 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 House house = dataSnapshot.getValue(House.class);
-                boolean lock = house.isHouse_lock();
-                boolean guestDetect = house.isGuest();
+                try {
 
-                if (lock == false){
-                    Picasso.with(mContext)
-                            .load(url)
-                            .into(holder.allLock, new Callback() {
-                                @Override
-                                public void onSuccess() {
+                    boolean lock = house.isHouse_lock();
+                    boolean guestDetect = house.isGuest();
 
-                                    holder.mProgressbar.setVisibility(View.INVISIBLE);
+                    if (lock == false) {
+                        Picasso.with(mContext)
+                                .load(url)
+                                .into(holder.allLock, new Callback() {
+                                    @Override
+                                    public void onSuccess() {
+
+                                        holder.mProgressbar.setVisibility(View.INVISIBLE);
 
 
-                                }
+                                    }
 
-                                @Override
-                                public void onError() {
+                                    @Override
+                                    public void onError() {
 
-                                }
-                            });
-                }
+                                    }
+                                });
+                    } else {
+                        Picasso.with(mContext)
+                                .load(url1)
+                                .into(holder.allLock, new Callback() {
+                                    @Override
+                                    public void onSuccess() {
 
-                else {
-                    Picasso.with(mContext)
-                            .load(url1)
-                            .into(holder.allLock, new Callback() {
-                                @Override
-                                public void onSuccess() {
+                                        holder.mProgressbar.setVisibility(View.INVISIBLE);
 
-                                    holder.mProgressbar.setVisibility(View.INVISIBLE);
+                                    }
 
-                                }
+                                    @Override
+                                    public void onError() {
 
-                                @Override
-                                public void onError() {
+                                    }
+                                });
 
-                                }
-                            });
+                    }
 
-                }
+                    if (guestDetect == false) {
 
-                if (guestDetect == false){
+                        holder.isGuest.setImageResource(R.drawable.ic_bell_black);
 
-                    holder.isGuest.setImageResource(R.drawable.ic_bell_black);
+                    } else {
 
-                }
+                        holder.isGuest.setImageResource(R.drawable.ic_bell_red);
 
-                else {
 
-                    holder.isGuest.setImageResource(R.drawable.ic_bell_red);
-
+                    }
+                }catch (Exception e){
 
                 }
             }
@@ -184,7 +184,6 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
             super(itemView);
             name_house =itemView.findViewById ( R.id.houseName );
             doorView = itemView.findViewById(R.id.doo_status);
-            dateTextView = itemView.findViewById(R.id.date);
             allLock = itemView.findViewById(R.id.all_lockHouse);
             isGuest = itemView.findViewById(R.id.guest);
             mProgressbar = itemView.findViewById(R.id.progress_lock);

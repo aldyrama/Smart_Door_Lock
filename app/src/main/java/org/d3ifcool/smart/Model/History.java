@@ -1,15 +1,11 @@
 package org.d3ifcool.smart.Model;
 
 public class History {
-    private String id;
-    private String usernamse;
     private String fullname;
     private String date;
     private String imageurl;
 
     public History(String id, String usernamse, String fullname, String date, String imageurl) {
-        this.id = id;
-        this.usernamse = usernamse;
         this.fullname = fullname;
         this.date = date;
         this.imageurl = imageurl;
@@ -17,22 +13,6 @@ public class History {
 
     public History() {
 
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getUsernamse() {
-        return usernamse;
-    }
-
-    public void setUsernamse(String usernamse) {
-        this.usernamse = usernamse;
     }
 
     public String getFullname() {

@@ -71,8 +71,8 @@ public class RecylerViewAdapterUserInvite extends RecyclerView.Adapter<RecylerVi
         User currentUser = mConnect.get(position);
         holder.username.setText(currentUser.getFullname());
         holder.email.setText(currentUser.getEmail());
-        holder.start.setText(getDateToday());
-        holder.end.setText(getDateToday());
+        holder.start.setText("EXP :");
+        holder.end.setText(currentUser.getExpired());
         Picasso.with(mContext)
                 .load(currentUser.getImageurl())
                 .placeholder(R.drawable.userphoto)
@@ -113,6 +113,8 @@ public class RecylerViewAdapterUserInvite extends RecyclerView.Adapter<RecylerVi
         private FrameLayout item_user;
         private TextView fullname, username, email, start, end;
         private CircleImageView photo;
+
+
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -120,7 +122,7 @@ public class RecylerViewAdapterUserInvite extends RecyclerView.Adapter<RecylerVi
             username = itemView.findViewById(R.id.username);
             email = itemView.findViewById(R.id.email_member);
             start = itemView.findViewById(R.id.start_access);
-            end = itemView.findViewById(R.id.long_access);
+            end = itemView.findViewById(R.id.expired_member);
             photo = itemView.findViewById(R.id.imageMember);
 
             itemView.setOnClickListener(this);

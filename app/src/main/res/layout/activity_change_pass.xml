@@ -18,9 +18,10 @@
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolregist"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:background="@drawable/white_grey_border_bottom"
+            android:layout_height="90dp"
+            android:background="@drawable/bann"
             android:gravity="center"
+            android:layout_gravity="center"
             style="@style/AppTheme.AppBarOverlay">
 
             <LinearLayout
@@ -31,26 +32,26 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginTop="0dp"
                         android:gravity="center"
                         android:text="Change password"
-                        android:textColor="@color/colorPrimaryDark"
-                        android:textSize="15sp"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="20sp"
                         android:textStyle="bold" />
 
                     <ImageView
                         android:id="@+id/btn_prev_change"
-                        android:layout_width="30dp"
-                        android:layout_height="50dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:onClick="onClickView"
-                        android:src="@drawable/ic_backarrow"
+                        android:src="@drawable/ic_left"
                         android:layout_alignParentLeft="true" />
                 </RelativeLayout>
             </LinearLayout>

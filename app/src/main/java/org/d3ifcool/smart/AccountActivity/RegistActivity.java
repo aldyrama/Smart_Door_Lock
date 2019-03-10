@@ -92,7 +92,14 @@ public class RegistActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_regist);
-        setStatustBarColor(R.color.colorWhite);
+//        setStatustBarColor(R.color.colorWhite);
+
+        getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+        );
+
+
         view();
         mActivity = this;
 
@@ -200,7 +207,7 @@ public class RegistActivity extends AppCompatActivity {
                             map.put("email", email);
                             map.put("username", username.toLowerCase());
                             map.put("fullname", fullname);
-                            map.put("imageurl", "https://firebasestorage.googleapis.com/v0/b/smartdoor-7d0e6.appspot.com/o/userphoto.png?alt=media&token=b9ed95a7-56ef-4ee6-9dcf-6b5669fccb8c");
+                            map.put("imageurl", "https://firebasestorage.googleapis.com/v0/b/smartdoor-7d0e6.appspot.com/o/male.png?alt=media&token=47fd79f3-e095-4d27-9302-0400d5bbdc39");
                             map.put("typeAccount", accountType());
 
 
