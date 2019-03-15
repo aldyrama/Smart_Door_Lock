@@ -16,11 +16,12 @@
         android:orientation="horizontal">
 
         <TextView
+            android:id="@+id/timeAccess"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="03/04/2019 12:00"
-            android:textSize="11sp"
-            android:layout_marginBottom="7dp"/>
+            android:textSize="8sp"
+            android:layout_marginBottom="17dp"/>
 
     <org.d3ifcool.smart.Activity.TimeLineMarker
         android:id="@+id/item_time_line_mark"
@@ -47,22 +48,55 @@
             <ImageView
                 android:id="@+id/status_activity"
                 android:layout_width="0dp"
-                android:layout_weight="0.2"
-                android:layout_height="33dp"
-                android:layout_gravity="center"
+                android:layout_weight="0.3"
+                android:layout_height="30dp"
+                android:layout_marginTop="5dp"
+                android:layout_gravity="center|top"
                 android:src="@drawable/activity_lock"/>
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/imageAccount_history"
-                android:layout_width="0dp"
-                android:layout_weight="0.4"
-                android:layout_height="50dp"
-                android:layout_gravity="center"
-                android:src="@drawable/userphoto" />
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_weight="2.4"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="12sp"
+                android:layout_gravity="bottom|center"
+                android:gravity="center|bottom">
+
+                <TextView
+                    android:id="@+id/door_where"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:text="Front door"
+                    android:layout_marginLeft="8dp"
+                    android:layout_gravity="center|left"
+                    android:gravity="center"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left|center"
+                    android:gravity="center|left"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imageAccount_history"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginLeft="20dp"
+                android:layout_gravity="center|left"
+                android:src="@drawable/user_fix" />
+
+                    </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="3"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_gravity="center"
@@ -72,7 +106,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="16sp"
+                    android:textSize="12sp"
                     android:textColor="@color/blackk"
                     tools:text="Aldy ramadhan"
                     android:id="@+id/name_history"/>
@@ -81,9 +115,11 @@
                     android:id="@+id/by"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="10sp"
+                    android:textSize="8sp"
                     tools:text="Lock by app"/>
 
+                 </LinearLayout>
+             </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

@@ -64,16 +64,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
-
-    <!--<android.support.design.widget.FloatingActionButton-->
-        <!--android:layout_width="60dp"-->
-        <!--android:layout_height="60dp"-->
-        <!--android:layout_alignParentRight="true"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_margin="16dp"-->
-        <!--android:backgroundTint="@color/blackk"-->
-        <!--android:src="@drawable/ic_user_white"/>-->
-
     </RelativeLayout>

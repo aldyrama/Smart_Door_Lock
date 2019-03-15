@@ -96,7 +96,7 @@ public class RegistActivity extends AppCompatActivity {
 
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
         );
 
 
@@ -207,7 +207,7 @@ public class RegistActivity extends AppCompatActivity {
                             map.put("email", email);
                             map.put("username", username.toLowerCase());
                             map.put("fullname", fullname);
-                            map.put("imageurl", "https://firebasestorage.googleapis.com/v0/b/smartdoor-7d0e6.appspot.com/o/male.png?alt=media&token=47fd79f3-e095-4d27-9302-0400d5bbdc39");
+                            map.put("imageurl", "https://firebasestorage.googleapis.com/v0/b/smartdoor-7d0e6.appspot.com/o/user_fix.png?alt=media&token=67244b24-081b-4c7a-a243-fa2734df42ee");
                             map.put("typeAccount", accountType());
 
 

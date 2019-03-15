@@ -45,7 +45,7 @@ public class ChangePassActivity extends AppCompatActivity implements View.OnClic
 
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
         );
 
         //Initial widget

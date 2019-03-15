@@ -48,7 +48,7 @@ public class HousesDetail extends AppCompatActivity implements  View.OnClickList
 
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
         );
 
         initializeWidgets();

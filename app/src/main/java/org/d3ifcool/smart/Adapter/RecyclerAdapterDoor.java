@@ -79,6 +79,7 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
 //        holder.dateTextView.setText(getDateToday());
         holder.lockImageView.setOnClickListener(this);
         holder.mProgressbar.setVisibility(View.VISIBLE);
+        final String time = holder.getDateToday();
 
 
         final String url = "https://firebasestorage.googleapis.com/v0/b/smartdoor-7d0e6.appspot.com/o/lock_door.png?alt=media&token=2a903126-fc6e-4f87-b62c-9ccb7e9f5383";
@@ -178,6 +179,8 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
                             reference1.child(uploadId).setValue(getUser);
                             reference1.child(uploadId).child("lock").setValue(lock);
                             reference1.child(uploadId).child("lockImage").setValue(url1);
+                            reference1.child(uploadId).child("door").setValue(currentDoor.getDoorName());
+                            reference1.child(uploadId).child("time").setValue(time);
 
 
                         } else {
@@ -187,6 +190,9 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
                             reference1.child(uploadId).setValue(getUser);
                             reference1.child(uploadId).child("lock").setValue(lock);
                             reference1.child(uploadId).child("lockImage").setValue(url);
+                            reference1.child(uploadId).child("door").setValue(currentDoor.getDoorName());
+                            reference1.child(uploadId).child("time").setValue(time);
+
 
 
 
@@ -256,7 +262,7 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
 
 
     private String getDateToday(){
-        DateFormat dateFormat=new SimpleDateFormat("yyyy/MM/dd");
+        DateFormat dateFormat=new SimpleDateFormat("yyyy/MM/dd hh:mm:ss a");
         Date date=new Date();
         String today= dateFormat.format(date);
         return today;

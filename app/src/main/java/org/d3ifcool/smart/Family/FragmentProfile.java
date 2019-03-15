@@ -53,6 +53,8 @@ import org.d3ifcool.smart.R;
 
 import java.util.HashMap;
 
+import hari.bounceview.BounceView;
+
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
 
@@ -179,6 +181,7 @@ public class FragmentProfile extends Fragment {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,
                                                 int which) {
+
                             }
                         });
                 builder.setPositiveButton("YES",

@@ -14,6 +14,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -48,6 +49,8 @@ import java.util.List;
 import java.util.Map;
 
 import at.markushi.ui.CircleButton;
+import hari.bounceview.BounceView;
+import info.androidramp.gearload.Loading;
 
 public class Fragment_List_Door extends Fragment implements View.OnClickListener, RecyclerAdapterDoor.OnItemClickListener {
 
@@ -56,7 +59,7 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
     FirebaseUser firebaseUser;
     private RecyclerView mRecyclerView;
     private RecyclerAdapterDoor mAdapter;
-    private ProgressBar mProgressBar;
+    private Loading mProgressBar;
     private DatabaseReference mDatabaseRef;
     private ValueEventListener mDBListener;
     private List<Door> mDoor;
@@ -68,8 +71,6 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
     private CardView addDoorCard;
     private  ImageView closePoupUpDoor;
     private ProgressDialog pd;
-    private CardView loading_card;
-
 
     public Fragment_List_Door() {
 
@@ -98,12 +99,11 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
         mRecyclerView = view.findViewById(R.id.mRecyclerView_detail);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        new LinearSnapHelper().attachToRecyclerView(mRecyclerView);
         dialog_Door = new Dialog(getContext());
 
         mProgressBar = view.findViewById(R.id.myDataLoaderProgressBarDoor);
-        loading_card = view.findViewById(R.id.card_loading_door);
-        loading_card.setVisibility(View.VISIBLE);
-        mProgressBar.setVisibility(View.VISIBLE);
+        mProgressBar.Start();
 
         addDoor = view.findViewById(R.id.addDoor_floating);
         addDoorCard = view.findViewById(R.id.cardAddDoor);
@@ -190,8 +190,7 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
                 }
 
                 mAdapter.notifyDataSetChanged();
-                mProgressBar.setVisibility(View.GONE);
-                loading_card.setVisibility(View.GONE);
+                mProgressBar.Cancel();
 
                 checkDoor();
 
@@ -200,7 +199,7 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Toast.makeText(getActivity(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
-                mProgressBar.setVisibility(View.INVISIBLE);
+                mProgressBar.Cancel();
 
             }
 
@@ -270,7 +269,7 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
         addDoorEdtxt = (EditText) dialog_Door.findViewById(R.id.door_name_txt);
         doorPin = (EditText) dialog_Door.findViewById(R.id.door_pin);
         commitDoor.setOnClickListener(this);
-
+        BounceView.addAnimTo(dialog_Door);
 
         closePoupUpDoor.setOnClickListener(new View.OnClickListener() {
             @Override

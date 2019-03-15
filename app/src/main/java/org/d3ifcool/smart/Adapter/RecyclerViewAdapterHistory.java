@@ -62,16 +62,19 @@ public class RecyclerViewAdapterHistory extends RecyclerView.Adapter<RecyclerVie
         User currentUser = mData.get(position);
         holder.username.setText(currentUser.getFullname());
         holder.lock.setText(currentUser.getLock());
+        holder.door.setText(currentUser.getDoor());
+        holder.time.setText(currentUser.getTime());
         Picasso.with(mContext)
                 .load(currentUser.getLockImage())
                 .placeholder(R.drawable.lock_door)
                 .fit()
+                .centerInside()
                 .into(holder.status);
         Picasso.with(mContext)
                 .load(currentUser.getImageurl())
-                .placeholder(R.drawable.ic_male)
+                .placeholder(R.drawable.user_fix)
                 .fit()
-                .centerCrop()
+                .centerInside()
                 .into(holder.photo);
 
     }
@@ -105,7 +108,7 @@ public class RecyclerViewAdapterHistory extends RecyclerView.Adapter<RecyclerVie
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
     View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
 
-        private TextView lock, username;
+        private TextView lock, username, door, time;
         private ImageView photo, status;
 
         public MyViewHolder(@NonNull View itemView, int type) {
@@ -115,6 +118,8 @@ public class RecyclerViewAdapterHistory extends RecyclerView.Adapter<RecyclerVie
             photo = itemView.findViewById(R.id.imageAccount_history);
             lock = itemView.findViewById(R.id.by);
             status = itemView.findViewById(R.id.status_activity);
+            door = itemView.findViewById(R.id.door_where);
+            time = itemView.findViewById(R.id.timeAccess);
 
             TimeLineMarker mMarker = (TimeLineMarker) itemView.findViewById(R.id.item_time_line_mark);
             if (type == ItemType.ATOM) {

@@ -30,7 +30,7 @@
         android:layout_height="55dp"
         android:layout_gravity="center"
         android:layout_marginLeft="6dp"
-        android:src="@drawable/ic_male" />
+        android:src="@drawable/user_fix" />
 
     <LinearLayout
         android:layout_width="0dp"

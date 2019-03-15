@@ -46,7 +46,7 @@ public class SettingActivity extends AppCompatActivity {
 
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
         );
 
         doorNotif = findViewById(R.id.doo_notif);

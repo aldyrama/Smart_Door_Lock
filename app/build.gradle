@@ -36,6 +36,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:17.3.4'
     implementation 'com.google.firebase:firebase-storage:16.0.5'
     implementation 'com.github.bumptech.glide:glide:4.8.0'
+    implementation 'info.androidramp:loading-gear:1.0.4'
+    implementation 'hari.bounceview:bounceview:0.1.0'
+    implementation 'com.github.rubensousa:gravitysnaphelper-compat:2.0'
     //noinspection GradleDynamicVersion
     implementation 'de.hdodenhof:circleimageview:2.2.0'
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.7.+'

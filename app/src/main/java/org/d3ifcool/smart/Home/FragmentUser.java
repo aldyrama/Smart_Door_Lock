@@ -56,6 +56,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+import hari.bounceview.BounceView;
+
 public class FragmentUser extends Fragment implements View.OnClickListener, RecylerViewAdapterUserInvite.OnItemClickListener{
 
     private static final String TAG = "User";
@@ -98,6 +100,9 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
         intent.putExtra("EMAIL_KEY",data[1]);
         intent.putExtra("IMAGE_KEY",data[2]);
         intent.putExtra("TYPEACCOUNT_KEY",data[3]);
+        intent.putExtra("STARTACCESS", data[4]);
+        intent.putExtra("EXPIRED", data[5]);
+
 
         Intent i = getActivity().getIntent();
         final String deviceCode =i.getExtras().getString("DEVICECODE_KEY");
@@ -305,6 +310,7 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
                 for (DataSnapshot connectSnapshot : dataSnapshot.getChildren()) {
                     User upload = connectSnapshot.getValue(User.class);
 
+
                     mConnect.add(upload);
 
 //                    String time = getDateToday();
@@ -374,6 +380,7 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
         sendInvite.setOnClickListener(this);
         start.setOnClickListener(this);
         expiredUser.setOnClickListener(this);
+        BounceView.addAnimTo(dialog);
         final Calendar myCalendar = Calendar.getInstance();
 
 
@@ -392,13 +399,15 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
                 if (member.isChecked()){
                     start.setVisibility(View.GONE);
                     expiredUser.setVisibility(View.GONE);
-                    start.setText("-1");
-                    expiredUser.setText("-1");
+                    start.setText("always");
+                    expiredUser.setText("always");
                 }
 
                 else {
                     start.setVisibility(View.VISIBLE);
                     expiredUser.setVisibility(View.VISIBLE);
+                    start.setText("Start");
+                    expiredUser.setText("End");
                 }
 
             }
@@ -480,8 +489,10 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
                                 String fullName = getUser.getFullname();
 
                                 String uploadId = getUser.getEmail().replace(".", ",");
+                                String uploadId1 = reference1.push().getKey();
+
 //                                reference.child(uploadId).setValue(user);
-                                reference1.child(uploadId).setValue(deviceCode);
+                                reference1.child(uploadId1).setValue(deviceCode);
                                 reference2.child(uploadId).setValue(getUser);
                                 reference3.child(uploadId).child("start_access").setValue(str_start);
                                 reference3.child(uploadId).child("expired").setValue(str_exp);
@@ -572,9 +583,7 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
 
         mRecyclerViewInvite = view.findViewById(R.id.recycler_view_invite);
         mRecyclerViewInvite.setHasFixedSize(true);
-
         mRecyclerViewInvite.setLayoutManager(new LinearLayoutManager(getActivity()));
-//        mAdapterInvite = new RecylerViewAdapterUserInvite(getContext(), mConnect);
 
         mProgressBarInvite = view.findViewById(R.id.myDataUserLoaderProgressBar);
         mProgressBarInvite.setVisibility(View.VISIBLE);
@@ -592,7 +601,7 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
         User clickedUser= mConnect.get(position);
 //        House device = mDevice.get(position);
         String[] userData={clickedUser.getFullname(), clickedUser.getEmail(), clickedUser.getImageurl(),
-                clickedUser.getTypeAccount()};
+                clickedUser.getTypeAccount(), clickedUser.getStart_access(), clickedUser.getExpired()};
         openDetailActivity(userData);
 
 
@@ -602,7 +611,7 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
     public void onShowItemClick(int position) {
         User clickedUser= mConnect.get(position);
         String[] userData={clickedUser.getFullname(), clickedUser.getEmail(), clickedUser.getImageurl(),
-                clickedUser.getTypeAccount()};
+                clickedUser.getTypeAccount(), clickedUser.getStart_access(), clickedUser.getExpired()};
         openDetailActivity(userData);
 
     }
@@ -617,15 +626,36 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
 
         reference = FirebaseDatabase.getInstance().getReference().child("Devices").child(deviceCode).child("Member");
         reference0 = FirebaseDatabase.getInstance().getReference().child("Users").child(selectedKey).child("Houses");
-        reference.child(selectedKey).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+        reference0.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                reference0.child(selectedKey).removeValue();
-                Toast.makeText(getActivity(), "Item deleted", Toast.LENGTH_SHORT).show();
-                return;
+            public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot data : dataSnapshot.getChildren()) {
+                    if(data.getValue(String.class).equals(deviceCode)){
+                        reference0.child(data.getKey()).removeValue();
+                    }
+                }
+
+                final String key = dataSnapshot.getKey();
+                reference.child(selectedKey).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+//                        reference0.child(key).removeValue();
+                        Toast.makeText(getActivity(), "Item deleted", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), key, Toast.LENGTH_SHORT).show();
+                        return;
+
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
+
 
     }
 

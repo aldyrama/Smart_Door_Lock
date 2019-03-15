@@ -60,7 +60,7 @@ public class StreamingActivity extends YouTubeBaseActivity implements YouTubePla
 
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
         );
 
         YouTubePlayerView youTubePlayerView = (YouTubePlayerView) findViewById(R.id.videoView);

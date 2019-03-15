@@ -42,7 +42,7 @@ public class FindPassword extends AppCompatActivity {
 //        setStatustBarColor(R.color.colorWhite);
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
         );
 
 

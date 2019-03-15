@@ -9,10 +9,13 @@ public class User {
     private String password;
     private String typeAccount;
     private String houseName;
+    private String start_access;
     private String expired;
+    private String time;
     private int age;
     private String lock;
     private String lockImage;
+    private String door;
     private String key;
 
     public User(String id, String username, String fullname, String imageurl, String typeAccount, String houseName, String password) {
@@ -102,12 +105,28 @@ public class User {
         this.email = email;
     }
 
+    public String getStart_access() {
+        return start_access;
+    }
+
+    public void setStart_access(String start_access) {
+        this.start_access = start_access;
+    }
+
     public String getExpired() {
         return expired;
     }
 
     public void setExpired(String expired) {
         this.expired = expired;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 
     public int getAge() {
@@ -140,5 +159,13 @@ public class User {
 
     public void setLockImage(String lockImage) {
         this.lockImage = lockImage;
+    }
+
+    public String getDoor() {
+        return door;
+    }
+
+    public void setDoor(String door) {
+        this.door = door;
     }
 }

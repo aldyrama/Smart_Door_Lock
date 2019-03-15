@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="355dp"
+    android:layout_width="380dp"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/tools"
     android:foreground="?attr/selectableItemBackgroundBorderless"
-    card_view:cardCornerRadius="28dp"
+    card_view:cardCornerRadius="20dp"
     android:clickable="true"
     android:focusable="true"
-    android:layout_marginTop="16dp"
-    android:layout_marginRight="6dp"
-    android:layout_marginLeft="16dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginRight="4dp"
+    android:layout_marginLeft="6dp"
     android:layout_marginBottom="16dp"
     android:layout_gravity="center"
     android:background="?attr/selectableItemBackgroundBorderless"
@@ -19,6 +19,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
         android:orientation="vertical">
 
     <LinearLayout
@@ -69,71 +71,68 @@
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_margin="6dp">
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical"
+                android:layout_marginTop="50dp"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/guest"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:padding="2dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_bell_black"/>
+
+                <TextView
+                    android:id="@+id/txt_guest"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/guest"
+                    android:textStyle="bold"
+                    android:textColor="@color/blackk"
+                    android:text="Guest"/>
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:layout_marginTop="30dp">
-
-                    <ImageView
-                        android:id="@+id/guest"
-                        android:layout_width="0dp"
-                        android:layout_weight="0.5"
-                        android:layout_height="30dp"
-                        android:padding="2dp"
-                        android:layout_marginLeft="30dp"
-                        android:src="@drawable/ic_bell_black"/>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content">
-
-                    </LinearLayout>
-
-                    <ImageView
-                        android:id="@+id/doo_status"
-                        android:layout_width="0dp"
-                        android:layout_weight="0.7"
-                        android:layout_height="30dp"
-                        android:padding="2dp"
-                        android:src="@drawable/ic_warning_green"/>
-
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_gravity="center"
-                android:gravity="center">
+                android:layout_gravity="center|bottom"
+                android:gravity="center|bottom">
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_weight="2"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:gravity="right">
+                    android:layout_gravity="right|bottom"
+                    android:layout_marginRight="10dp"
+                    android:gravity="right|bottom">
+
+                    <Button
+                        android:layout_width="150dp"
+                        android:layout_height="24dp"
+                        android:text="@string/history_user_access"
+                        android:textSize="10sp"
+                        android:padding="6dp"
+                        android:backgroundTint="@color/gray400"
+                        android:layout_gravity="center|left"
+                        android:layout_marginRight="60dp"
+                        android:textColor="@color/gray400"
+                        android:textAllCaps="false"
+                        android:gravity="center"
+                        android:background="@drawable/bg_edittext"/>
 
                     <RelativeLayout
                         android:layout_width="wrap_content"

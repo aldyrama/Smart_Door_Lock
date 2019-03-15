@@ -29,7 +29,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class DetailUser extends AppCompatActivity implements  View.OnClickListener, RecylerViewAdapterUserInvite.OnItemClickListener {
 
-    TextView emailDetailTextView,detailNameTextView,detailTypeAccount, deviceCode;
+    TextView emailDetailTextView,detailNameTextView,detailTypeAccount, deviceCode, startTime, endTime;
     ImageView close;
     CircleImageView photo;
 
@@ -40,6 +40,8 @@ public class DetailUser extends AppCompatActivity implements  View.OnClickListen
         photo = findViewById(R.id.imgUser);
         detailNameTextView = findViewById(R.id.detailNameUser);
         detailTypeAccount = findViewById(R.id.typeaccount);
+        startTime = findViewById(R.id.start_time);
+        endTime = findViewById(R.id.end_time);
 
 
     }
@@ -53,7 +55,7 @@ public class DetailUser extends AppCompatActivity implements  View.OnClickListen
 
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
         );
 
         initializeWidgets();
@@ -73,11 +75,15 @@ public class DetailUser extends AppCompatActivity implements  View.OnClickListen
         String image =i.getExtras().getString("IMAGE_KEY");
         String typeaccount = i.getExtras().getString("TYPEACCOUNT_KEY");
         String device =i.getExtras().getString("DEVICECODE_KEY");
+        String startAccess =i.getExtras().getString("STARTACCESS");
+        String expired =i.getExtras().getString("EXPIRED");
 
 
         detailNameTextView.setText(name);
         deviceCode.setText(device);
         detailTypeAccount.setText(typeaccount);
+        startTime.setText(startAccess);
+        endTime.setText(expired);
         Picasso.with(this)
                 .load(image)
                 .placeholder(R.drawable.userphoto)

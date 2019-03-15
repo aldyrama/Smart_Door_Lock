@@ -183,7 +183,7 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
         public RecyclerViewHolder(View itemView) {
             super(itemView);
             name_house =itemView.findViewById ( R.id.houseName );
-            doorView = itemView.findViewById(R.id.doo_status);
+//            doorView = itemView.findViewById(R.id.doo_status);
             allLock = itemView.findViewById(R.id.all_lockHouse);
             isGuest = itemView.findViewById(R.id.guest);
             mProgressbar = itemView.findViewById(R.id.progress_lock);
