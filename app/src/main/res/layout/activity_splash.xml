@@ -51,15 +51,18 @@
     <TextView
         android:id="@+id/checking"
         android:layout_width="wrap_content"
+        android:visibility="gone"
         android:layout_height="wrap_content"
         android:text="Checking"/>
 
     <com.tomer.fadingtextview.FadingTextView
+        android:id="@+id/fad"
         android:layout_width="20dp"
         android:layout_height="wrap_content"
         android:gravity="center|left"
         android:layout_marginLeft="2dp"
         app:timeout="200"
+        android:visibility="gone"
         app:texts="@array/text_demo"
         android:layout_toRightOf="@+id/checking"/>
     </RelativeLayout>

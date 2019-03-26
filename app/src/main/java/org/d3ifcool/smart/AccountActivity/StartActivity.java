@@ -31,7 +31,6 @@ public class StartActivity extends AppCompatActivity {
     String profileid;
     FirebaseUser firebaseUser;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -371,6 +371,7 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
 
     private void showDialogPhoneNumber() {
         dialog.setContentView(R.layout.invite_user_popup);
+        dialog.setCanceledOnTouchOutside(false);
         phoneNumber = (EditText) dialog.findViewById(R.id.email_member);
         start = (TextView) dialog.findViewById(R.id.start_time);
         member = (CheckBox) dialog.findViewById(R.id.always_member);

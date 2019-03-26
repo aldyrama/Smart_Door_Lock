@@ -16,9 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
-import com.andretietz.android.controller.ActionView;
-import com.andretietz.android.controller.DirectionView;
-import com.andretietz.android.controller.InputView;
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;

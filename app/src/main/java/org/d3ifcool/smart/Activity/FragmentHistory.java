@@ -1,5 +1,7 @@
 package org.d3ifcool.smart.Activity;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -7,11 +9,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +37,7 @@ import org.d3ifcool.smart.Model.User;
 import org.d3ifcool.smart.R;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +45,8 @@ public class FragmentHistory extends Fragment implements View.OnClickListener, R
 
     private SectionsPageAdapter mSectionsPageAdapter;
     private ViewPager mViewPager;
-    private TextView misEmpty;
+    private TextView misEmpty, mFilter;
+    private CardView cardView;
 
     private RecyclerView mRecyclerViewHistory;
     private RecyclerViewAdapterHistory mAdapterHistory;
@@ -50,7 +56,8 @@ public class FragmentHistory extends Fragment implements View.OnClickListener, R
     private ValueEventListener mDBListener;
     private List<User> mHistory;
     FirebaseUser firebaseUser;
-
+    Calendar myCalendar = Calendar.getInstance();
+    Dialog dialog;
 
     public FragmentHistory() {
         // Required empty public constructor
@@ -65,20 +72,69 @@ public class FragmentHistory extends Fragment implements View.OnClickListener, R
 
         viewWidget(view);
         getHistory();
+        
+        mFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDatePicker();
+
+            }
+        });
 
 
         return view;
     }
 
+
+    private void showDatePicker() {
+        final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+
+                myCalendar.set(Calendar.YEAR, year);
+                myCalendar.set(Calendar.MONTH, monthOfYear);
+                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+//                updateLabel();
+
+            }
+
+            int calculateAge(long date){
+                Calendar dob = Calendar.getInstance();
+                dob.setTimeInMillis(date);
+                Calendar today = Calendar.getInstance();
+                int age = today.get(Calendar.MONTH) - dob.get(Calendar.MONTH);
+                if(today.get(Calendar.HOUR_OF_DAY) < dob.get(Calendar.HOUR_OF_DAY)){
+                    age--;
+                }
+                return age;
+            }
+
+        };
+
+        new DatePickerDialog(dialog.getContext(), R.style.DialogTheme, date, myCalendar
+                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                myCalendar.get(Calendar.DAY_OF_MONTH))
+                .show();
+
+    }
+
+
     public void checkHistory(){
         if (mAdapterHistory.getItemCount() != 0){
             misEmpty.setVisibility(View.INVISIBLE);
             mRecyclerViewHistory.setVisibility(View.VISIBLE);
+            mFilter.setVisibility(View.VISIBLE);
+            cardView.setVisibility(View.VISIBLE);
         }
 
         else {
             misEmpty.setVisibility(View.VISIBLE);
             mRecyclerViewHistory.setVisibility(View.INVISIBLE);
+            mFilter.setVisibility(View.INVISIBLE);
+            cardView.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -134,6 +190,7 @@ public class FragmentHistory extends Fragment implements View.OnClickListener, R
     }
 
     private void viewWidget(View view){
+        dialog = new Dialog(getActivity());
         mRecyclerViewHistory = view.findViewById(R.id.recycler_view_history);
         mRecyclerViewHistory.setHasFixedSize(true);
         mRecyclerViewHistory.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -141,6 +198,8 @@ public class FragmentHistory extends Fragment implements View.OnClickListener, R
         mProgressBarHistory = view.findViewById(R.id.myHistoryLoaderProgressBar);
         mProgressBarHistory.setVisibility(View.VISIBLE);
         misEmpty = view.findViewById(R.id.empty_history);
+        mFilter = view.findViewById(R.id.filter_history);
+        cardView = view.findViewById(R.id.card_filter);
 
         mHistory = new ArrayList<>();
         mAdapterHistory = new RecyclerViewAdapterHistory (getActivity(), mHistory);

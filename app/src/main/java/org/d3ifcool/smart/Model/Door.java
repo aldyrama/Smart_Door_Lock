@@ -6,6 +6,7 @@ public class Door {
     private int doorLock;
     private String madeDate;
     private String doorPin;
+    private String status;
     private int position;
 
     public Door() {
@@ -66,5 +67,21 @@ public class Door {
 
     public void setDoorLock(int doorLock) {
         this.doorLock = doorLock;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 }

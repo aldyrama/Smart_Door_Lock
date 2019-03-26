@@ -30,6 +30,7 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import org.d3ifcool.smart.Data;
+import org.d3ifcool.smart.Model.Door;
 import org.d3ifcool.smart.Model.House;
 import org.d3ifcool.smart.R;
 
@@ -43,6 +44,12 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
     private List<House> houses;
     private OnItemClickListener mListener;
     private boolean status = false;
+
+    public interface doorInterfaces{
+
+        void getDoor();
+
+    }
 
     public RecyclerAdapterHouse (Context context, List<House> uploads) {
         mContext = context;
@@ -73,14 +80,19 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
                 House house = dataSnapshot.getValue(House.class);
+                Door door = new Door();
+//                DatabaseReference reference0 = FirebaseDatabase.getInstance().getReference("Devices").child(currentHouse.getDeviceCode());
+//                DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference("Devices").child(currentHouse.getDeviceCode()).child("Doors")
+//                        .child(door.getDoorPin());
+
                 try {
 
                     boolean lock = house.isHouse_lock();
                     boolean guestDetect = house.isGuest();
 
                     if (lock == false) {
+//                        reference1.setValue(false);
                         Picasso.with(mContext)
                                 .load(url)
                                 .into(holder.allLock, new Callback() {
@@ -98,6 +110,7 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
                                     }
                                 });
                     } else {
+//                        reference1.setValue(true);
                         Picasso.with(mContext)
                                 .load(url1)
                                 .into(holder.allLock, new Callback() {
@@ -119,10 +132,12 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
                     if (guestDetect == false) {
 
                         holder.isGuest.setImageResource(R.drawable.ic_bell_black);
+                        holder.guest.setText("no guests");
 
                     } else {
 
                         holder.isGuest.setImageResource(R.drawable.ic_bell_red);
+                        holder.guest.setText("there is guest");
 
 
                     }
@@ -175,7 +190,7 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
     public class RecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
             View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
 
-        public TextView name_house, dateTextView;
+        public TextView name_house, dateTextView, guest;
         public ImageView doorView, allLock, isGuest;
         ProgressBar mProgressbar;
         Vibrator v;
@@ -184,6 +199,7 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
             super(itemView);
             name_house =itemView.findViewById ( R.id.houseName );
 //            doorView = itemView.findViewById(R.id.doo_status);
+            guest = itemView.findViewById(R.id.txt_guest);
             allLock = itemView.findViewById(R.id.all_lockHouse);
             isGuest = itemView.findViewById(R.id.guest);
             mProgressbar = itemView.findViewById(R.id.progress_lock);

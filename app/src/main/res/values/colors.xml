@@ -14,6 +14,7 @@
 
     <color name="navigationBarColorAttempted">#777</color>
     <color name="navigationBarColorSkipped">#063e8b</color>
+    <color name="holo_blue_dark">#ff0099cc</color>
     <color name="violet">#673ab7</color>
     <color name="sky_blue">#0f96fe</color>
     <color name="sky_blue_pressed">#245e61</color>

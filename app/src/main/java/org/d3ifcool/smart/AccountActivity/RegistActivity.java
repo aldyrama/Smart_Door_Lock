@@ -58,8 +58,6 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import okhttp3.internal.Util;
-
 public class RegistActivity extends AppCompatActivity {
 
     //Widget

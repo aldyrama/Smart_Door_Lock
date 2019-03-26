@@ -139,19 +139,38 @@
 
         </RelativeLayout>
 
+        <com.rbrooks.indefinitepagerindicator.IndefinitePagerIndicator
+            android:id="@+id/recyclerview_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:dotColor="@color/gray400"
+            app:supportRTL="true"
+            app:selectedDotColor="@color/blackk"
+            app:selectedDotRadius="5dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="60dp"
+            android:layout_centerHorizontal="true"/>
+
         <FrameLayout
+            android:id="@+id/fader"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@android:drawable/screen_background_dark_transparent"
+            android:visibility="invisible" />
 
-            <info.androidramp.gearload.Loading
-                android:id="@+id/myDataLoaderProgressBar"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:indeterminate="true"
-                android:layout_gravity="center"
-                android:visibility="visible" />
+        <com.wang.avi.AVLoadingIndicatorView
+            android:id="@+id/myDataLoaderProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/AVLoadingIndicatorView.Large"
+            android:visibility="visible"
+            app:indicatorName="LineScalePulseOutIndicator"
+            app:indicatorColor="@android:color/holo_blue_dark"
+            android:elevation="3dp"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            />
 
-        </FrameLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"

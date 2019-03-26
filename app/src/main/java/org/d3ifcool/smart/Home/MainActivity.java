@@ -9,10 +9,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.media.MediaRecorder;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.opengl.Visibility;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.ColorRes;
@@ -25,13 +23,9 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SnapHelper;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,12 +33,11 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.rubensousa.gravitysnaphelper.GravitySnapHelper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -53,11 +46,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.StorageTask;
+import com.rbrooks.indefinitepagerindicator.IndefinitePagerIndicator;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import org.d3ifcool.smart.Adapter.RecyclerAdapterHouse;
 import org.d3ifcool.smart.BottomNavigation.BottomNavigationViewHelper;
@@ -74,13 +67,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import at.markushi.ui.CircleButton;
 import hari.bounceview.BounceView;
-import info.androidramp.gearload.Loading;
 
 import static java.security.AccessController.getContext;
 
@@ -98,8 +87,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private List<House> mHouses;
     FirebaseAuth auth;
     FirebaseUser firebaseUser;
-    DatabaseReference reference, reference0;
-    private Loading mProgressBar;
+    DatabaseReference reference, reference0, reference1;
+    private AVLoadingIndicatorView mProgressBar;
+    FrameLayout fader;
 
     String profileid;
     ProgressDialog pd;
@@ -109,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ImageView closePoupUp, toolAddHome, allLock, action_stream;
     EditText  deviceCode, housnameEdittxt, houseNameEditTxt;
     TextView  emptyInMemer;
+    IndefinitePagerIndicator indicator;
 
 
     public void openDetailActivity(String[] data) {
@@ -264,6 +255,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             recyclerView.setVisibility(View.VISIBLE);
             emptyInMemer.setVisibility(View.GONE);
             toolAddHome.setVisibility(View.VISIBLE);
+            indicator.setVisibility(View.VISIBLE);
 
         }
 
@@ -272,6 +264,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             addHome.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
             toolAddHome.setVisibility(View.GONE);
+            indicator.setVisibility(View.GONE);
             checkAccount();
 
         }
@@ -297,7 +290,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .replace(".", ",")).child("Houses").getChildren()) {
                         String kode_device = kodedeviceSnapshot.getValue(String.class);
                         Log.d(TAG, "onDataChange: " + kode_device);
-                        House house = dataSnapshot.child("Devices").child(kode_device).getValue(House.class);
+                        House house = dataSnapshot.child("Devices").child("ListDevices").child(kode_device).getValue(House.class);
                         Log.d(TAG, "onDataChange: " + house.getName());
                         mHouses.add(house);
 
@@ -315,7 +308,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 mAdapter.notifyDataSetChanged();
 //                loadning.setVisibility(View.INVISIBLE);
-                mProgressBar.Cancel();
+                stopLoadingAnimation();
 
                 checkHouse();
                 checkAccount();
@@ -326,8 +319,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Toast.makeText(MainActivity.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
-                mProgressBar.Cancel();
-            }
+                stopLoadingAnimation();            }
 
         });
 
@@ -427,16 +419,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         House selectedItem = mHouses.get(position);
         final String selectedKey = selectedItem.getDeviceCode();
 
-        reference = FirebaseDatabase.getInstance().getReference().child("Devices");
-//        reference0 = FirebaseDatabase.getInstance().getReference().child("User")
-//                .child("Houses").child(firebaseUser.getEmail().replace(".", ","));
-        reference.child(selectedKey).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-//                reference0.removeValue();
-                Toast.makeText(MainActivity.this, "Item deleted " + selectedKey, Toast.LENGTH_SHORT).show();
-            }
-        });
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false);
+        builder.setTitle("DELETE DEVICE");
+        builder.setMessage("are you sure to delete this device ?");
+        builder.setNegativeButton("NO",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
+        builder.setPositiveButton("YES",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        reference = FirebaseDatabase.getInstance().getReference().child("Devices").child("ListDevices");
+                        reference0 = FirebaseDatabase.getInstance().getReference().child("Devices").child(selectedKey);
+                        reference1 = FirebaseDatabase.getInstance().getReference().child("Devices").child(selectedKey);
+                        reference.child(selectedKey).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                reference0.child("Member").removeValue();
+                                reference1.child("ListDoor").removeValue();
+                                Toast.makeText(MainActivity.this, "Item deleted " + selectedKey, Toast.LENGTH_SHORT).show();
+                            }
+
+                        });
+
+                    }
+                });
+
+        builder.show();
 
     }
 
@@ -463,6 +477,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //Show dialog addhome
     private void showDialogAddHome() {
         dialog.setContentView(R.layout.add_home_popup);
+        dialog.setCanceledOnTouchOutside(false);
         closePoupUp = (ImageView) dialog.findViewById(R.id.close_popup_home);
         commitHome = (Button) dialog.findViewById(R.id.add_home_code);
         houseNameEditTxt = (EditText) dialog.findViewById(R.id.house_name);
@@ -489,14 +504,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 pd = new ProgressDialog(MainActivity.this);
                 pd.setMessage("Please wait...");
                 pd.show();
-                String str_house = houseNameEditTxt.getText().toString();
-                String str_device = deviceCode.getText().toString();
-                reference = FirebaseDatabase.getInstance().getReference().child("Devices").child(str_device);
-                reference0 = FirebaseDatabase.getInstance().getReference().child("Users").
-                        child(firebaseUser.getEmail().replace(".", ",")).child("Houses");
+
+                final String str_house = houseNameEditTxt.getText().toString();
+                final String str_device = deviceCode.getText().toString();
 
                 String made_date = Data.madeDateHouse;
-                House house = new House(str_house, str_device);
+                final House house = new House(str_house, str_device);
 
                 if (TextUtils.isEmpty(str_house)){
                     houseNameEditTxt.setError("House name required");
@@ -507,20 +520,50 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 }
 
-                else {
+                reference = FirebaseDatabase.getInstance().getReference().child("Devices").child(str_device);
+                reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        reference0 = FirebaseDatabase.getInstance().getReference().child("Users").
+                                child(firebaseUser.getEmail().replace(".", ",")).child("Houses");
+                        reference1 = FirebaseDatabase.getInstance().getReference().child("Devices").child("ListDevices").child(str_device);
 
-                    String uploadId = reference.push().getKey();
-                    reference.setValue(house);
-                    reference0.child(uploadId).setValue(str_device);
-                    reference.child("madeDate").setValue(made_date);
+                        if (dataSnapshot.exists()) {
+                            House getHouses = dataSnapshot.getValue(House.class);
 
-                    Toast.makeText(MainActivity.this, str_house + " added", Toast.LENGTH_SHORT).show();
+                            String uploadId = reference.push().getKey();
+//                            reference.setValue(house);
+                            reference0.child(uploadId).setValue(str_device);
+                            reference1.setValue(house);
 
-                    dialog.dismiss();
+                            dialog.dismiss();
+                            Toast.makeText(MainActivity.this, str_house + " added", Toast.LENGTH_SHORT).show();
 
-                }
+                            pd.hide();
+                            return;
 
-                pd.hide();
+                        }
+
+                        else {
+
+                            pd.hide();
+                            deviceCode.setError(str_device + " Not found");
+
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+//
+//                    reference.child("madeDate").setValue(made_date);
+//
+//                    dialog.dismiss();
+//                pd.hide();
 
             }
         });
@@ -540,9 +583,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         housnameEdittxt = findViewById(R.id.house_name);
         deviceCode = findViewById(R.id.code_device);
         mProgressBar = findViewById(R.id.myDataLoaderProgressBar);
+        fader = findViewById(R.id.fader);
+        indicator = findViewById(R.id.recyclerview_indicator);
 //        loadning = findViewById(R.id.card_loading);
 //        loadning.setVisibility(View.VISIBLE);
-        mProgressBar.Start();
+        setLoadingAnimation();
+
 
 
         dialog = new Dialog(this);
@@ -555,11 +601,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        SnapHelper snapHelper = new GravitySnapHelper(Gravity.START);
         new LinearSnapHelper().attachToRecyclerView(recyclerView);
 //        snapHelper.attachToRecyclerView(recyclerView);
+        indicator.attachToRecyclerView(recyclerView);
         mHouses = new ArrayList<> ();
         mAdapter = new RecyclerAdapterHouse (MainActivity.this, mHouses);
         recyclerView.setAdapter(mAdapter);
         mAdapter.setOnItemClickListener(MainActivity.this);
 
+    }
+
+    private void setLoadingAnimation() {
+        fader.setVisibility(View.VISIBLE);
+        mProgressBar.show();
+    }
+
+    private void stopLoadingAnimation(){
+        fader.setVisibility(View.GONE);
+        mProgressBar.hide();
     }
 
 

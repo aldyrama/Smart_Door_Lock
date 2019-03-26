@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="380dp"
+    android:layout_width="match_parent"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/tools"
     android:foreground="?attr/selectableItemBackgroundBorderless"
-    card_view:cardCornerRadius="20dp"
+    card_view:cardCornerRadius="6dp"
     android:clickable="true"
     android:focusable="true"
-    android:layout_marginTop="8dp"
-    android:layout_marginRight="4dp"
-    android:layout_marginLeft="6dp"
-    android:layout_marginBottom="16dp"
+    android:layout_marginBottom="30dp"
+    android:layout_marginLeft="12dp"
+    android:layout_marginRight="12dp"
+    android:layout_marginTop="6dp"
     android:layout_gravity="center"
     android:background="?attr/selectableItemBackgroundBorderless"
     android:layout_height="match_parent"
@@ -98,9 +98,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@+id/guest"
-                    android:textStyle="bold"
                     android:textColor="@color/blackk"
-                    android:text="Guest"/>
+                    android:text=" "/>
 
             </LinearLayout>
 
@@ -128,7 +127,8 @@
                         android:padding="6dp"
                         android:backgroundTint="@color/gray400"
                         android:layout_gravity="center|left"
-                        android:layout_marginRight="60dp"
+                        android:layout_marginRight="50dp"
+                        android:layout_marginLeft="30dp"
                         android:textColor="@color/gray400"
                         android:textAllCaps="false"
                         android:gravity="center"

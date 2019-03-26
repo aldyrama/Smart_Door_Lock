@@ -48,7 +48,8 @@ import java.util.Date;
 import java.util.List;
 
 
-public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoor.RecyclerViewHolder> implements View.OnClickListener {
+public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoor.RecyclerViewHolder>
+        implements View.OnClickListener, RecyclerAdapterHouse.doorInterfaces{
     private Context mContext;
     private List<Door> mDoor;
     private OnItemClickListener mListener;
@@ -89,7 +90,7 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
         final String name =i.getExtras().getString("NAME_KEY");
         final String deviceCode =i.getExtras().getString("DEVICECODE_KEY");
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Devices").child(deviceCode).child("Doors")
-                .child(currentDoor.getDoorName());
+                .child(currentDoor.getDoorPin());
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -98,7 +99,7 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
                 try {
 
                 int lock = door.getDoorLock();
-
+//                status = lock;
                 if (lock == 0){
                     Picasso.with(mContext)
                             .load(url)
@@ -154,7 +155,6 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
             public void onClick(View v) {
                 final String url = "https://firebasestorage.googleapis.com/v0/b/smartdoor-7d0e6.appspot.com/o/lock_door.png?alt=media&token=2a903126-fc6e-4f87-b62c-9ccb7e9f5383";
                 final String url1 = "https://firebasestorage.googleapis.com/v0/b/smartdoor-7d0e6.appspot.com/o/unlock_door.png?alt=media&token=15c98219-2c31-49db-9338-968e35cced71";
-
                 final DatabaseReference reference0 = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getEmail().replace(".",","));
 
                 reference0.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -165,7 +165,7 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
                         String deviceCode = i.getExtras().getString("DEVICECODE_KEY");
 
                         final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Devices").child(deviceCode).child("Doors")
-                                .child(currentDoor.getDoorName());
+                                .child(currentDoor.getDoorPin());
                         final DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference().child("Devices").child(deviceCode).child("History");
 
                         User getUser = dataSnapshot.getValue(User.class);
@@ -216,6 +216,11 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
         return mDoor.size();
     }
 
+    @Override
+    public void getDoor() {
+
+    }
+
 
     public interface OnItemClickListener {
         void onItemClick(int position);
@@ -253,7 +258,6 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
             mProgressbar = itemView.findViewById(R.id.prog_lock);
             status = itemView.findViewById(R.id.status_lock);
             imagesAnimation = (AnimationDrawable) lockImageView.getBackground();
-
             firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
             itemView.setOnClickListener(this);
@@ -283,7 +287,6 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
             menu.setHeaderTitle("Select Action");
             MenuItem deleteItem = menu.add(Menu.NONE, 1, 1, "Delete");
-
 
             deleteItem.setOnMenuItemClickListener(this);
         }

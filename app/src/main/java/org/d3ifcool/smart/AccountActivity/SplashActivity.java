@@ -20,11 +20,14 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tomer.fadingtextview.FadingTextView;
+
 import org.d3ifcool.smart.R;
 
 public class SplashActivity extends AppCompatActivity implements View.OnClickListener {
 
-    TextView protxt;
+    TextView protxt, checking;
+    FadingTextView fadingTextView;
     private long ms = 0, splashTime = 1600;
     private boolean splashActiv = true, paused = false;
     Dialog dialog;
@@ -44,8 +47,9 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
         );
 
         final LinearLayout lr = findViewById(R.id.lr);
-
         protxt = findViewById(R.id.prolockname);
+        checking = findViewById(R.id.checking);
+        fadingTextView = findViewById(R.id.fad);
 
 
         Typeface font = Typeface.createFromAsset(getAssets(), "font/Fontspring_DEMO_microsquare_bold.ttf");
@@ -59,6 +63,8 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
                         if (!paused){
                             ms = ms + 100;
                             sleep(100);
+//                            checking.setVisibility(View.GONE);
+//                            fadingTextView.setVisibility(View.GONE);
 
                         }
                     }
@@ -72,6 +78,8 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
                                     @Override
                                     public void onClick(View v) {
                                         recreate();
+                                        checking.setVisibility(View.VISIBLE);
+                                        fadingTextView.setVisibility(View.VISIBLE);
 
 
 
@@ -79,6 +87,7 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
                                 });
 
                         snackbar.show();
+
                     }
 
                     else {
@@ -95,6 +104,7 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
 
 
     private boolean isOnline() {
+
         ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
         return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnectedOrConnecting();
     }
@@ -110,6 +120,7 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
             window.setTitleColor(R.color.black);
         }
     }
+
 
     private void goMain() {
         startActivity(new Intent(SplashActivity.this, StartActivity.class));
