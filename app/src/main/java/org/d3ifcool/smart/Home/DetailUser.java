@@ -36,7 +36,6 @@ public class DetailUser extends AppCompatActivity implements  View.OnClickListen
     private void initializeWidgets(){
 //        emailDetailTextView = findViewById(R.id.emailuser);
         deviceCode = findViewById(R.id.devicecodedetail);
-        close = findViewById(R.id.close_detail);
         photo = findViewById(R.id.imgUser);
         detailNameTextView = findViewById(R.id.detailNameUser);
         detailTypeAccount = findViewById(R.id.typeaccount);
@@ -91,14 +90,6 @@ public class DetailUser extends AppCompatActivity implements  View.OnClickListen
                 .centerCrop()
                 .into(photo);
 
-        close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(DetailUser.this, FragmentUser.class));
-                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-
-            }
-        });
 
 
     }

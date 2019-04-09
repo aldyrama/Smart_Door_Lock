@@ -299,9 +299,14 @@ public class FragmentProfile extends Fragment {
 
                         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").
                                 child(firebaseUser.getEmail().replace(".", ","));
+                        DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference();
+                        String code = reference1.push().getKey();
+                        reference1.child("Devices").child(code).child("Member").child(firebaseUser.getEmail().replace(".", ","));
+
                         HashMap<String, Object> map1 = new HashMap<>();
                         map1.put("imageurl", ""+miUrlOk);
                         reference.updateChildren(map1);
+                        reference1.child("imageurl").setValue(miUrlOk);
 
                         pd.dismiss();
 
@@ -330,7 +335,6 @@ public class FragmentProfile extends Fragment {
     }
 
 
-
     private void checkAndRequestForPermission() {
 
 
@@ -353,11 +357,10 @@ public class FragmentProfile extends Fragment {
         else{
 
             cropImage();
+
         }
 
     }
-
-
 
 
     @Override

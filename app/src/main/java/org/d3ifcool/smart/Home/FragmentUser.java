@@ -1,9 +1,12 @@
 package org.d3ifcool.smart.Home;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -14,6 +17,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,19 +29,20 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
-import com.hbb20.CountryCodePicker;
 
 import org.d3ifcool.smart.Adapter.RecylerViewAdapterUserInvite;
 import org.d3ifcool.smart.Data;
@@ -67,18 +72,20 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
     DatabaseReference mDatabase;
     FirebaseUser firebaseUser;
     FirebaseAuth auth;
-    DatabaseReference reference, reference0, reference1, reference2, reference3, reference4;
+    DatabaseReference reference, reference0, reference1, reference2, reference3, expired;
 
     Dialog dialog;
     Button sendInvite;
     EditText phoneNumber;
-    CountryCodePicker phoneCode;
     ImageView closePopup;
     Button invite;
     ProgressDialog pd;
     LinearLayout lr;
-    TextView expiredUser, empty_members, start;
+    TextView expiredUser, empty_members;
     CheckBox member;
+    String endTime;
+    int day, month, year, hour, minute;
+    int dayFinal, monthFinal, yearFinal, hourFinal, minuteFinal;
     private RecyclerView mRecyclerViewInvite;
     private RecylerViewAdapterUserInvite mAdapterInvite;
     private ProgressBar mProgressBarInvite;
@@ -93,6 +100,10 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
     Calendar myCalendar = Calendar.getInstance();
     int age_member;
     private long timestamp;
+    Activity mActivity;
+    private DatePickerDialog datePicker;
+    private SimpleDateFormat simpleDateFormat;
+
 
     private void openDetailActivity(String[] data){
         Intent intent = new Intent(getActivity(), DetailUser.class);
@@ -112,6 +123,42 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
         startActivity(intent);
     }
 
+
+    private ChildEventListener childEventListener = new ChildEventListener() {
+        @Override
+        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//            mConnect.clear();
+//            getMember();
+//            mAdapterInvite.notifyDataSetChanged();
+            Log.d("chiladd", "change" + dataSnapshot);
+        }
+
+        @Override
+        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            mConnect.clear();
+            getMember();
+            mAdapterInvite.notifyDataSetChanged();
+            Log.d("onChildChanged", "change" + dataSnapshot);
+        }
+
+        @Override
+        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+            Log.d("onChildRemoved", "change" + dataSnapshot);
+
+        }
+
+        @Override
+        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            Log.d("onChildMoved", "change" + dataSnapshot);
+
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+        }
+    };
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -119,9 +166,11 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
 
         auth = FirebaseAuth.getInstance();
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        mActivity = getActivity();
 
 
         //Get method
+        expireUsers();
         viewWidgrt(view);
         checkAccount();
         getMember();
@@ -131,31 +180,7 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
         Intent i = getActivity().getIntent();
         final String deviceCode =i.getExtras().getString("DEVICECODE_KEY");
 
-//
-//        mRecyclerViewInvite.addOnScrollListener(new RecyclerView.OnScrollListener() {
-//            @Override
-//            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-//                super.onScrollStateChanged(recyclerView, newState);
-//            }
-//
-//            @Override
-//            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-//
-//                if (dy < 0){
-//                    invite.show();
-//
-//                }
-//
-//                else if (dy > 0){
-//                    invite.hide();
-//                }
-//
-//                else if (dy == 0){
-//                    invite.show();
-//                }
-//            }
-//        });
-
+        simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy h:mm a", Locale.US);
 
         invite.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -225,44 +250,48 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
 
     }
 
-    public void showDatePickerStart(){
-        final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
-
+    public void showDate(){
+        Calendar calendar=Calendar.getInstance();
+        DatePickerDialog dialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear,
                                   int dayOfMonth) {
+                Calendar newDate = Calendar.getInstance();
+                newDate.set(year, month, dayOfMonth);
 
-                myCalendar.set(Calendar.YEAR, year);
-                myCalendar.set(Calendar.MONTH, monthOfYear);
-                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                age_member = Integer.parseInt((Integer.toString(calculateAge(myCalendar.getTimeInMillis()))));
+//                String myFormat = "dd/MM/yyyy h:mm a";
+//                SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+//                expiredUser.setText(sdf.format(myCalendar.getTime()));
+//                updateLabelEnd();
 
-                updateLabelStart();
+                expiredUser.setText(new StringBuilder().append(day).append("/")
+                        .append(month + 1).append("/").append(year));
+//                expiredUser.setText(simpleDateFormat.format(newDate.getTime()));
 
+                new TimePickerDialog(mActivity, mTimeDataSet, newDate.get(Calendar.HOUR_OF_DAY),
+                        newDate.get(Calendar.MINUTE), false)
+                        .show();
             }
 
-            int calculateAge(long date){
-                Calendar dob = Calendar.getInstance();
-                dob.setTimeInMillis(date);
-                Calendar today = Calendar.getInstance();
-                int age = today.get(Calendar.MONTH) - dob.get(Calendar.MONTH);
-                if(today.get(Calendar.HOUR_OF_DAY) < dob.get(Calendar.HOUR_OF_DAY)){
-                    age--;
+            final TimePickerDialog.OnTimeSetListener mTimeDataSet = new TimePickerDialog.OnTimeSetListener() {
+                @Override
+                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                    myCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                    myCalendar.set(Calendar.MINUTE, minute);
+                    updateLabelEnd();
                 }
-                return age;
-            }
+            };
 
-        };
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
 
-        new DatePickerDialog(dialog.getContext(), R.style.DialogTheme, date, myCalendar
-                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                myCalendar.get(Calendar.DAY_OF_MONTH))
-                .show();
-
+        dialog.getDatePicker().setMinDate(calendar.getTimeInMillis());
+        dialog.show();
     }
 
+
     public void showDatePickerEnd(){
-        final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+
+         DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear,
@@ -271,22 +300,22 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
                 myCalendar.set(Calendar.YEAR, year);
                 myCalendar.set(Calendar.MONTH, monthOfYear);
                 myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                age_member = Integer.parseInt((Integer.toString(calculateAge(myCalendar.getTimeInMillis()))));
+                new TimePickerDialog(mActivity, mTimeDataSet, myCalendar.get(Calendar.HOUR_OF_DAY),
+                        myCalendar.get(Calendar.MINUTE), false)
+                        .show();
 
                 updateLabelEnd();
 
             }
 
-            int calculateAge(long date){
-                Calendar dob = Calendar.getInstance();
-                dob.setTimeInMillis(date);
-                Calendar today = Calendar.getInstance();
-                int age = today.get(Calendar.MONTH) - dob.get(Calendar.MONTH);
-                if(today.get(Calendar.HOUR_OF_DAY) < dob.get(Calendar.HOUR_OF_DAY)){
-                    age--;
+            final TimePickerDialog.OnTimeSetListener mTimeDataSet = new TimePickerDialog.OnTimeSetListener() {
+                @Override
+                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                    myCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                    myCalendar.set(Calendar.MINUTE, minute);
+                    updateLabelEnd();
                 }
-                return age;
-            }
+            };
 
         };
 
@@ -294,6 +323,7 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
                 .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                 myCalendar.get(Calendar.DAY_OF_MONTH))
                 .show();
+
 
     }
 
@@ -302,21 +332,21 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
         Intent i = getActivity().getIntent();
         final String deviceCode =i.getExtras().getString("DEVICECODE_KEY");
         mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Devices").child(deviceCode).child("Member");
-        mDBListener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
+        mDatabaseRef.addChildEventListener(childEventListener);
+//        Log.d("change", "onData", + childEventListener)
+        mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 mConnect.clear();
                 for (DataSnapshot connectSnapshot : dataSnapshot.getChildren()) {
                     User upload = connectSnapshot.getValue(User.class);
-
+                    endTime = upload.getExpired();
 
                     mConnect.add(upload);
 
-//                    String time = getDateToday();
-//                    if (time == upload.getExpired()){
-//                        onDeleteItemClick();
-//                    }
+                    String time = getDateToday();
+
 
                 }
 
@@ -337,7 +367,7 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
     }
 
     private String getDateToday(){
-        DateFormat dateFormat=new SimpleDateFormat("yyyy/MM/dd");
+        SimpleDateFormat dateFormat=new SimpleDateFormat("dd/MM/yyyy h:mm a");
         Date date = new Date();
         String today= dateFormat.format(date);
         return today;
@@ -373,13 +403,13 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
         dialog.setContentView(R.layout.invite_user_popup);
         dialog.setCanceledOnTouchOutside(false);
         phoneNumber = (EditText) dialog.findViewById(R.id.email_member);
-        start = (TextView) dialog.findViewById(R.id.start_time);
+//        start = (TextView) dialog.findViewById(R.id.start_time);
         member = (CheckBox) dialog.findViewById(R.id.always_member);
         expiredUser = (TextView) dialog.findViewById(R.id.exp);
         closePopup = (ImageView) dialog.findViewById(R.id.close_popup_phone);
         sendInvite = (Button) dialog.findViewById(R.id.send_invite);
         sendInvite.setOnClickListener(this);
-        start.setOnClickListener(this);
+//        start.setOnClickListener(this);
         expiredUser.setOnClickListener(this);
         BounceView.addAnimTo(dialog);
         final Calendar myCalendar = Calendar.getInstance();
@@ -398,35 +428,29 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
             @Override
             public void onClick(View v) {
                 if (member.isChecked()){
-                    start.setVisibility(View.GONE);
+//                    start.setVisibility(View.GONE);
                     expiredUser.setVisibility(View.GONE);
-                    start.setText("always");
-                    expiredUser.setText("always");
+//                    start.setText("always");
+                    expiredUser.setText(" - ");
                 }
 
                 else {
-                    start.setVisibility(View.VISIBLE);
+//                    start.setVisibility(View.VISIBLE);
                     expiredUser.setVisibility(View.VISIBLE);
-                    start.setText("Start");
-                    expiredUser.setText("End");
+//                    start.setText("Start");
+                    expiredUser.setText("Expired");
                 }
 
             }
         });
-
-
-        start.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDatePickerStart();
-            }
-        });
-
 
         expiredUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            showDatePickerEnd();
+
+//            showDatePickerEnd();
+//                showMinimumDateDialog();
+                showDate();
             }
         });
 
@@ -447,17 +471,11 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
                 final String str_invite = phoneNumber.getText().toString();
                 final String str_username = Data.usernameConnect;
                 final String str_exp = expiredUser.getText().toString();
-                final String str_start = start.getText().toString();
+                final String str_start = getDateToday();
                 final String str_member = member.getText().toString();
 
                 if (str_invite.isEmpty()){
                     phoneNumber.setError("Email required");
-                    pd.hide();
-                    return;
-                }
-
-                else if (str_start.isEmpty()){
-                    start.setError("Start time required");
                     pd.hide();
                     return;
                 }
@@ -467,6 +485,7 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
                     pd.hide();
                     return;
                 }
+
                 long cutoff = new Date().getTime() - TimeUnit.MILLISECONDS.convert(30, TimeUnit.DAYS);
                 reference = FirebaseDatabase.getInstance().getReference("Users").child(str_invite.replace(".",","));
                     reference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -521,7 +540,7 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
                         public void onCancelled(@NonNull DatabaseError databaseError) {
                             pd.hide();
                             phoneNumber.setError(str_invite + " Not found");
-//                            Toast.makeText(getActivity(), str_invite + " Not found ", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), str_invite + " Not found ", Toast.LENGTH_SHORT).show();
 
 
                         }
@@ -534,15 +553,8 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
 
     }
 
-
-    private void updateLabelStart() {
-        String myFormat = "MM/dd/yyyy";
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-        start.setText(sdf.format(myCalendar.getTime()));
-    }
-
     private void updateLabelEnd() {
-        String myFormat = "MM/dd/yyyy";
+        String myFormat = "dd/MM/yyyy h:mm a";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         expiredUser.setText(sdf.format(myCalendar.getTime()));
     }
@@ -578,7 +590,7 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
         sendInvite = (Button) view.findViewById(R.id.send_invite);
         closePopup = (ImageView) view.findViewById(R.id.close_popup_phone);
         expiredUser = (TextView) view.findViewById(R.id.exp);
-        start = (TextView) view.findViewById(R.id.start_time);
+//        start = (TextView) view.findViewById(R.id.start_time);
         member = (CheckBox) view.findViewById(R.id.always_member);
         lr = (LinearLayout) view.findViewById(R.id.lr_invite);
 
@@ -659,6 +671,51 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
 
 
     }
+
+
+    public void expireUsers(){
+
+        Intent i = getActivity().getIntent();
+        final String deviceCode = i.getExtras().getString("DEVICECODE_KEY");
+
+        expired = FirebaseDatabase.getInstance().getReference();
+        expired.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
+                for (DataSnapshot expiredSnapshot : dataSnapshot.child("Devices").child(deviceCode).child("Member").getChildren()) {
+                    final String email = expiredSnapshot.getKey();
+                    String exp = expiredSnapshot.child("expired").getValue(String.class);
+                    Log.d("exp", "onDataChange: " + exp);
+
+                    String now = getDateToday();
+
+                    if (exp.equals(now)) {
+
+                        expiredSnapshot.getRef().removeValue();
+
+                    }
+
+                    dataSnapshot.child("Users").child(email).child("Houses").child(deviceCode).getRef().removeValue().
+                            addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            Log.d("dataMember", "data" + dataSnapshot);
+//                            Toast.makeText(getActivity(), email + " expired", Toast.LENGTH_SHORT).show();
+
+                        }
+                    });
+                }
+            }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+
+    }
+
 
 //    public void handleExpired(){
 //        User user = new User();

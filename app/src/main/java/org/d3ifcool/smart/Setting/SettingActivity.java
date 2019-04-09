@@ -19,24 +19,39 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.d3ifcool.smart.Adapter.SettingAdapter;
 import org.d3ifcool.smart.BottomNavigation.BottomNavigationViewHelper;
 import org.d3ifcool.smart.Family.FamilyActivity;
 import org.d3ifcool.smart.Home.MainActivity;
 import org.d3ifcool.smart.Model.Setting;
+import org.d3ifcool.smart.Model.User;
 import org.d3ifcool.smart.R;
+import org.d3ifcool.smart.WifiConfiguration.EsptouchDemoActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static java.security.AccessController.getContext;
 
 public class SettingActivity extends AppCompatActivity {
     private static final String TAG = "Setting";
 
     int preSelectedIndex = -1;
     private ImageView doorNotif, guestNotif;
-    int statusDoor, statusGuest;
-
+    private String statusDoor, statusGuest;
+    private FirebaseAuth auth;
+    private FirebaseUser firebaseUser;
+    private TextView configur;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,11 +64,14 @@ public class SettingActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
         );
 
-        doorNotif = findViewById(R.id.doo_notif);
-        guestNotif = findViewById(R.id.guest_notif);
+        auth = FirebaseAuth.getInstance();
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        onOffNotifDoor();
+        guestNotif = findViewById(R.id.guest_notif);
+        configur = findViewById(R.id.conf);
+
         onOffNotifGuest();
+        checkAccount();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolsetting);
         setSupportActionBar(toolbar);
@@ -75,12 +93,6 @@ public class SettingActivity extends AppCompatActivity {
                         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                         break;
 
-//                    case R.id.nav_activity:
-//                        Intent intent2 = new Intent(SettingActivity.this, ActivityFeature.class);
-//                        startActivity(intent2);
-//                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-//                        break;
-
                     case R.id.nav_user:
                         Intent intent3 = new Intent(SettingActivity.this, FamilyActivity.class);
                         startActivity(intent3);
@@ -97,8 +109,12 @@ public class SettingActivity extends AppCompatActivity {
             }
         });
 
-
-
+        configur.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(SettingActivity.this, EsptouchDemoActivity.class));
+            }
+        });
 
 
 //        final List<Setting> setting = new ArrayList<>();
@@ -142,36 +158,62 @@ public class SettingActivity extends AppCompatActivity {
 
     }
 
-    public void onOffNotifDoor(){
-        doorNotif.setOnClickListener(new View.OnClickListener() {
+    //check account login
+    private void checkAccount() {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getEmail()
+                .replace(".",","));
+        reference.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onClick(View v) {
-                if (statusDoor == 0){
-                    doorNotif.setImageResource(R.drawable.switch_off);
-                    statusDoor = 1;
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (getContext() == null){
+                    return;
                 }
+                User user = dataSnapshot.getValue(User.class);
+
+                String check = user.getTypeAccount();
+
+                if (check.equals("Owner")) {
+
+                    configur.setEnabled(true);
+
+                }
+
                 else {
-                    doorNotif.setImageResource(R.drawable.switch_on);
-                    statusDoor = 0;
+
+                    configur.setEnabled(false);
+
                 }
 
             }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+
         });
 
     }
 
     public void onOffNotifGuest(){
+        final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getEmail().replace(".", ","))
+                .child("Notifications");
         guestNotif.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (statusGuest == 0){
-                    guestNotif.setImageResource(R.drawable.switch_off);
-                    statusGuest = 1;
+                if (statusGuest == "enable"){
+                    guestNotif.setImageResource(R.drawable.switch_on);
+                    reference.child("guest").setValue(statusGuest);
+
+                    statusGuest = "disable";
+
                 }
 
                 else {
-                    guestNotif.setImageResource(R.drawable.switch_on);
-                    statusGuest = 0;
+                    guestNotif.setImageResource(R.drawable.switch_off);
+                    reference.child("guest").setValue(statusGuest);
+                    statusGuest = "enable";
+
                 }
 
             }

@@ -3,7 +3,6 @@
     android:id="@+id/item_user"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:gravity="center"
     xmlns:tools="http://schemas.android.com/tools"
@@ -13,8 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:background="@color/gray100"
-        android:layout_marginLeft="50dp"
-        android:layout_marginRight="25dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="25dp"
         android:layout_gravity="bottom|center"/>
 
         <LinearLayout
@@ -29,7 +28,7 @@
         android:layout_width="55dp"
         android:layout_height="55dp"
         android:layout_gravity="center"
-        android:layout_marginLeft="6dp"
+        android:layout_marginStart="6dp"
         android:src="@drawable/user_fix" />
 
     <LinearLayout
@@ -38,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center|left"
-        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
         android:orientation="vertical">
 
     <TextView
@@ -63,7 +62,7 @@
 
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_weight="0.5"
+        android:layout_weight="0.6"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:orientation="horizontal"
@@ -72,7 +71,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="11sp"
+                android:textSize="9sp"
                 tools:text="EXP :"
                 android:textStyle="bold"
                 android:id="@+id/start_access"
@@ -84,9 +83,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="9sp"
+            android:textSize="8sp"
             tools:text="2019/03/20"
-            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
             android:id="@+id/expired_member"
             android:gravity="center|left"
             android:textColor="@color/blackk"

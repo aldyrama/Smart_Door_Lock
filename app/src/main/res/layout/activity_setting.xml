@@ -62,32 +62,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:text="Door status notification"
-                    android:layout_gravity="center"/>
-
-                <ImageView
-                    android:id="@+id/doo_notif"
-                    android:layout_width="0dp"
-                    android:layout_weight="0.2"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/switch_on"/>
-            </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/colorGrey"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -99,7 +73,7 @@
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
-                    android:text="Guest notification"
+                    android:text="Notification"
                     android:layout_gravity="center"/>
 
                 <ImageView
@@ -136,6 +110,28 @@
                         android:layout_height="20dp"
                         android:layout_gravity="center"
                         android:src="@drawable/switch_on"/>
+                </LinearLayout>
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorGrey"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/conf"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:text="Wifi Configuration"
+                        android:layout_gravity="center"/>
+
                 </LinearLayout>
 
             </LinearLayout>

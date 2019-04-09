@@ -12,6 +12,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,16 +37,20 @@ import org.d3ifcool.smart.Model.History;
 import org.d3ifcool.smart.Model.User;
 import org.d3ifcool.smart.R;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class FragmentHistory extends Fragment implements View.OnClickListener, RecyclerViewAdapterHistory.OnItemClickListener  {
 
     private SectionsPageAdapter mSectionsPageAdapter;
     private ViewPager mViewPager;
-    private TextView misEmpty, mFilter;
+    private TextView misEmpty, mFilter, dateview;
     private CardView cardView;
 
     private RecyclerView mRecyclerViewHistory;
@@ -58,6 +63,7 @@ public class FragmentHistory extends Fragment implements View.OnClickListener, R
     FirebaseUser firebaseUser;
     Calendar myCalendar = Calendar.getInstance();
     Dialog dialog;
+    String mCurrentDate;
 
     public FragmentHistory() {
         // Required empty public constructor
@@ -96,46 +102,59 @@ public class FragmentHistory extends Fragment implements View.OnClickListener, R
                 myCalendar.set(Calendar.YEAR, year);
                 myCalendar.set(Calendar.MONTH, monthOfYear);
                 myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                myCalendar.setMinimalDaysInFirstWeek((int) (System.currentTimeMillis() - 1000));
 
-//                updateLabel();
 
-            }
+                int day = myCalendar.get(Calendar.DAY_OF_MONTH);
+                int month = myCalendar.get(Calendar.MONTH);
+                int years = myCalendar.get(Calendar.YEAR);
 
-            int calculateAge(long date){
-                Calendar dob = Calendar.getInstance();
-                dob.setTimeInMillis(date);
-                Calendar today = Calendar.getInstance();
-                int age = today.get(Calendar.MONTH) - dob.get(Calendar.MONTH);
-                if(today.get(Calendar.HOUR_OF_DAY) < dob.get(Calendar.HOUR_OF_DAY)){
-                    age--;
-                }
-                return age;
+                mCurrentDate = (day+"/"+month+"/"+years);
+
+                updateLabel();
+
             }
 
         };
 
+        Date newDate = myCalendar.getTime();
+
         new DatePickerDialog(dialog.getContext(), R.style.DialogTheme, date, myCalendar
                 .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                 myCalendar.get(Calendar.DAY_OF_MONTH))
+//                .getDatePicker().setMinDate(newDate.getTime()-(newDate.getTime()%(24*60*60*1000)))
                 .show();
+
 
     }
 
+    private void updateLabel() {
+        String myFormat = "MM/dd/yyyy";
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+        dateview.setText(sdf.format(myCalendar.getTime()));
+    }
 
     public void checkHistory(){
         if (mAdapterHistory.getItemCount() != 0){
             misEmpty.setVisibility(View.INVISIBLE);
             mRecyclerViewHistory.setVisibility(View.VISIBLE);
             mFilter.setVisibility(View.VISIBLE);
-            cardView.setVisibility(View.VISIBLE);
+//            cardView.setVisibility(View.VISIBLE);
         }
 
         else {
             misEmpty.setVisibility(View.VISIBLE);
             mRecyclerViewHistory.setVisibility(View.INVISIBLE);
-            mFilter.setVisibility(View.INVISIBLE);
-            cardView.setVisibility(View.INVISIBLE);
+            mFilter.setVisibility(View.VISIBLE);
+//            cardView.setVisibility(View.VISIBLE);
         }
+    }
+
+    private String getDateToday(){
+        DateFormat dateFormat=new SimpleDateFormat("dd/MM/yyyy" );
+        Date date = new Date();
+        String today= dateFormat.format(date);
+        return today;
     }
 
 
@@ -148,15 +167,28 @@ public class FragmentHistory extends Fragment implements View.OnClickListener, R
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 mHistory.clear();
-                for (DataSnapshot connectSnapshot : dataSnapshot.getChildren()) {
 
-                    User upload = connectSnapshot.getValue(User.class);
-                    mHistory.add(upload);
-                }
-                mAdapterHistory.notifyDataSetChanged();
-                mProgressBarHistory.setVisibility(View.INVISIBLE);
-                checkHistory();
+                try {
 
+                    for (DataSnapshot connectSnapshot : dataSnapshot.getChildren()) {
+
+                        User upload = connectSnapshot.getValue(User.class);
+                        String date = upload.getDate();
+                        String now = getDateToday();
+
+                        Log.d("time", now);
+
+                        if (date.equals(now)) {
+
+                            mHistory.add(upload);
+
+                        }
+                    }
+                    mAdapterHistory.notifyDataSetChanged();
+                    mProgressBarHistory.setVisibility(View.INVISIBLE);
+                    checkHistory();
+
+                }catch (Exception e){}
             }
 
             @Override
@@ -200,6 +232,9 @@ public class FragmentHistory extends Fragment implements View.OnClickListener, R
         misEmpty = view.findViewById(R.id.empty_history);
         mFilter = view.findViewById(R.id.filter_history);
         cardView = view.findViewById(R.id.card_filter);
+        dateview = view.findViewById(R.id.datenow);
+
+        dateview.setText("Today, " + getDateToday());
 
         mHistory = new ArrayList<>();
         mAdapterHistory = new RecyclerViewAdapterHistory (getActivity(), mHistory);

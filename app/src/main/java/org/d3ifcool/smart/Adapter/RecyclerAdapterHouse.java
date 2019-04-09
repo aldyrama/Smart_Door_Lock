@@ -8,6 +8,7 @@ import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -70,8 +71,9 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
         holder.allLock.setOnClickListener(this);
         holder.mProgressbar.setVisibility(View.VISIBLE);
         holder.mProgressbar.setSecondaryProgress(50000);
-        holder.v = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
+        holder.vibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
 
+        Log.d("houseName", "ondatachange" + currentHouse.getName());
         final String url = "https://firebasestorage.googleapis.com/v0/b/smartdoor-7d0e6.appspot.com/o/lock_door.png?alt=media&token=2a903126-fc6e-4f87-b62c-9ccb7e9f5383";
         final String url1 = "https://firebasestorage.googleapis.com/v0/b/smartdoor-7d0e6.appspot.com/o/unlock_door.png?alt=media&token=15c98219-2c31-49db-9338-968e35cced71";
 
@@ -81,7 +83,7 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 House house = dataSnapshot.getValue(House.class);
-                Door door = new Door();
+//                Door door = new Door();
 //                DatabaseReference reference0 = FirebaseDatabase.getInstance().getReference("Devices").child(currentHouse.getDeviceCode());
 //                DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference("Devices").child(currentHouse.getDeviceCode()).child("Doors")
 //                        .child(door.getDoorPin());
@@ -131,13 +133,14 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
 
                     if (guestDetect == false) {
 
-                        holder.isGuest.setImageResource(R.drawable.ic_bell_black);
+                        holder.isGuest.setImageResource(R.drawable.bell_no_guest);
                         holder.guest.setText("no guests");
 
                     } else {
 
-                        holder.isGuest.setImageResource(R.drawable.ic_bell_red);
+                        holder.isGuest.setImageResource(R.drawable.bell_guest);
                         holder.guest.setText("there is guest");
+//                        holder.vibrator.vibrate(800);
 
 
                     }
@@ -160,6 +163,7 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
                 if (status == false){
                     status = true;
                     reference.child("house_lock").setValue(status);
+                    holder.locktxt.setText("House is not locked");
                     Toast.makeText(mContext, "House unlocked", Toast.LENGTH_SHORT).show();
 
 
@@ -168,6 +172,7 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
                 else {
                     status = false;
                     reference.child("house_lock").setValue(status);
+                    holder.locktxt.setText("House locked");
                     Toast.makeText(mContext, "House locked", Toast.LENGTH_SHORT).show();
 
                 }
@@ -190,22 +195,22 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
     public class RecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
             View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
 
-        public TextView name_house, dateTextView, guest;
+        public TextView name_house, dateTextView, guest, locktxt;
         public ImageView doorView, allLock, isGuest;
         ProgressBar mProgressbar;
-        Vibrator v;
+        Vibrator vibrator;
 
         public RecyclerViewHolder(View itemView) {
             super(itemView);
-            name_house =itemView.findViewById ( R.id.houseName );
+            name_house = itemView.findViewById ( R.id.houseName );
 //            doorView = itemView.findViewById(R.id.doo_status);
             guest = itemView.findViewById(R.id.txt_guest);
             allLock = itemView.findViewById(R.id.all_lockHouse);
             isGuest = itemView.findViewById(R.id.guest);
+            locktxt = itemView.findViewById(R.id.allock);
             mProgressbar = itemView.findViewById(R.id.progress_lock);
             mProgressbar.setSecondaryProgress(50000);
-            v = (Vibrator) itemView.getContext().getSystemService(Context.VIBRATOR_SERVICE);
-
+            vibrator = (Vibrator) itemView.getContext().getSystemService(Context.VIBRATOR_SERVICE);
 
             Typeface typeface = Typeface.createFromAsset(itemView.getContext().getAssets(), "font/Aaargh.ttf");
             name_house.setTypeface(typeface);
@@ -275,4 +280,6 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
         String today= dateFormat.format(date);
         return today;
     }
+
+
 }

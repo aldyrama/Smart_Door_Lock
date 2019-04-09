@@ -19,7 +19,7 @@
     </style>
 
     <style name="DialogTheme" >
-        <item name="colorAccent">@color/bluesamsung</item>
+        <item name="colorAccent">@color/black</item>
     </style>
 
     <style name="AppTheme.CustomTheme">

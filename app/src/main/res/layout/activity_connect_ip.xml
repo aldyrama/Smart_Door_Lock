@@ -24,7 +24,7 @@
     <Button
         android:id="@+id/button"
         android:layout_width="200dp"
-        android:layout_height="55dp"
+        android:layout_height="50dp"
         android:layout_marginBottom="80dp"
         android:text="Connect to camera"
         android:background="@drawable/transparent_bg_bordered"

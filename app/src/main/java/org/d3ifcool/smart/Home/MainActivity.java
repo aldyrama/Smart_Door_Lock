@@ -2,20 +2,28 @@ package org.d3ifcool.smart.Home;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.media.RingtoneManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -33,7 +41,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -60,6 +67,7 @@ import org.d3ifcool.smart.Family.FamilyActivity;
 import org.d3ifcool.smart.Model.House;
 import org.d3ifcool.smart.Model.User;
 import org.d3ifcool.smart.Notification.MyFirebaseMessagingService;
+import org.d3ifcool.smart.QrCode.Qr;
 import org.d3ifcool.smart.R;
 import org.d3ifcool.smart.Setting.SettingActivity;
 
@@ -85,22 +93,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private RecyclerAdapterHouse mAdapter;
     private ValueEventListener mDBListener;
     private List<House> mHouses;
-    FirebaseAuth auth;
-    FirebaseUser firebaseUser;
-    DatabaseReference reference, reference0, reference1;
+    private FirebaseAuth auth;
+    private FirebaseUser firebaseUser;
+    private DatabaseReference reference, reference0, reference1, reference2;
     private AVLoadingIndicatorView mProgressBar;
-    FrameLayout fader;
+    private View fader;
 
-    String profileid;
-    ProgressDialog pd;
-    CardView addHome, loadning;
-    Button commitHome;
-    Dialog dialog, dialogJoin, dialogHouseName;
-    ImageView closePoupUp, toolAddHome, allLock, action_stream;
-    EditText  deviceCode, housnameEdittxt, houseNameEditTxt;
-    TextView  emptyInMemer;
-    IndefinitePagerIndicator indicator;
-
+    private String profileid;
+    private ProgressDialog pd;
+    private CardView addHome;
+    private Button commitHome;
+    private Dialog dialog, dialogAdd, dialogJoin, dialogHouseName;
+    private ImageView closePoupUp, toolAddHome, allLock, action_stream, closePouUpOption, qrOption, inputOption;
+    private EditText  deviceCode, housnameEdittxt, houseNameEditTxt;
+    private TextView  emptyInMemer;
+    private IndefinitePagerIndicator indicator;
 
     public void openDetailActivity(String[] data) {
         Intent intent = new Intent(this, HousesDetail.class);
@@ -144,7 +151,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //set custom toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolhome);
         setSupportActionBar(toolbar);
-
 
         //set Custom bottomNavigationView
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavView_Bar);
@@ -250,6 +256,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void checkHouse() {
 
+
         if (mAdapter.getItemCount() !=  0){
             addHome.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
@@ -271,6 +278,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    private void notificationDoorKnock() {
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("RssPullService");
+
+        Intent resultIntent = new Intent(this, StreamingActivity.class);
+        PendingIntent resultPandingIntent = PendingIntent.getActivity(this, 1, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Builder notification = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
+                .setDefaults(NotificationCompat.DEFAULT_ALL)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.logo_lock))
+                .setSmallIcon(R.drawable.logo_lock)
+                .setContentTitle(getString(R.string.app_name))
+                .setContentText("Guest")
+                .setVibrate(new long[]{0, 500, 1000})
+                .setContentIntent(resultPandingIntent)
+                .setAutoCancel(true)
+                .setPriority(Notification.PRIORITY_MAX);
+
+        Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        notification.setSound(uri);
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(1, notification.build());
+
+
+
+    }
 
     public void getHouse(){
         mDatabaseRef = database.getInstance().getReference();
@@ -307,7 +342,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                    Data.checkRecyler = upload;
 
                 mAdapter.notifyDataSetChanged();
-//                loadning.setVisibility(View.INVISIBLE);
+                fader.setVisibility(View.GONE);
                 stopLoadingAnimation();
 
                 checkHouse();
@@ -368,22 +403,75 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (view.getId()) {
 
             case R.id.action_add_home :
-                showDialogAddHome();
+//                showDialogAddHome();
+                showDialodAdd();
                 break;
 
             case R.id.stream_action :
-                startActivity(new Intent(MainActivity.this, StreamingActivity.class));
-                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                Intent launchIntent = getPackageManager().getLaunchIntentForPackage("object.p2pwificam.client");
+                if (launchIntent != null) {
+                    startActivity(launchIntent);
+                }
+
+                else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setCancelable(false);
+                    builder.setTitle("DOWNLOAD APP");
+                    builder.setMessage("download this app for acces wifi camera ?");
+                    builder.setNegativeButton("NO",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            });
+
+                    builder.setPositiveButton("YES",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                                    intent.setData(Uri.parse(
+                                            "https://play.google.com/store/apps/details?id=object.p2pwificam.client"));
+                                    startActivity(intent);
+                                }
+                            });
+
+                    builder.show();
+                }
+
                 break;
 
             case R.id.cards_add_home :
-                showDialogAddHome();
+//                showDialogAddHome();
+                showDialodAdd();
                 break;
 
         }
 
     }
 
+
+    public void anotherApp(Context context){
+
+//        packageName = "object.p2pwificam.client";
+        Intent intent = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.CUPCAKE) {
+            intent = context.getPackageManager().getLaunchIntentForPackage("object.p2pwificam.client");
+        }
+        if (intent == null) {
+            try {
+                intent = new Intent(Intent.ACTION_VIEW);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setData(Uri.parse("play.google.com/store/apps/details?id=" + "object.p2pwificam.client"));
+                context.startActivity(intent);
+            } catch (android.content.ActivityNotFoundException anfe) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + "object.p2pwificam.client")));
+            }
+        } else {
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        }
+    }
 
 
     @Override
@@ -418,6 +506,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onDeleteItemClick(int position) {
         House selectedItem = mHouses.get(position);
         final String selectedKey = selectedItem.getDeviceCode();
+//        final String selectEmail = firebaseUser.getEmail().replace(".", ",");
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(false);
@@ -434,15 +523,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                        reference = FirebaseDatabase.getInstance().getReference().child("Devices").child("ListDevices");
-                        reference0 = FirebaseDatabase.getInstance().getReference().child("Devices").child(selectedKey);
-                        reference1 = FirebaseDatabase.getInstance().getReference().child("Devices").child(selectedKey);
-                        reference.child(selectedKey).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Users").child(selectedKey).child("Houses");
+                        ref.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                reference0.child("Member").removeValue();
-                                reference1.child("ListDoor").removeValue();
-                                Toast.makeText(MainActivity.this, "Item deleted " + selectedKey, Toast.LENGTH_SHORT).show();
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                for(DataSnapshot data : dataSnapshot.getChildren()) {
+                                    if(data.getValue(String.class).equals(deviceCode)){
+                                        ref.child(data.getKey()).removeValue();
+                                    }
+                                }
+
+                                reference = FirebaseDatabase.getInstance().getReference().child("Devices").child("ListDevices");
+                                reference0 = FirebaseDatabase.getInstance().getReference().child("Devices").child(selectedKey);
+                                reference1 = FirebaseDatabase.getInstance().getReference().child("Devices").child(selectedKey);
+                                reference.child(selectedKey).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        reference0.child("Member").getRef().removeValue();
+                                        reference1.child("ListDoor").getRef().removeValue();
+                                        Toast.makeText(MainActivity.this, "Item deleted " + selectedKey, Toast.LENGTH_SHORT).show();
+                                    }
+
+                            });
+                        }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
                             }
 
                         });
@@ -473,6 +581,47 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    private void showDialodAdd() {
+        dialogAdd.setContentView(R.layout.dialog_add);
+        dialogAdd.setCanceledOnTouchOutside(false);
+        closePouUpOption = dialogAdd.findViewById(R.id.close_popup_add);
+        qrOption = dialogAdd.findViewById(R.id.qr);
+        inputOption = dialogAdd.findViewById(R.id.input);
+
+        BounceView.addAnimTo(dialogAdd);
+
+        closePouUpOption.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialogAdd.dismiss();
+
+            }
+        });
+
+        qrOption.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialogAdd.dismiss();
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                startActivity(new Intent(MainActivity.this, Qr.class));
+
+            }
+        });
+
+        inputOption.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialogAddHome();
+                dialogAdd.dismiss();
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+
+            }
+        });
+
+        dialogAdd.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialogAdd.show();
+
+    }
 
     //Show dialog addhome
     private void showDialogAddHome() {
@@ -484,7 +633,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         deviceCode = (EditText) dialog.findViewById(R.id.code_device);
         commitHome.setOnClickListener(this);
         BounceView.addAnimTo(dialog);
-
 
         closePoupUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -511,60 +659,58 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 String made_date = Data.madeDateHouse;
                 final House house = new House(str_house, str_device);
 
-                if (TextUtils.isEmpty(str_house)){
+                if (TextUtils.isEmpty(str_house)) {
                     houseNameEditTxt.setError("House name required");
+                    pd.hide();
                 }
 
-                else if (TextUtils.isEmpty(str_device)){
+                if (TextUtils.isEmpty(str_device)) {
                     deviceCode.setError("Device code required");
+                    pd.hide();
+
+                } else {
+                    reference = FirebaseDatabase.getInstance().getReference().child("Devices").child(str_device);
+                    reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            reference0 = FirebaseDatabase.getInstance().getReference().child("Users").
+                                    child(firebaseUser.getEmail().replace(".", ",")).child("Houses");
+                            reference1 = FirebaseDatabase.getInstance().getReference().child("Devices").child("ListDevices").child(str_device);
+                            reference2 = FirebaseDatabase.getInstance().getReference().child("Devices").child(str_device);
+
+
+                            if (dataSnapshot.exists()) {
+                                House getHouses = dataSnapshot.getValue(House.class);
+
+                                String uploadId = reference.push().getKey();
+//                            reference.setValue(house);
+                                reference0.child(uploadId).setValue(str_device);
+                                reference1.setValue(house);
+                                reference2.child("name").setValue(str_house);
+
+                                dialog.dismiss();
+                                dialogAdd.dismiss();
+                                Toast.makeText(MainActivity.this, str_house + " added", Toast.LENGTH_SHORT).show();
+
+                                pd.hide();
+                                return;
+
+                            } else {
+
+                                pd.hide();
+                                deviceCode.setError("Device " + str_device + " Not found");
+
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
 
                 }
-
-                reference = FirebaseDatabase.getInstance().getReference().child("Devices").child(str_device);
-                reference.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        reference0 = FirebaseDatabase.getInstance().getReference().child("Users").
-                                child(firebaseUser.getEmail().replace(".", ",")).child("Houses");
-                        reference1 = FirebaseDatabase.getInstance().getReference().child("Devices").child("ListDevices").child(str_device);
-
-                        if (dataSnapshot.exists()) {
-                            House getHouses = dataSnapshot.getValue(House.class);
-
-                            String uploadId = reference.push().getKey();
-//                            reference.setValue(house);
-                            reference0.child(uploadId).setValue(str_device);
-                            reference1.setValue(house);
-
-                            dialog.dismiss();
-                            Toast.makeText(MainActivity.this, str_house + " added", Toast.LENGTH_SHORT).show();
-
-                            pd.hide();
-                            return;
-
-                        }
-
-                        else {
-
-                            pd.hide();
-                            deviceCode.setError(str_device + " Not found");
-
-                        }
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-
-//
-//                    reference.child("madeDate").setValue(made_date);
-//
-//                    dialog.dismiss();
-//                pd.hide();
-
             }
         });
 
@@ -586,7 +732,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         fader = findViewById(R.id.fader);
         indicator = findViewById(R.id.recyclerview_indicator);
 //        loadning = findViewById(R.id.card_loading);
-//        loadning.setVisibility(View.VISIBLE);
+        fader.setVisibility(View.VISIBLE);
         setLoadingAnimation();
 
 
@@ -594,6 +740,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         dialog = new Dialog(this);
         dialogJoin = new Dialog(this);
         dialogHouseName = new Dialog(this);
+        dialogAdd = new Dialog(this);
 
         recyclerView = findViewById(R.id.mRecyclerView);
         recyclerView.setHasFixedSize(true);
@@ -609,14 +756,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+//    public void scannow(){
+//        IntentIntegrator intentIntegrator = new IntentIntegrator(this);
+//        intentIntegrator.setCaptureActivity(Potrait.class);
+//        intentIntegrator.setOrientationLocked(false);
+//        intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
+//        intentIntegrator.setPrompt("Scan your barcode");
+//        intentIntegrator.initiateScan();
+//    }
+
     private void setLoadingAnimation() {
-        fader.setVisibility(View.VISIBLE);
         mProgressBar.show();
+        addHome.setVisibility(View.GONE);
+        addHome.setEnabled(false);
     }
 
     private void stopLoadingAnimation(){
-        fader.setVisibility(View.GONE);
+//        fader.setVisibility(View.GONE);
         mProgressBar.hide();
+        addHome.setVisibility(View.VISIBLE);
+        addHome.setEnabled(true);
     }
 
 

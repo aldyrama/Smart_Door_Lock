@@ -13,17 +13,17 @@
         android:id="@+id/fader"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:drawable/screen_background_dark_transparent"
+        android:background="@color/colorWhite"
         android:visibility="invisible" />
 
     <com.wang.avi.AVLoadingIndicatorView
         android:id="@+id/myDataLoaderProgressBarDoor"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         style="@style/AVLoadingIndicatorView.Large"
         android:visibility="visible"
-        app:indicatorName="LineScalePulseOutIndicator"
-        app:indicatorColor="@android:color/holo_blue_dark"
+        app:indicatorName="BallPulseIndicator"
+        app:indicatorColor="@android:color/darker_gray"
         android:elevation="3dp"
         android:layout_centerInParent="true"
         android:layout_gravity="center"
@@ -96,13 +96,13 @@
         app:supportRTL="true"
         android:layout_marginLeft="6dp"
         app:verticalSupport="true"
-        android:layout_marginTop="50dp"
+        android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
         app:selectedDotColor="@color/blackk"
         app:selectedDotRadius="5dp"
         />
 
-        <at.markushi.ui.CircleButton
+        <android.support.design.widget.FloatingActionButton
             android:id="@+id/addDoor_floating"
             android:layout_width="60dp"
             android:layout_height="60dp"

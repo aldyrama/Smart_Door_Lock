@@ -1,7 +1,10 @@
 package org.d3ifcool.smart.Home;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.app.Service;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -11,9 +14,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSnapHelper;
@@ -27,7 +27,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -40,28 +39,24 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
 import com.rbrooks.indefinitepagerindicator.IndefinitePagerIndicator;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.d3ifcool.smart.Adapter.RecyclerAdapterDoor;
-import org.d3ifcool.smart.Data;
 import org.d3ifcool.smart.Model.Door;
+import org.d3ifcool.smart.Model.User;
 import org.d3ifcool.smart.R;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import at.markushi.ui.CircleButton;
 import hari.bounceview.BounceView;
-import info.androidramp.gearload.Loading;
 
 public class Fragment_List_Door extends Fragment implements View.OnClickListener, RecyclerAdapterDoor.OnItemClickListener {
 
-    FirebaseAuth auth;
-    DatabaseReference reference, reference0;
-    FirebaseUser firebaseUser;
+    private FirebaseAuth auth;
+    private DatabaseReference reference, reference0, reference1;
+    private FirebaseUser firebaseUser;
     private RecyclerView mRecyclerView;
     private RecyclerAdapterDoor mAdapter;
     private AVLoadingIndicatorView mProgressBar;
@@ -69,7 +64,7 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
     private FirebaseDatabase database;
     private ValueEventListener mDBListener;
     private List<Door> mDoor;
-    private CircleButton addDoor;
+    private FloatingActionButton addDoor;
 
     private Dialog dialog_Door;
     private Button commitDoor;
@@ -77,10 +72,25 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
     private CardView addDoorCard;
     private  ImageView closePoupUpDoor;
     private ProgressDialog pd;
-    IndefinitePagerIndicator indicator;
-    FrameLayout fader;
+    private IndefinitePagerIndicator indicator;
+    private FrameLayout fader;
+    private mainnotification notif;
+    private String replaceEmail;
+
+    @SuppressLint("ValidFragment")
+    public Fragment_List_Door(Service service){
+        this.notif = (mainnotification) service;
+
+    }
+
+    public interface mainnotification{
+
+        void refresh();
+
+        void notifGuest(String notif);
 
 
+    }
 
     public Fragment_List_Door() {
 
@@ -94,6 +104,7 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
 
         auth = FirebaseAuth.getInstance();
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        replaceEmail = firebaseUser.getEmail().replace(".", ",");
 
         mRecyclerView = view.findViewById(R.id.mRecyclerView_detail);
         mRecyclerView.setHasFixedSize(true);
@@ -117,9 +128,10 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
         indicator.attachToRecyclerView(mRecyclerView);
         mAdapter.setOnItemClickListener(this);
 
+        checkAccount();
         getDoor();
         setLoadingAnimation();
-
+        notif();
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -127,6 +139,7 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
                 super.onScrollStateChanged(recyclerView, newState);
             }
 
+            @SuppressLint("RestrictedApi")
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
 
@@ -149,10 +162,11 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
     }
 
 
+    @SuppressLint("RestrictedApi")
     public void checkDoor(){
 
         if (mAdapter.getItemCount() != 0){
-
+            checkAccount();
             addDoor.setVisibility(View.VISIBLE);
             addDoorCard.setVisibility(View.GONE);
             mRecyclerView.setVisibility(View.VISIBLE);
@@ -176,7 +190,6 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
         Intent i = getActivity().getIntent();
         final String deviceCode = i.getExtras().getString("DEVICECODE_KEY");
         mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Devices").child(deviceCode).child("ListDoor");
-//        mDatabaseRef = database.getInstance().getReference();
         mDBListener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -190,10 +203,6 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
 
                     mDoor.clear();
 
-//                    for (DataSnapshot doorSnapshot : dataSnapshot.child("Devices").child(deviceCode).child("DoorApp").getChildren()) {
-//                        String door = doorSnapshot.getValue(String.class);
-//                        Door house = dataSnapshot.child("Devices").child(door).getValue(Door.class);
-
                     for (DataSnapshot doorSnapshot : dataSnapshot.getChildren()) {
                         GenericTypeIndicator<Map<String, Object>> genericTypeIndicator = new GenericTypeIndicator<Map<String, Object>>() {
                         };
@@ -202,6 +211,7 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
                         Door uploadDoor = new Door();
                         uploadDoor.setDoorName((String) map.get("doorName"));
                         uploadDoor.setDoorPin((String) map.get("doorPin"));
+//                        uploadDoor.setStatusDoor((String) map.get("status"));
 
                         Door door = doorSnapshot.getValue(Door.class);
                         mDoor.add(door);
@@ -314,6 +324,45 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
     }
 
 
+    //check account login
+    private void checkAccount() {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(replaceEmail);
+        reference.addValueEventListener(new ValueEventListener() {
+            @SuppressLint("RestrictedApi")
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (getContext() == null){
+                    return;
+                }
+                User user = dataSnapshot.getValue(User.class);
+
+                String check = user.getTypeAccount();
+
+                if (check.equals("Owner")) {
+
+                    addDoor.setEnabled(true);
+                    addDoorCard.setEnabled(true);
+                }
+
+                else {
+
+                    addDoor.setEnabled(false);
+                    addDoorCard.setEnabled(false);
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+
+        });
+
+    }
+
+
     public void showDialogAddDoor(){
         dialog_Door.setContentView(R.layout.add_door_popup);
         dialog_Door.setCanceledOnTouchOutside(false);
@@ -353,55 +402,90 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
 
                 if (TextUtils.isEmpty(str_door)){
                     addDoorEdtxt.setError("Door name required");
+                    pd.hide();
                 }
 
-                else if (TextUtils.isEmpty(str_pin)){
+                 if (TextUtils.isEmpty(str_pin)){
                     doorPin.setError("Pin door required");
-
+                    pd.hide();
                 }
 
-                reference = FirebaseDatabase.getInstance().getReference().child("Devices").child(deviceCode).child("Doors").child(str_pin);
-                reference.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        reference0 = FirebaseDatabase.getInstance().getReference().child("Devices").child(deviceCode).child("ListDoor").child(str_pin);
+                else {
+                    reference = FirebaseDatabase.getInstance().getReference().child("Devices").child(deviceCode).child("Doors").child(str_pin);
+                    reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            reference0 = FirebaseDatabase.getInstance().getReference().child("Devices").child(deviceCode).child("ListDoor").child(str_pin);
+                            reference1 = FirebaseDatabase.getInstance().getReference().child("Devices").child(deviceCode).child("Doors").child(str_pin);
 
-                        if (dataSnapshot.exists()) {
-                            Door getDoor = dataSnapshot.getValue(Door.class);
 
-                            reference0.setValue(door);
-                            dialog_Door.dismiss();
-                            Toast.makeText(getActivity(), str_door + " door added", Toast.LENGTH_SHORT).show();
+                            if (dataSnapshot.exists()) {
+                                Door getDoor = dataSnapshot.getValue(Door.class);
+                                String pin = getDoor.getDoorPin();
+                                reference0.setValue(door);
+                                reference1.child("doorName").setValue(str_door);
+                                dialog_Door.dismiss();
+                                Toast.makeText(getActivity(), str_door + " door added", Toast.LENGTH_SHORT).show();
 
-                            pd.hide();
-                            return;
+                                pd.hide();
+                                return;
 
-                            }
 
-                            else{
-                            pd.hide();
-                            doorPin.setError(str_pin + " Not found");
+//
+//                            if (pin.equals(str_pin)) {
+//                                doorPin.setError(str_pin + " already");
+//                                Toast.makeText(getActivity(), str_pin + " already", Toast.LENGTH_SHORT).show();
+//
+//                                pd.hide();
+//
+                            } else {
+                                pd.hide();
+                                doorPin.setError(str_pin + " Not found");
                             }
 
                         }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Toast.makeText(getActivity(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            Toast.makeText(getActivity(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
 
-                    }
-                });
-
-//                    reference.setValue(door);
-//                    reference0.setValue(door);
-//                    Data.doorName = str_door;
-//                    dialog_Door.dismiss();
-//
-//
-//                pd.hide();
+                        }
+                    });
+                }
 
             }
         });
 
     }
+
+    public void notif(){
+        Intent i = getActivity().getIntent();
+        final String deviceCode =i.getExtras().getString("DEVICECODE_KEY");
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Devices").child(deviceCode).child("guest");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                try {
+                boolean value = dataSnapshot.getValue(boolean.class);
+                Log.d("yy", "Value is: " + value);
+
+                if (value == true) {
+                    notif.notifGuest(deviceCode);
+
+                    }
+                }catch (Exception e){}
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
 }
+
+

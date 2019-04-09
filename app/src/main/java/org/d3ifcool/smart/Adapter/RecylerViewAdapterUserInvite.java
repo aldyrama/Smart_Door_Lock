@@ -1,10 +1,13 @@
 package org.d3ifcool.smart.Adapter;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,6 +17,12 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import org.d3ifcool.smart.Model.User;
@@ -45,14 +54,6 @@ public class RecylerViewAdapterUserInvite extends RecyclerView.Adapter<RecylerVi
         View v = LayoutInflater.from(mContext).inflate(R.layout.list_member, parent, false);
         final MyViewHolder viewHolder = new MyViewHolder(v);
 
-//        myDialog = new Dialog(mContext);
-//        myDialog.setContentView(R.layout.popup_detail_user);
-//        TextView dialog_username = (TextView) myDialog.findViewById(R.id.emailuser);
-//        TextView dialog_member = (TextView) myDialog.findViewById(R.id.account);
-////        ImageView dialog_imgUser = (ImageView) myDialog.findViewById(R.id.imgtUser);
-//
-////        dialog_username.setText(mConnect.get(viewHolder.getAdapterPosition()).getUsers());
-
         viewHolder.item_user.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,12 +63,10 @@ public class RecylerViewAdapterUserInvite extends RecyclerView.Adapter<RecylerVi
 
         return new MyViewHolder(v);
 
-
-
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
         User currentUser = mConnect.get(position);
         holder.username.setText(currentUser.getFullname());
         holder.email.setText(currentUser.getEmail());
@@ -75,11 +74,48 @@ public class RecylerViewAdapterUserInvite extends RecyclerView.Adapter<RecylerVi
         holder.end.setText(currentUser.getExpired());
         Picasso.with(mContext)
                 .load(currentUser.getImageurl())
-                .placeholder(R.drawable.userphoto)
+                .placeholder(R.drawable.user_fix)
                 .fit()
                 .centerCrop()
                 .into(holder.photo);
 
+        Intent i = ((Activity) mContext).getIntent();
+        final String name =i.getExtras().getString("NAME_KEY");
+        final String deviceCode =i.getExtras().getString("DEVICECODE_KEY");
+
+//        DatabaseReference reference  = FirebaseDatabase.getInstance().getReference().child("Devices").child(deviceCode).child("Member");
+//        reference.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                for (DataSnapshot expSnapshot : dataSnapshot.getChildren()) {
+//                    User upload = expSnapshot.getValue(User.class);
+//                    String endTime = upload.getExpired();
+//
+//                    Log.d("en", "ondate" + endTime);
+//                    if (endTime.equals("always")){
+//
+//                        holder.start.setVisibility(View.GONE);
+//                        holder.end.setVisibility(View.GONE);
+//
+//                    }
+//
+//                    else {
+//
+//                        holder.start.setVisibility(View.VISIBLE);
+//                        holder.end.setVisibility(View.VISIBLE);
+//
+//                    }
+//
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//
     }
 
 

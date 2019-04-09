@@ -17,6 +17,8 @@
     <uses-permission android:name="com.htc.launcher.permission.READ_SETTINGS" />
     <uses-permission android:name="com.htc.launcher.permission.UPDATE_SHORTCUT" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -26,6 +28,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".QrCode.Qr"></activity>
         <activity android:name=".AccountActivity.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -35,9 +38,10 @@
         </activity>
         <activity android:name=".Setting.SettingActivity" />
         <activity android:name=".Home.ConnectIp" />
-        <activity android:name=".AccountActivity.StartActivity"></activity>
-        <activity android:name=".AccountActivity.LoginActivity"
-            android:screenOrientation="portrait"/>
+        <activity android:name=".AccountActivity.StartActivity" />
+        <activity
+            android:name=".AccountActivity.LoginActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".AccountActivity.FindPassword" />
         <activity android:name=".Family.FamilyActivity" />
         <activity
@@ -52,12 +56,15 @@
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
-        <activity android:name=".AccountActivity.RegistActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".AccountActivity.RegistActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Home.StreamingActivity"
             android:configChanges="orientation|screenSize|locale" />
         <activity android:name=".AccountActivity.ChangePassActivity" />
+
+        <activity android:name=".WifiConfiguration.EsptouchDemoActivity"/>
 
         <service
             android:name=".Notification.MyFirebaseMessagingService"

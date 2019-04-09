@@ -25,8 +25,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="center_horizontal">
 
@@ -68,21 +67,19 @@
             android:gravity="center"
             android:textColor="@color/black" />
 
-        </LinearLayout>
-
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:gravity="center">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
                 android:layout_gravity="center"
                 android:orientation="vertical"
-                android:layout_marginTop="50dp"
                 android:gravity="center">
 
                 <ImageView
@@ -90,8 +87,9 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:padding="2dp"
+                    android:scaleType="centerInside"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_bell_black"/>
+                    android:src="@drawable/bell_no_guest"/>
 
                 <TextView
                     android:id="@+id/txt_guest"
@@ -99,78 +97,80 @@
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@+id/guest"
                     android:textColor="@color/blackk"
-                    android:text=" "/>
+                    android:text=" "
+                    android:textSize="12sp"/>
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:orientation="horizontal"
-                android:layout_gravity="center|bottom"
-                android:gravity="center|bottom">
-
                 <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_weight="2"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right|bottom"
-                    android:layout_marginRight="10dp"
-                    android:gravity="right|bottom">
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center|bottom"
+                    android:gravity="bottom|center">
 
-                    <Button
-                        android:layout_width="150dp"
-                        android:layout_height="24dp"
-                        android:text="@string/history_user_access"
-                        android:textSize="10sp"
-                        android:padding="6dp"
-                        android:backgroundTint="@color/gray400"
-                        android:layout_gravity="center|left"
-                        android:layout_marginRight="50dp"
-                        android:layout_marginLeft="30dp"
-                        android:textColor="@color/gray400"
-                        android:textAllCaps="false"
-                        android:gravity="center"
-                        android:background="@drawable/bg_edittext"/>
+                <ImageView
+                    android:id="@+id/stream_action"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:onClick="onClickView"
+                    android:src="@drawable/cctv"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_gravity="center|bottom"
+                    android:layout_marginLeft="6dp"
+                    android:layout_marginRight="10dp"/>
+
+                </LinearLayout>
+            </LinearLayout>
+
+                    <!--<Button-->
+                        <!--android:layout_width="150dp"-->
+                        <!--android:layout_height="24dp"-->
+                        <!--android:text="@string/history_user_access"-->
+                        <!--android:textSize="10sp"-->
+                        <!--android:padding="6dp"-->
+                        <!--android:backgroundTint="@color/gray400"-->
+                        <!--android:layout_gravity="center|left"-->
+                        <!--android:layout_marginRight="50dp"-->
+                        <!--android:layout_marginLeft="30dp"-->
+                        <!--android:textColor="@color/gray400"-->
+                        <!--android:textAllCaps="false"-->
+                        <!--android:gravity="center"-->
+                        <!--android:background="@drawable/bg_edittext"/>-->
 
                     <RelativeLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:visibility="visible">
 
                         <ProgressBar
                             android:id="@+id/progress_lock"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:visibility="gone"
                             android:layout_centerInParent="true"/>
 
                         <ImageView
                             android:id="@+id/all_lockHouse"
-                            android:layout_width="35dp"
-                            android:layout_height="35dp"
+                            android:layout_width="70dp"
+                            android:layout_height="70dp"
+                            android:visibility="gone"
                             android:src="@drawable/lock_door"
-                            android:layout_margin="6dp"/>
+                            android:layout_margin="6dp" />
+
+                        <TextView
+                            android:id="@+id/allock"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="House locked"
+                            android:visibility="gone"
+                            android:layout_marginBottom="20dp"/>
 
                     </RelativeLayout>
 
-                    <View
-                        android:layout_width="10dp"
-                        android:layout_height="10dp"
-                        android:layout_gravity="center"/>
-
-                    <ImageView
-                        android:id="@+id/stream_action"
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:onClick="onClickView"
-                        android:src="@drawable/ic_cam"
-                        android:layout_marginBottom="6dp"
-                        android:layout_marginTop="6dp"
-                        android:layout_marginLeft="6dp"
-                        android:layout_marginRight="10dp"/>
-
-                </LinearLayout>
-            </LinearLayout>
-        </LinearLayout>
-    </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
 </android.support.v7.widget.CardView>

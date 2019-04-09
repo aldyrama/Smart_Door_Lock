@@ -4,13 +4,16 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.IBinder;
+import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
@@ -21,136 +24,197 @@ import android.widget.Toast;
 
 import com.github.arturogutierrez.Badges;
 import com.github.arturogutierrez.BadgesNotSupportedException;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
+import org.d3ifcool.smart.Data;
 import org.d3ifcool.smart.Home.MainActivity;
 import org.d3ifcool.smart.Home.StreamingActivity;
 import org.d3ifcool.smart.R;
 
-import static android.support.constraint.Constraints.TAG;
+import java.util.Map;
 
-public class MyFirebaseMessagingService extends Service {
+import static android.support.constraint.Constraints.TAG;
+import static android.view.View.inflate;
+
+public class MyFirebaseMessagingService extends Service{
 
         private FirebaseDatabase database;
-        private DatabaseReference DoorA, DoorB, KnockA, KnockB;
+        private DatabaseReference Door, Doors, guest;
         Pair<DatabaseReference, ValueEventListener> mListener;
+        FirebaseAuth auth;
+        FirebaseUser firebaseUser;
+        String name, doorName, housename;
+        int lock;
+        Vibrator vibrator;
+        MediaPlayer mediaPlayer;
+
         @Override
         public void onCreate() {
                 super.onCreate();
 
+                auth = FirebaseAuth.getInstance();
+                firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
                 database = FirebaseDatabase.getInstance();
-                DoorA = database.getReference("DoorA_Status");
-                DoorB = database.getReference("DoorB_Status");
-                KnockA = database.getReference("Knock_SensorA");
-                KnockB = database.getReference("DoorB_Status");
-                readFirebase();
+                guestOn();
+                triggerDoors();
+                vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
-//                ValueEventListener valueEventListener = DoorA.addValueEventListener(new ValueEventListener() {
-//                        @Override
-//                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                                int value = dataSnapshot.getValue(int.class);
-//                                Log.d(TAG, "Value is: " + value);
-//
-//                                if (Float.valueOf(value) == 1){
-//                                        notificationDoorOpen();
-//                                }
-//
-//                        }
-//
-//                        @Override
-//                        public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                        }
-//                });
-//
-//                mListener = new Pair<>(DoorA, valueEventListener);
-//
-        }
-
-        private void readFirebase() {
-                DoorA.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                int value = dataSnapshot.getValue(int.class);
-                                Log.d(TAG, "Value isA : " + value);
-
-                                if (Float.valueOf(value) == 1){
-                                        notificationDoorAOpen();
-                                }
-
-
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                                Log.w(TAG, "Failed to read value.", databaseError.toException());
-
-                        }
-                });
-
-                DoorB.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                int value = dataSnapshot.getValue(int.class);
-                                Log.d(TAG, "Value isA : " + value);
-
-                                if (Float.valueOf(value) == 1){
-                                        notificationDoorBOpen();
-                                }
-
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                                Log.w(TAG, "Failed to read value.", databaseError.toException());
-
-                        }
-                });
-
-                KnockA.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                int value = dataSnapshot.getValue(int.class);
-                                Log.d(TAG,"Value knockA is :" + value);
-
-                                if (Float.valueOf(value) == 1){
-                                        notificationDoorKnock();
-
-                                }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                                Log.w(TAG, "Failed to read value.", databaseError.toException());
-                        }
-                });
-
-//                try {
-//                        Badges.setBadge(MyFirebaseMessagingService.this, 1);
-//
-//                }catch (BadgesNotSupportedException e){
-//                        Toast.makeText(this, "That was error!", Toast.LENGTH_SHORT).show();
-//                }
 
         }
 
-        @Override
-        public int onStartCommand(Intent intent, int flags, int startId) {
+        public void guestOn(){
                 try {
 
-                }catch (Exception e){
-                        e.printStackTrace();
-                }
-                return super.onStartCommand(intent, flags, startId);
+                        final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getEmail().replace(".", ","))
+                                .child("Notifications");
+                        reference.keepSynced(false);
+                        reference.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        try {
+                                                String notif = dataSnapshot.child("guest").getValue(String.class);
+                                                Log.d("notif", "data " + notif);
+                                                if (notif.equals("enable")) {
+
+                                                        triggerHouses();
+
+                                                } else if (notif.equals("disable")){
+                                                        reference.child("guest").getRef().removeValue();
+
+                                                }
+                                        } catch (Exception e) {
+                                        }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                        });
+                }catch (Exception e){}
         }
 
+        private void triggerHouses() {
 
+                guest = FirebaseDatabase.getInstance().getReference();
+                guest.keepSynced(false);
+                guest.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//
+                                try {
 
-        private void notificationDoorAOpen() {
+                                        for (DataSnapshot guesSnapshot : dataSnapshot.child("Users").child(firebaseUser.getEmail().replace(".", ","))
+                                                .child("Houses").getChildren()) {
+
+                                                String kode_device = guesSnapshot.getValue(String.class);
+                                                Log.d("devices", "onDataChange: " + kode_device);
+
+                                                guest.child("Devices").child(kode_device).addValueEventListener(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                                boolean statusGuset = dataSnapshot.child("guest").getValue(boolean.class);
+                                                                name = dataSnapshot.child("name").getValue(String.class);
+
+                                                                if (statusGuset == true) {
+
+                                                                        notificationDoorKnock();
+
+                                                                }
+
+                                                                return;
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                        }
+                                                });
+
+                                        }
+                                }catch (Exception e){}
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                });
+
+        }
+
+        private void triggerDoors() {
+                Door = FirebaseDatabase.getInstance().getReference();
+                Door.keepSynced(false);
+                Door.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                try {
+                                        for (DataSnapshot guesSnapshot : dataSnapshot.child("Users").child(firebaseUser.getEmail().replace(".", ","))
+                                                .child("Houses").getChildren()) {
+
+                                                final String kode_device = guesSnapshot.getValue(String.class);
+                                                Log.d("devices", "onDataChange: " + kode_device);
+
+                                                Door.child("Devices").child(kode_device).addValueEventListener(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                                housename = dataSnapshot.child("name").getValue(String.class);
+
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                        }
+                                                });
+
+                                                for (DataSnapshot doorSnapshot : dataSnapshot.child("Devices").child(kode_device).child("Doors").getChildren()) {
+                                                        String pin = doorSnapshot.getKey();
+                                                        Log.d("pin", "onDataChange: " + pin);
+
+                                                        Door.child("Devices").child(kode_device).child("Doors").child(pin).addValueEventListener(new ValueEventListener() {
+                                                                @Override
+                                                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                                        try {
+
+                                                                                lock = dataSnapshot.child("doorLock").getValue(int.class);
+                                                                                doorName = dataSnapshot.child("doorName").getValue(String.class);
+
+                                                                                if (lock == 1) {
+                                                                                        notificationDoorOpen();
+                                                                                }
+                                                                        } catch (Exception e) {
+                                                                        }
+                                                                }
+
+                                                                @Override
+                                                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                                }
+                                                        });
+
+                                                }
+                                        }
+                                }catch (Exception e){}
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                });
+
+        }
+
+        private void notificationDoorOpen() {
 
                 IntentFilter intentFilter = new IntentFilter();
                 intentFilter.addAction("RssPullService");
@@ -162,41 +226,19 @@ public class MyFirebaseMessagingService extends Service {
                         .setDefaults(NotificationCompat.DEFAULT_ALL)
                         .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.logo_lock))
                         .setSmallIcon(R.drawable.logo_lock)
-                        .setContentTitle(getString(R.string.app_name))
-                        .setContentText("Your front door is open")
+                        .setContentTitle("Door")
+                        .setContentText("the " + doorName + " door of the " + housename + " house is open!")
                         .setVibrate(new long[]{0, 500, 1000})
                         .setContentIntent(resultPandingIntent)
                         .setAutoCancel(true)
+                        .setLights(0xff0000ff, 300, 1000) // blue color
+                        .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                         .setPriority(Notification.PRIORITY_MAX);
 
-                Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                notification.setSound(uri);
-
-                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                notificationManager.notify(1, notification.build());
-        }
-
-        private void notificationDoorBOpen() {
-
-                IntentFilter intentFilter = new IntentFilter();
-                intentFilter.addAction("RssPullService");
-
-                Intent resultIntent = new Intent(this, MainActivity.class);
-                PendingIntent resultPandingIntent = PendingIntent.getActivity(this, 1, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                NotificationCompat.Builder notification = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
-                        .setDefaults(NotificationCompat.DEFAULT_ALL)
-                        .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.logo_lock))
-                        .setSmallIcon(R.drawable.logo_lock)
-                        .setContentTitle(getString(R.string.app_name))
-                        .setContentText("Your back door is open")
-                        .setVibrate(new long[]{0, 500, 1000})
-                        .setContentIntent(resultPandingIntent)
-                        .setAutoCancel(true)
-                        .setPriority(Notification.PRIORITY_MAX);
-
-                Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                notification.setSound(uri);
+                vibrator.vibrate(600);
+                play();
+//                Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+//                notification.setSound(uri);
 
                 NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 notificationManager.notify(1, notification.build());
@@ -205,24 +247,27 @@ public class MyFirebaseMessagingService extends Service {
         private void notificationDoorKnock() {
 
                 IntentFilter intentFilter = new IntentFilter();
-                intentFilter.addAction("RssPullService");
+                intentFilter.addAction("RssPullS3ervice");
 
-                Intent resultIntent = new Intent(this, StreamingActivity.class);
+                Intent resultIntent = new Intent(this, MainActivity.class);
                 PendingIntent resultPandingIntent = PendingIntent.getActivity(this, 1, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
                 NotificationCompat.Builder notification = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
                         .setDefaults(NotificationCompat.DEFAULT_ALL)
                         .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.logo_lock))
                         .setSmallIcon(R.drawable.logo_lock)
-                        .setContentTitle(getString(R.string.app_name))
-                        .setContentText("Guest")
+                        .setContentTitle("House")
+                        .setContentText("guest in the " + name + " house!")
                         .setVibrate(new long[]{0, 500, 1000})
                         .setContentIntent(resultPandingIntent)
                         .setAutoCancel(true)
+                        .setLights(0xff0000ff, 300, 1000) // blue color
                         .setPriority(Notification.PRIORITY_MAX);
 
-                Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                notification.setSound(uri);
+                vibrator.vibrate(600);
+                play();
+//                Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+//                notification.setSound(uri);
 
                 NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 notificationManager.notify(1, notification.build());
@@ -230,6 +275,16 @@ public class MyFirebaseMessagingService extends Service {
 
 
         }
+
+        public void play(){
+                if (mediaPlayer == null){
+                        mediaPlayer = MediaPlayer.create(this, R.raw.iphone_notif);
+
+                }
+
+                mediaPlayer.start();
+        }
+
 
         @Nullable
         @Override
@@ -252,4 +307,17 @@ public class MyFirebaseMessagingService extends Service {
 
                 }
         }
+
+
+//        @Override
+//        public void refresh() {
+//
+//        }
+//
+//        @Override
+//        public void notifGuest(String notif) {
+//                notificationDoorKnock(notif);
+//        }
+
+
 }

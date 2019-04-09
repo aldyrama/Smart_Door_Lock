@@ -77,6 +77,8 @@ public class RecyclerViewAdapterHistory extends RecyclerView.Adapter<RecyclerVie
                 .centerInside()
                 .into(holder.photo);
 
+
+
     }
 
     @Override

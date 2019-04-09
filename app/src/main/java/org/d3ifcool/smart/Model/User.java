@@ -12,6 +12,7 @@ public class User {
     private String start_access;
     private String expired;
     private String time;
+    private String date;
     private int age;
     private String lock;
     private String lockImage;
@@ -125,6 +126,10 @@ public class User {
         return time;
     }
 
+    public String getDate() {
+        return date;
+    }
+
     public void setTime(String time) {
         this.time = time;
     }
@@ -167,5 +172,9 @@ public class User {
 
     public void setDoor(String door) {
         this.door = door;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }
