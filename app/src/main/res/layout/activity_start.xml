@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bannerr"
+    android:background="@drawable/bg_firs"
     tools:context=".AccountActivity.StartActivity"
     android:orientation="vertical"
     android:layout_gravity="center">
@@ -32,7 +32,7 @@
             android:id="@+id/txt_appname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorWhite"
+            android:textColor="@color/blackk"
             android:text="PROLOCK"
             android:textStyle="bold"
             android:layout_marginTop="90dp"
@@ -42,7 +42,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorWhite"
+            android:textColor="@color/black"
             android:text="Processor Team"
             android:layout_gravity="center"
             android:textSize="14sp"/>
@@ -63,7 +63,7 @@
             android:layout_height="40dp"
             android:background="@drawable/transparent_bg_bordered"
             android:text="Sign in"
-            android:textColor="@color/blackk"
+            android:textColor="@color/colorWhite"
             android:textStyle="bold"
             android:textSize="14sp"
             android:clickable="true"

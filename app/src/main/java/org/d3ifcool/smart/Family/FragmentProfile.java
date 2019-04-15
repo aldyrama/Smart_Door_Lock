@@ -47,29 +47,23 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.d3ifcool.smart.AccountActivity.LoginActivity;
 import org.d3ifcool.smart.AccountActivity.RegistActivity;
-import org.d3ifcool.smart.Data;
 import org.d3ifcool.smart.Model.User;
 import org.d3ifcool.smart.R;
 
 import java.util.HashMap;
-
-import hari.bounceview.BounceView;
-
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
 
 public class FragmentProfile extends Fragment {
 
     private static final String TAG = "History";
-    TextView name, email, username, password, account;
+    TextView name, email, password, account;
     private Button logOut, removeAccount;
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener authListener;
-    private DatabaseReference myRef;
-    private FirebaseDatabase database;
     ProgressDialog pd;
     ProgressBar load_pict;
-    ImageView image_profile, menu;
+    ImageView image_profile;
     static int PReqCode = 1 ;
     static int REQUESCODE = 1 ;
 
@@ -86,22 +80,31 @@ public class FragmentProfile extends Fragment {
         View view = inflater.inflate(R.layout.profile_fragment,container,false);
 
         image_profile = view.findViewById(R.id.image_profile);
+
         name = view.findViewById(R.id.setname);
-        username = view.findViewById(R.id.setusername);
+
         email = view.findViewById(R.id.setemail);
+
         account = view.findViewById(R.id.setaccount);
+
         password = view.findViewById(R.id.value_password);
+
         load_pict = view.findViewById(R.id.load_pic);
+
         load_pict.setVisibility(View.VISIBLE);
 
         removeAccount = view.findViewById(R.id.delete_acoun);
+
         logOut = view.findViewById(R.id.btn_logout);
 
         auth = FirebaseAuth.getInstance();
+
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
         storageRef = FirebaseStorage.getInstance().getReference("uploads");
 
         SharedPreferences prefs = getContext().getSharedPreferences("PREFS", MODE_PRIVATE);
+
         profileid = prefs.getString("profileid", "none");
 
         userInfo();
@@ -114,7 +117,9 @@ public class FragmentProfile extends Fragment {
         image_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 if (Build.VERSION.SDK_INT >= 22){
+
                     checkAndRequestForPermission();
 
                 }
@@ -122,27 +127,39 @@ public class FragmentProfile extends Fragment {
                 else {
 
                     cropImage();
+
                 }
+
             }
+
         });
 
 
         authListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+
                 FirebaseUser user = firebaseAuth.getCurrentUser();
+
                 if (user == null) {
+
                     startActivity(new Intent(getActivity(), LoginActivity.class));
+
                     getActivity().finish();
+
                 }
+
             }
+
         };
 
 
         logOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 logOutAccount();
+
                 getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
             }
@@ -150,20 +167,28 @@ public class FragmentProfile extends Fragment {
             FirebaseAuth.AuthStateListener authStateListener = new FirebaseAuth.AuthStateListener() {
                 @Override
                 public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+
                     FirebaseUser user = firebaseAuth.getCurrentUser();
+
                     if (user == null) {
+
                         pd.hide();
+
                         startActivity(new Intent(getActivity(), LoginActivity.class));
+
                         getActivity().finish();
 
+                    }
 
-                    }
-                    }
-                };
+                }
+
+            };
 
             private void logOutAccount() {
+
                 auth.signOut();
             }
+
         });
 
 
@@ -175,48 +200,77 @@ public class FragmentProfile extends Fragment {
                         child(firebaseUser.getEmail().replace(".",","));
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
                 builder.setTitle("DELETE ACCOUNT");
+
                 builder.setMessage("If your unsubscribe, you will lose all information. Doyou want to continue?");
+
                 builder.setNegativeButton("NO",
+
                         new DialogInterface.OnClickListener() {
+
                             public void onClick(DialogInterface dialog,
                                                 int which) {
 
                             }
+
                         });
+
                 builder.setPositiveButton("YES",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,
                                                 int which) {
+
                                 pd = new ProgressDialog(getActivity());
+
                                 pd.setMessage("Please wait...");
+
                                 pd.setCancelable(false);
+
                                 pd.setCanceledOnTouchOutside(false);
+
                                 pd.show();
+
                                 if (firebaseUser != null) {
+
                                     firebaseUser.delete()
+
                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
+
                                                     pd.hide();
+
                                                     if (task.isSuccessful()) {
+
                                                         Toast.makeText(getActivity(), "Your profile is deleted:( Create a account now!", Toast.LENGTH_SHORT).show();
+
                                                         startActivity(new Intent(getActivity(), RegistActivity.class));
+
                                                         getActivity().finish();
+
                                                     } else {
+
                                                         pd.hide();
+
                                                         Toast.makeText(getActivity(), "Failed to delete your account!", Toast.LENGTH_SHORT).show();
 
                                                     }
+
                                                 }
+
                                             });
 
-
                                 }
+
                             }
+
                         });
+
                 builder.show();
+
             }
+
         });
 
         return view;
@@ -224,28 +278,42 @@ public class FragmentProfile extends Fragment {
     }
 
     private void cropImage() {
+
         CropImage.activity()
+
                 .setAspectRatio(1, 1)
+
                 .setCropShape(CropImageView.CropShape.OVAL)
+
                 .start(getContext(), FragmentProfile.this);
+
     }
 
     private void userInfo(){
+
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getEmail().replace(".", ","));
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
                 String showEmail = firebaseUser.getEmail();
+
                 if (getContext() == null){
+
                     return;
+
                 }
+
                 User user = dataSnapshot.getValue(User.class);
 
                 Glide.with(getContext()).load(user.getImageurl()).into(image_profile);
+
                 name.setText(user.getFullname());
-                username.setText(user.getUsername());
+
                 email.setText(showEmail);
+
                 account.setText(user.getTypeAccount());
+
                 load_pict.setVisibility(View.INVISIBLE);
 
             }
@@ -254,92 +322,134 @@ public class FragmentProfile extends Fragment {
             public void onCancelled(DatabaseError databaseError) {
 
             }
+
         });
+
     }
 
     public void deleteDataUser(){
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
-        reference.removeValue();
-        startActivity(new Intent(getActivity(), RegistActivity.class));
 
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
+
+        reference.removeValue();
+
+        startActivity(new Intent(getActivity(), RegistActivity.class));
 
     }
 
 
     private String getFileExtension(Uri uri){
+
         ContentResolver cR = getActivity().getContentResolver();
+
         MimeTypeMap mime = MimeTypeMap.getSingleton();
+
         return mime.getExtensionFromMimeType(cR.getType(uri));
+
     }
 
 
     private void uploadImage(){
+
         final ProgressDialog pd = new ProgressDialog(getActivity());
+
         pd.setMessage("Uploading");
+
         pd.show();
+
         if (mImageUri != null){
+
             final StorageReference fileReference = storageRef.child(System.currentTimeMillis()
+
                     + "." + getFileExtension(mImageUri));
 
             uploadTask = fileReference.putFile(mImageUri);
+
             uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                 @Override
                 public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+
                     if (!task.isSuccessful()) {
+
                         throw task.getException();
+
                     }
+
                     return fileReference.getDownloadUrl();
+
                 }
+
             }).addOnCompleteListener(new OnCompleteListener<Uri>() {
                 @Override
                 public void onComplete(@NonNull Task<Uri> task) {
+
                     if (task.isSuccessful()) {
+
                         Uri downloadUri = task.getResult();
+
                         String miUrlOk = downloadUri.toString();
 
                         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").
                                 child(firebaseUser.getEmail().replace(".", ","));
+
                         DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference();
+
                         String code = reference1.push().getKey();
+
                         reference1.child("Devices").child(code).child("Member").child(firebaseUser.getEmail().replace(".", ","));
 
                         HashMap<String, Object> map1 = new HashMap<>();
+
                         map1.put("imageurl", ""+miUrlOk);
+
                         reference.updateChildren(map1);
+
                         reference1.child("imageurl").setValue(miUrlOk);
 
                         pd.dismiss();
 
                     } else {
+
                         Toast.makeText(getActivity(), "Failed", Toast.LENGTH_SHORT).show();
+
                     }
+
                 }
+
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
+
                     Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+
                 }
+
             });
 
         } else {
-            Toast.makeText(getActivity(), "No image selected", Toast.LENGTH_SHORT).show();
-        }
-    }
 
+            Toast.makeText(getActivity(), "No image selected", Toast.LENGTH_SHORT).show();
+
+        }
+
+    }
 
     private void openGallery() {
 
         Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
+
         galleryIntent.setType("image/*");
+
         startActivityForResult(galleryIntent,REQUESCODE);
+
     }
 
 
     private void checkAndRequestForPermission() {
 
-
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
             != PackageManager.PERMISSION_GRANTED) {
+
         if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)) {
 
             Toast.makeText(getActivity(),"Please accept for required permission",Toast.LENGTH_SHORT).show();
@@ -349,8 +459,10 @@ public class FragmentProfile extends Fragment {
         else
         {
             ActivityCompat.requestPermissions(getActivity(),
+
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                     PReqCode);
+
         }
 
     }
@@ -370,36 +482,51 @@ public class FragmentProfile extends Fragment {
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
 
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
+
             mImageUri = result.getUri();
 
             uploadImage();
 
         } else {
+
             Toast.makeText(getActivity(), "Something gone wrong!", Toast.LENGTH_SHORT).show();
+
         }
+
     }
 
 
     @Override
     public void onResume() {
+
         super.onResume();
+
     }
 
 
     @Override
     public void onStart() {
+
         super.onStart();
+
         auth.addAuthStateListener(authListener);
+
     }
 
 
     @Override
     public void onStop() {
+
         super.onStop();
+
         if (authListener != null) {
+
             auth.removeAuthStateListener(authListener);
+
         }
+
     }
+
 }
 
 

@@ -7,6 +7,7 @@
     android:layout_centerInParent="true"
     android:layout_gravity="center"
     android:gravity="center"
+    android:id="@+id/rl"
     android:background="@color/blue_gray">
 
     <FrameLayout
@@ -42,51 +43,14 @@
 
     </LinearLayout>
 
-    <RelativeLayout
-        android:layout_below="@+id/topBar"
-        android:layout_above="@+id/bottomBar"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center">
-
-        <android.support.v7.widget.CardView
-            android:id="@+id/cardAddDoor"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="48dp"
-            android:layout_marginBottom="48dp"
-            android:layout_marginRight="23dp"
-            android:layout_marginLeft="23dp"
-            app:cardCornerRadius="35dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:onClick="onClick"
-            android:foreground="?attr/selectableItemBackgroundBorderless"
-            android:elevation="8dp"
-            android:divider="@android:color/transparent"
-            android:dividerHeight="0.0px"
-            android:clipToPadding="false"
-            android:clipChildren="false"
-            android:visibility="invisible"
-            card_view:cardElevation="10dp"
-            card_view:cardPreventCornerOverlap="false">
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/profile_image"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:src="@drawable/ck"
-                android:layout_gravity="center"
-                app:civ_border_width="0dp" />
-
-            <ImageView
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:src="@drawable/ic_action_add_white"
-                android:layout_gravity="center" />
-
-        </android.support.v7.widget.CardView>
-    </RelativeLayout>
+    <TextView
+        android:id="@+id/empty_door"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No door"
+        android:gravity="center"
+        android:layout_centerInParent="true"
+        android:drawableTop="@drawable/emptyy"/>
 
     <com.rbrooks.indefinitepagerindicator.IndefinitePagerIndicator
         android:id="@+id/recyclerview_indicator_door"
@@ -111,5 +75,44 @@
             android:layout_margin="16dp"
             android:backgroundTint="@color/blackk"
             android:src="@drawable/ic_action_add_white"/>
+
+
+    <LinearLayout
+        android:id="@+id/lr_statur"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:background="@color/colorWhite"
+        android:visibility="gone"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Device not connected!"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/blackk"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="check your device and reconnect it."
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="16sp"/>
+
+        <Button
+            android:id="@+id/config_btn"
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/confirm" />
+
+    </LinearLayout>
+
 
 </RelativeLayout>

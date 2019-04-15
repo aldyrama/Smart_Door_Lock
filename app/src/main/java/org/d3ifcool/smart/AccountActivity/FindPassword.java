@@ -39,15 +39,18 @@ public class FindPassword extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_find_password);
-//        setStatustBarColor(R.color.colorWhite);
-        getWindow().setFlags(
-                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-        );
 
+        getWindow().setFlags(
+
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+
+        );
 
         //Initial Widget
         findPass = findViewById(R.id.find_pass);
+
         email = findViewById(R.id.email);
         //Initial firebase
         auth = FirebaseAuth.getInstance();
@@ -56,78 +59,95 @@ public class FindPassword extends AppCompatActivity {
         findPass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 String emailInput = email.getText().toString().trim();
 
-
                 if (TextUtils.isEmpty(emailInput)){
+
                     email.setError("Email required!");
+
                 }
+
                 else {
+
                     pd.setMessage("Please wait");
+
                     pd.show();
+
                     auth.sendPasswordResetEmail(email.getText().toString())
+
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
+
                                     pd.hide();
+
                                     if (task.isSuccessful()){
+
                                         Toast.makeText(FindPassword.this, "Password send to your email", Toast.LENGTH_SHORT).show();
+
                                     }
+
                                     else {
+
                                         Toast.makeText(FindPassword.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+
                                     }
 
                                 }
+
                             });
+
                 }
 
             }
+
         });
+
     }
-
-    private TextWatcher findPassword = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-
-        }
-    };
 
     @Override
     public void onBackPressed() {
+
         startActivity(new Intent(FindPassword.this, LoginActivity.class));
+
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
     }
 
     public void onClickView(View view) {
+
         switch (view.getId()){
+
             case R.id.btn_prev :
+
                 startActivity(new Intent(FindPassword.this, LoginActivity.class));
+
                 overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
         }
+
     }
 
     @SuppressLint("ResourceAsColor")
     private void setStatustBarColor(@ColorRes int statustBarColor) {
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+
             int color = ContextCompat.getColor(this, statustBarColor);
+
             Window window = getWindow();
+
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+
             window.setStatusBarColor(color);
+
             window.setTitleColor(R.color.black);
+
         }
+
     }
+
 }

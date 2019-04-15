@@ -15,6 +15,26 @@
     <string name="offset_value">%1$.2f :Offset</string>
     <string name="angle_value_none">Angle: none</string>
     <string name="offset_value_none">none :Offset</string>
+    <string name="no_guest">no guest</string>
+    <string name="guest">there is guest</string>
+    <string name="disconnect">Not connected</string>
+    <string name="connect">Connected</string>
+    <string name="house_not_locket">House is not locked</string>
+    <string name="house_locket">House locked</string>
+    <string name="delete_device">"DELETE DEVICE"</string>
+    <string name="yes">Yes</string>
+    <string name="retry">Retry</string>
+    <string name="Canncel">Cancel</string>
+    <string name="Close">Close</string>
+    <string name="massegaeDelete">are you sure to delete this device ?</string>
+    <string name="formatDate">dd/MM/yyyy h:mm a</string>
+    <string name="device_not_connected">Device not connected</string>
+    <string name="connect_the_device">connect the device ?</string>
+    <string name="No_internet_access">No internet access</string>
+    <string name="Please_Check_Internet">Please Check Your Connection Internet</string>
+    <string name="Expired">Expired</string>
+    <string name="Email_required">Email required</string>
+    <string name="Expired_required">Expired required</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -39,5 +59,27 @@
     <string name="configure_result_failed_port">Create Esptouch task failed, the EspTouch port could be used by other thread</string>
     <string name="configure_result_success">Config succes</string>
     <string name="configure_result_success_item">BSSID = %1$s, InetAddress = %2$s</string>
+    <string name="log_in">Log In</string>
+    <string name="your_password">Your password</string>
+    <string name="your_email">Your email</string>
+    <string name="change_password">Change password</string>
+    <string name="enter_your_new_password">Enter your new password</string>
+    <string name="new_password">New password</string>
+    <string name="re_password">Re-password</string>
+    <string name="manage_account">Manage account</string>
+    <string name="forget_password">Forget password</string>
+    <string name="enter_your_email">Enter your email</string>
+    <string name="send">Send</string>
+    <string name="home">Home</string>
+    <string name="already_have_an_sccount_log_in">Already have an sccount? Log in</string>
+    <string name="register">register</string>
+    <string name="member">Member</string>
+    <string name="owner">Owner</string>
+    <string name="account_type">Account Type</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="full_name">Full Name</string>
+    <string name="prolock">PROLOCK</string>
+    <string name="sing_up">Sing Up</string>
 
 </resources>

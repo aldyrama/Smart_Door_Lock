@@ -29,60 +29,83 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class DetailUser extends AppCompatActivity implements  View.OnClickListener, RecylerViewAdapterUserInvite.OnItemClickListener {
 
-    TextView emailDetailTextView,detailNameTextView,detailTypeAccount, deviceCode, startTime, endTime;
-    ImageView close;
-    CircleImageView photo;
+    private TextView detailNameTextView,
+            detailTypeAccount,
+            deviceCode,
+            startTime,
+            endTime;
+    private CircleImageView photo;
 
     private void initializeWidgets(){
-//        emailDetailTextView = findViewById(R.id.emailuser);
+
         deviceCode = findViewById(R.id.devicecodedetail);
+
         photo = findViewById(R.id.imgUser);
+
         detailNameTextView = findViewById(R.id.detailNameUser);
+
         detailTypeAccount = findViewById(R.id.typeaccount);
+
         startTime = findViewById(R.id.start_time);
+
         endTime = findViewById(R.id.end_time);
 
-
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.popup_detail_user);
-//        setStatustBarColor(R.color.colorWhite);
 
         getWindow().setFlags(
+
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+
         );
 
         initializeWidgets();
 
         DisplayMetrics mt = new DisplayMetrics();
+
         getWindowManager().getDefaultDisplay().getMetrics(mt);
 
         int width = mt.widthPixels;
+
         int hight = mt.heightPixels;
 
         getWindow().setLayout((int)(width *.9), (int)(hight *.6));
+
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         Intent i=this.getIntent();
+
         String name = i.getExtras().getString("NAME_KEY");
+
         String email = i.getExtras().getString("EMAIL_KEY");
+
         String image =i.getExtras().getString("IMAGE_KEY");
+
         String typeaccount = i.getExtras().getString("TYPEACCOUNT_KEY");
+
         String device =i.getExtras().getString("DEVICECODE_KEY");
+
         String startAccess =i.getExtras().getString("STARTACCESS");
+
         String expired =i.getExtras().getString("EXPIRED");
 
 
         detailNameTextView.setText(name);
+
         deviceCode.setText(device);
+
         detailTypeAccount.setText(typeaccount);
+
         startTime.setText(startAccess);
+
         endTime.setText(expired);
+
         Picasso.with(this)
                 .load(image)
                 .placeholder(R.drawable.userphoto)
@@ -90,10 +113,7 @@ public class DetailUser extends AppCompatActivity implements  View.OnClickListen
                 .centerCrop()
                 .into(photo);
 
-
-
     }
-
 
     @Override
     public void onClick(View v) {
@@ -117,21 +137,35 @@ public class DetailUser extends AppCompatActivity implements  View.OnClickListen
 
     @SuppressLint("ResourceAsColor")
     private void setStatustBarColor(@ColorRes int statustBarColor) {
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+
             int color = ContextCompat.getColor(this, statustBarColor);
+
             Window window = getWindow();
+
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+
             window.setStatusBarColor(color);
+
             window.setTitleColor(R.color.black);
+
         }
+
     }
 
     private String getDateToday(){
+
         DateFormat dateFormat=new SimpleDateFormat("yyyy/MM/dd");
+
         Date date = new Date();
+
         String today= dateFormat.format(date);
+
         return today;
+
     }
 
 }

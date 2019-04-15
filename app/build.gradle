@@ -50,6 +50,7 @@ dependencies {
     implementation 'me.dm7.barcodescanner:zxing:1.9.8'
     implementation 'com.github.arturogutierrez:badges:1.0.5@aar'
     implementation 'com.ryanjeffreybrooks:indefinitepagerindicator:1.0.10'
+    implementation 'com.gdacciaro:iosdialog:1.0.3'
     implementation project(':esptouch')
     implementation('com.google.apis:google-api-services-youtube:v3-rev206-1.25.0') {
         exclude group: 'org.apache.httpcomponents'

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -38,7 +37,7 @@
                         android:layout_centerInParent="true"
                         android:layout_marginTop="0dp"
                         android:gravity="center|bottom"
-                        android:text="Sing Up"
+                        android:text="@string/sing_up"
                         android:textColor="@color/colorWhite"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -48,8 +47,8 @@
                         android:layout_width="30dp"
                         android:layout_height="50dp"
                         android:src="@drawable/ic_left"
-                        android:layout_alignParentLeft="true"
-                        android:layout_marginRight="5dp"/>
+                        android:layout_alignParentStart="true"
+                        android:layout_marginEnd="5dp"/>
 
                 </RelativeLayout>
             </LinearLayout>
@@ -67,41 +66,41 @@
                     android:id="@+id/text_regist"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="PROLOCK"
+                    android:text="@string/prolock"
                     android:layout_gravity="center"
                     android:textSize="32sp"
                     android:textStyle="bold"
                     android:textColor="@color/blackk"/>
 
-                <EditText
-                    android:id="@+id/username_edittxt"
-                    android:layout_width="320dp"
-                    android:layout_height="40dp"
-                    android:background="@drawable/bg_edittext"
-                    android:hint="Username"
-                    android:ems="10"
-                    android:drawablePadding="8dp"
-                    android:drawableStart="@drawable/ic_action_user"
-                    android:imeOptions="actionNext"
-                    android:lines="1"
-                    android:layout_marginTop="50dp"
-                    android:inputType="textEmailAddress"
-                    android:textSize="12sp"
-                    android:paddingLeft="12dp"
-                    android:layout_gravity="center"/>
+                <!--<EditText-->
+                    <!--android:id="@+id/username_edittxt"-->
+                    <!--android:layout_width="320dp"-->
+                    <!--android:layout_height="40dp"-->
+                    <!--android:layout_gravity="center"-->
+                    <!--android:layout_marginTop="50dp"-->
+                    <!--android:background="@drawable/bg_edittext"-->
+                    <!--android:drawableStart="@drawable/ic_action_user"-->
+                    <!--android:drawablePadding="8dp"-->
+                    <!--android:ems="10"-->
+                    <!--android:hint="Username"-->
+                    <!--android:imeOptions="actionNext"-->
+                    <!--android:inputType="textEmailAddress"-->
+                    <!--android:lines="1"-->
+                    <!--android:paddingLeft="12dp"-->
+                    <!--android:textSize="12sp" />-->
 
                 <EditText
                     android:id="@+id/fullname_edittxt"
                     android:layout_width="320dp"
                     android:layout_height="40dp"
                     android:background="@drawable/bg_edittext"
-                    android:hint="Full Name"
+                    android:hint="@string/full_name"
                     android:ems="10"
                     android:drawablePadding="8dp"
                     android:drawableStart="@drawable/ic_action_user"
                     android:imeOptions="actionNext"
                     android:lines="1"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="50dp"
                     android:inputType="textEmailAddress"
                     android:textSize="12sp"
                     android:paddingLeft="12dp"
@@ -121,7 +120,7 @@
                     android:drawableStart="@drawable/ic_action_email"
                     android:textSize="12sp"
                     android:paddingStart="12dp"
-                    android:hint="Email"
+                    android:hint="@string/email"
                     android:ems="10"/>
 
                 <EditText
@@ -137,8 +136,8 @@
                     android:textSize="12sp"
                     android:drawablePadding="8dp"
                     android:drawableStart="@drawable/ic_action_lock"
-                    android:paddingLeft="12dp"
-                    android:hint="Password"
+                    android:paddingStart="12dp"
+                    android:hint="@string/password"
                     android:ems="10"/>
 
                 <LinearLayout
@@ -146,12 +145,13 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="8dp">
+                    android:layout_marginStart="8dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Account Type"
+                    android:text="@string/account_type"
+                    android:layout_marginTop="10dp"
                     android:textColor="@color/black"
                     android:textSize="18sp" />
 
@@ -165,7 +165,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checked="true"
-                        android:text="Owner"
+                        android:text="@string/owner"
                         android:textColor="@color/black" />
 
 
@@ -173,7 +173,7 @@
                         android:id="@+id/member_radiobutton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Member"
+                        android:text="@string/member"
                         android:textColor="@color/black" />
 
                 </RadioGroup>
@@ -194,7 +194,7 @@
                 android:layout_height="40dp"
                 android:layout_gravity="bottom|center"
                 android:background="@drawable/transparent_bg_bordered"
-                android:text="register"
+                android:text="@string/register"
                 android:gravity="center"
                 android:textStyle="bold"
                 android:textSize="14sp"
@@ -206,7 +206,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#B0BEC5"
-                android:text="Already have an sccount? Log in"
+                android:text="@string/already_have_an_sccount_log_in"
                 android:id="@+id/txt_login"
                 android:layout_marginTop="10dp"/>
 

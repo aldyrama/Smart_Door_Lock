@@ -72,18 +72,21 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:text="Notification"
+                    android:layout_marginLeft="15dp"
+                    android:text="Guest"
+                    android:drawableLeft="@drawable/ic_notif"
+                    android:drawablePadding="10dp"
                     android:layout_gravity="center"/>
 
                 <ImageView
                     android:id="@+id/guest_notif"
                     android:layout_width="0dp"
                     android:layout_weight="0.2"
-                    android:layout_height="20dp"
+                    android:layout_height="30dp"
                     android:layout_gravity="center"
                     android:src="@drawable/switch_on"/>
             </LinearLayout>
+
 
                 <View
                     android:layout_width="match_parent"
@@ -99,15 +102,17 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:text="Auto lock"
+                        android:layout_marginLeft="15dp"
+                        android:text="Door"
+                        android:drawableLeft="@drawable/ic_notif"
+                        android:drawablePadding="10dp"
                         android:layout_gravity="center"/>
 
                     <ImageView
-                        android:id="@+id/autolock"
+                        android:id="@+id/door_notif"
                         android:layout_width="0dp"
                         android:layout_weight="0.2"
-                        android:layout_height="20dp"
+                        android:layout_height="30dp"
                         android:layout_gravity="center"
                         android:src="@drawable/switch_on"/>
                 </LinearLayout>
@@ -117,6 +122,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/colorGrey"/>
+
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -128,8 +134,10 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
+                        android:layout_marginLeft="15dp"
                         android:text="Wifi Configuration"
+                        android:drawableLeft="@drawable/ic_connect"
+                        android:drawablePadding="10dp"
                         android:layout_gravity="center"/>
 
                 </LinearLayout>

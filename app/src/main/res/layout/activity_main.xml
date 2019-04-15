@@ -41,7 +41,7 @@
                     android:layout_centerInParent="true"
                     android:layout_marginTop="0dp"
                     android:gravity="center|bottom"
-                    android:text="Home"
+                    android:text="@string/home"
                     android:textColor="@color/colorWhite"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -54,8 +54,8 @@
                 android:layout_centerVertical="true"
                 android:visibility="gone"
                 android:src="@drawable/ic_action_add_white"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="15dp"/>
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="15dp"/>
 
             </RelativeLayout>
         </LinearLayout>
@@ -85,7 +85,6 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/mRecyclerView"
-            android:layout_weight="0.5"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="3dp"
@@ -170,7 +169,7 @@
             app:selectedDotColor="@color/blackk"
             app:selectedDotRadius="5dp"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="60dp"
+            android:layout_marginBottom="55dp"
             android:layout_centerHorizontal="true"/>
 
         <RelativeLayout
