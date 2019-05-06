@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tomer.fadingtextview.FadingTextView;
@@ -27,6 +28,7 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
     private FadingTextView fadingTextView;
     private long ms = 0, splashTime = 1600;
     private boolean splashActiv = true, paused = false;
+    private ProgressBar pd;
 
 
     @Override
@@ -52,9 +54,19 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
 
         fadingTextView = findViewById(R.id.fad);
 
+        pd = findViewById(R.id.progressbar);
+
+        pd.setVisibility(View.VISIBLE);
+
         Typeface font = Typeface.createFromAsset(getAssets(), "font/Fontspring_DEMO_microsquare_bold.ttf");
 
         protxt.setTypeface(font);
+
+        if (!isOnline()){
+
+            pd.setVisibility(View.GONE);
+
+        }
 
         final Thread thread = new Thread(){
             @Override
@@ -96,6 +108,8 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
                                         checking.setVisibility(View.VISIBLE);
 
                                         fadingTextView.setVisibility(View.VISIBLE);
+
+                                        pd.setVisibility(View.VISIBLE);
 
                                     }
 

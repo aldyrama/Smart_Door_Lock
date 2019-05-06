@@ -38,9 +38,9 @@ public class MessageDialogFragment extends DialogFragment {
     private DatabaseReference reference, reference0, reference1, reference2;
     private FirebaseUser firebaseUser;
     private FirebaseAuth auth;
-    MediaPlayer mediaPlayer;
+    private MediaPlayer mediaPlayer;
 
-    EditText inputHouse;
+    private EditText inputHouse;
 
 
 

@@ -16,6 +16,10 @@ public class Door {
 
     private int position;
 
+    private String connect;
+
+    private int power;
+
     public Door() {
 
         //empty constructor needed
@@ -65,6 +69,10 @@ public class Door {
 
         return doorName;
 
+    }
+
+    public String getConnect() {
+        return connect;
     }
 
     public void setDoorName(String doorName) {
@@ -133,4 +141,15 @@ public class Door {
 
     }
 
+    public void setConnect(String connect) {
+        this.connect = connect;
+    }
+
+    public int getPower() {
+        return power;
+    }
+
+    public void setPower(int power) {
+        this.power = power;
+    }
 }

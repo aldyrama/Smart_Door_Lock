@@ -1,5 +1,6 @@
 package org.d3ifcool.smart.Adapter;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -7,6 +8,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,24 +16,40 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import org.d3ifcool.smart.Model.User;
 import org.d3ifcool.smart.R;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
+
+import static java.security.AccessController.getContext;
 
 
 public class RecylerViewAdapterUserInvite extends RecyclerView.Adapter<RecylerViewAdapterUserInvite.MyViewHolder> {
     private Context mContext;
     private List<User> mConnect;
     private OnItemClickListener mListener;
+    private FirebaseUser firebaseUser;
+    private FirebaseAuth auth;
 
     public RecylerViewAdapterUserInvite(FragmentActivity activity, List<User> mConnectlist) {
 
@@ -83,63 +101,44 @@ public class RecylerViewAdapterUserInvite extends RecyclerView.Adapter<RecylerVi
         Intent i = ((Activity) mContext).getIntent();
         final String name =i.getExtras().getString("NAME_KEY");
         final String deviceCode =i.getExtras().getString("DEVICECODE_KEY");
-//
-//        DatabaseReference reference  = FirebaseDatabase.getInstance().getReference().child("Devices").child(deviceCode).child("Member");
-//        reference.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                for (DataSnapshot expSnapshot : dataSnapshot.getChildren()) {
-//                    User upload = expSnapshot.getValue(User.class);
-//                    String startTime = upload.getStart_access();
-//                    String endTime = upload.getExpired();
-//
-//                    try {
-//                        Date startDate = new SimpleDateFormat("dd/MM/yyyy h:mm a").parse(startTime);
-//                        Date dateExp = new SimpleDateFormat("dd/MM/yyyy h:mm a").parse(endTime);
-//
-//                        long millisExp = dateExp.getTime();
-//                        long millisStart = startDate.getTime();
-//                        long total_millis = (millisExp - millisStart);
-//
-//                        CountDownTimer cdt = new CountDownTimer(total_millis, 1000) {
-//                            @Override
-//                            public void onTick(long millisUntilFinished) {
-//                                long days = TimeUnit.MILLISECONDS.toDays(millisUntilFinished);
-//                                millisUntilFinished -= TimeUnit.DAYS.toMillis(days);
-//
-//                                long hours = TimeUnit.MILLISECONDS.toHours(millisUntilFinished);
-//                                millisUntilFinished -= TimeUnit.HOURS.toMillis(hours);
-//
-//                                long minutes = TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished);
-//                                millisUntilFinished -= TimeUnit.MINUTES.toMillis(minutes);
-//
-//                                long seconds = TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished);
-//
-//                                holder.end.setText(days + ":" + hours + ":" + minutes + ":" + seconds);    }
-//
-//                            @Override
-//                            public void onFinish() {
-//
-//                            }
-//                        };
-//
-//                        cdt.start();
-//
-//                    } catch (ParseException e) {
-//                        e.printStackTrace();
-//                    }
-//
-//
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-//
+
+        DatabaseReference expired = FirebaseDatabase.getInstance().getReference();
+        expired.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot expiredSnapshot : dataSnapshot.child("Devices").child(deviceCode).child("Member").getChildren()) {
+
+                    final String email = expiredSnapshot.getKey();
+
+                    String exp = expiredSnapshot.child("expired").getValue(String.class);
+
+                    Log.d("exp", "onDataChange: " + exp);
+
+                    if (exp.equals(" ")){
+
+                        holder.icon.setVisibility(View.GONE);
+
+                    }
+
+                    else {
+
+                        holder.icon.setVisibility(View.VISIBLE);
+
+                    }
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+
+        });
+
+
     }
 
     @Override
@@ -183,6 +182,7 @@ public class RecylerViewAdapterUserInvite extends RecyclerView.Adapter<RecylerVi
         private FrameLayout item_user;
         private TextView fullname, username, email, start, end;
         private CircleImageView photo;
+        private ImageView icon;
 
 
         public MyViewHolder(@NonNull View itemView) {
@@ -197,6 +197,12 @@ public class RecylerViewAdapterUserInvite extends RecyclerView.Adapter<RecylerVi
             end = itemView.findViewById(R.id.expired_member);
 
             photo = itemView.findViewById(R.id.imageMember);
+
+            icon = itemView.findViewById(R.id.ic_exp);
+
+            auth = FirebaseAuth.getInstance();
+
+            firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
             itemView.setOnClickListener(this);
 
@@ -242,7 +248,7 @@ public class RecylerViewAdapterUserInvite extends RecyclerView.Adapter<RecylerVi
 
             if (mListener != null) {
 
-                int position = getAdapterPosition();
+                final int position = getAdapterPosition();
 
                 if (position != RecyclerView.NO_POSITION) {
 
@@ -256,7 +262,39 @@ public class RecylerViewAdapterUserInvite extends RecyclerView.Adapter<RecylerVi
 
                         case 2:
 
-                            mListener.onDeleteItemClick(position);
+                            DatabaseReference checkUser = FirebaseDatabase.getInstance().getReference().child("Users").child(firebaseUser.getEmail()
+                                    .replace(".", ","));
+                            checkUser.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if (getContext() == null) {
+
+                                        return;
+
+                                    }
+
+                                    User user = dataSnapshot.getValue(User.class);
+
+                                    String account = user.getTypeAccount();
+                                    if (account.equals("Owner")) {
+
+                                        mListener.onDeleteItemClick(position);
+
+                                    }
+
+                                    else {
+
+                                        Toast.makeText(mContext, "only owner", Toast.LENGTH_SHORT).show();
+
+                                    }
+
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
 
                             return true;
 

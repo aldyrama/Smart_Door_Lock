@@ -10,16 +10,21 @@ import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.dinuscxj.progressbar.CircleProgressBar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -34,25 +39,30 @@ import org.d3ifcool.smart.Model.Door;
 import org.d3ifcool.smart.Model.House;
 import org.d3ifcool.smart.Model.User;
 import org.d3ifcool.smart.R;
+import org.d3ifcool.smart.WifiConfiguration.EsptouchDemoActivity;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 import hari.bounceview.BounceView;
 
+import static java.security.AccessController.getContext;
+
 
 public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoor.RecyclerViewHolder>
-        implements View.OnClickListener, RecyclerAdapterHouse.DoorInterfaces{
+        implements View.OnClickListener, RecyclerAdapterHouse.DoorInterfaces, CircleProgressBar.ProgressFormatter {
     private Context mContext;
     private List<Door> mDoor;
     private OnItemClickListener mListener;
     private FirebaseUser firebaseUser;
     int status;
     private boolean statusDevice;
-
+    private FirebaseAuth auth;
+    private static final String DEFAULT_PATTERN = "%d%%";
 
     public RecyclerAdapterDoor (FragmentActivity activity, List<Door> uploads) {
 
@@ -82,9 +92,11 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
 
         holder.mProgressbar.setVisibility(View.VISIBLE);
 
+        holder.circleProgressBar.setProgressFormatter(null);
+
         final String time = holder.getTimeToday();
 
-        final String date = holder.getDateToday();
+        final String date = getToday();
 
         final Activity activity = (Activity) mContext;
 
@@ -116,36 +128,32 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
 
                 Door door = dataSnapshot.getValue(Door.class);
 
-                Door doorr = new Door();
-
-                String statustDoor = door.getStatus();
-
-                holder.statusdoor.setText(door.getStatus());
-
                 try {
 
-                int lock = door.getDoorLock();
+                    holder.statusdoor.setText(door.getStatus());
 
-                status = lock;
+                    int lock = door.getDoorLock();
 
-                String system = door.getStatus();
+                    status = lock;
 
-                String nameDoor = door.getDoorName();
+                    int power = door.getPower();
 
-                if (lock == 0){
+                    String nameDoor = door.getDoorName();
 
-                    Picasso.with(mContext)
-                            .load(url)
-                            .into(holder.lockImageView, new Callback() {
-                                @Override
-                                public void onSuccess() {
+                    if (lock == 0){
 
-                                    holder.mProgressbar.setVisibility(View.INVISIBLE);
+                        Picasso.with(mContext)
+                                .load(url)
+                                .into(holder.lockImageView, new Callback() {
+                                    @Override
+                                    public void onSuccess() {
 
-                                }
+                                        holder.mProgressbar.setVisibility(View.INVISIBLE);
 
-                                @Override
-                                public void onError() {
+                                    }
+
+                                    @Override
+                                    public void onError() {
 
                                 }
 
@@ -175,6 +183,45 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
                             });
 
                     holder.status.setText("Unlocked");
+
+                    }
+
+                    if (power == 100){
+
+                        holder.devicePower.setImageResource(R.drawable.b100);
+
+                        holder.textIndicator.setText("100%");
+
+                    }
+
+                    else if (power == 75){
+
+                        holder.devicePower.setImageResource(R.drawable.b75);
+
+                        holder.textIndicator.setText("75%");
+
+                    }
+
+                    else if (power == 50){
+
+                        holder.devicePower.setImageResource(R.drawable.b50);
+
+                        holder.textIndicator.setText("50%");
+
+                    }
+
+                    else if (power == 25){
+
+                        holder.devicePower.setImageResource(R.drawable.b25);
+
+                        holder.textIndicator.setText("25%");
+                    }
+
+                    else {
+
+                        holder.devicePower.setImageResource(R.drawable.b0);
+
+                        holder.textIndicator.setText("0%");
 
                     }
 
@@ -236,11 +283,15 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
 
                         if (!isInternetOn()){
 
+                            holder.textConnection.setVisibility(View.VISIBLE);
+
                             Toast.makeText(v.getContext(), "no internet connection!", Toast.LENGTH_SHORT).show();
 
                         }
 
-                        else if (status == 0) {
+                        else if (status == 0 && isInternetOn()) {
+
+                            holder.textConnection.setVisibility(View.GONE);
 
                             holder.mProgressbar.setVisibility(View.VISIBLE);
 
@@ -300,26 +351,61 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
 
         });
 
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Devices").child(deviceCode);
+        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Devices").child(deviceCode).child("Doors")
+                .child(currentDoor.getDoorPin());
         ref.addValueEventListener(new ValueEventListener() {
+            @SuppressLint("ResourceType")
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                House connect = dataSnapshot.getValue(House.class);
+                Door door = dataSnapshot.getValue(Door.class);
 
-                boolean isConnect = connect.isConnect();
+                try {
 
-                String update = connect.getUpdate();
+                    String now = getDateToday();
 
-                if (!isConnect){
+                    Log.d("total", "now" + now);
 
-                    holder.lockImageView.setEnabled(false);
+                    String statusDevice = door.getConnect();
 
-                }
+                    Log.d("total", "updateDate" + statusDevice);
 
-                else {
+                    @SuppressLint("SimpleDateFormat")
+                    Date dateNow = new SimpleDateFormat("dd/M/yyyy HH:mm").parse(now);
 
-                    holder.lockImageView.setEnabled(true);
+                    @SuppressLint("SimpleDateFormat")
+                    Date dateCont = new SimpleDateFormat("dd/M/yyyy HH:mm").parse(statusDevice);
+
+                    long millisNow = dateNow.getTime();
+
+                    long millisCont = dateCont.getTime();
+
+                    long totalMillis = (millisNow - millisCont);
+
+                    Log.d("total", "millis" + totalMillis);
+
+                    if (totalMillis >= 24000) {
+
+                        holder.device.setImageResource(R.drawable.ic_not_connect);
+
+                        holder.lockImageView.setEnabled(false);
+
+
+                    }
+
+                    else {
+
+                        holder.device.setImageResource(R.drawable.ic_connect);
+
+                        holder.lockImageView.setEnabled(true);
+
+                    }
+
+                } catch (
+
+                        ParseException e) {
+
+                    e.printStackTrace();
 
                 }
 
@@ -332,21 +418,45 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
 
         });
 
+        if (!isInternetOn()){
+
+            holder.textConnection.setVisibility(View.VISIBLE);
+
+        }
+
+        else {
+
+            holder.textConnection.setVisibility(View.GONE);
+
+        }
+
+    }
+
+    private String getToday(){
+
+        DateFormat dateFormat=new SimpleDateFormat("dd/MM/yyyy" );
+
+        Date date = new Date();
+
+        String today= dateFormat.format(date);
+
+        return today;
+
     }
 
 
-    private boolean isNetworkAvailable() {
+    private String getDateToday() {
 
-        ConnectivityManager connectivityManager
+        @SuppressLint("SimpleDateFormat")
+        DateFormat dateFormat=new SimpleDateFormat("dd/M/yyyy HH:mm");
 
-                = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        Date date = new Date();
 
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        String today= dateFormat.format(date);
 
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        return today;
 
     }
-
 
     public final boolean isInternetOn()
     {
@@ -387,6 +497,13 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
 
     }
 
+    @SuppressLint("DefaultLocale")
+    @Override
+    public CharSequence format(int progress, int max) {
+        return String.format(DEFAULT_PATTERN, (int) ((float) progress / (float) max * 100));
+
+    }
+
     public interface OnItemClickListener {
 
         void onItemClick(int position);
@@ -414,11 +531,12 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
     public class RecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
             View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
 
-        public TextView name_door, statusdoor, dateTextView, status;
-        public ImageView lockImageView;
-        public AnimationDrawable imagesAnimation;
-        ProgressBar mProgressbar;
-
+        private TextView name_door, statusdoor, textConnection, status, textIndicator;
+        private ImageView lockImageView, device, devicePower;
+        private AnimationDrawable imagesAnimation;
+        private CircleProgressBar circleProgressBar;
+        private ProgressBar mProgressbar;
+        private String replaceEmail;
 
         public RecyclerViewHolder(View itemView) {
             super(itemView);
@@ -426,6 +544,10 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
             name_door =itemView.findViewById ( R.id.doorName );
 
             statusdoor = itemView.findViewById(R.id.statustDoor);
+
+            textIndicator = itemView.findViewById(R.id.txt_power);
+
+            textConnection = itemView.findViewById(R.id.text_status);
 
             lockImageView = itemView.findViewById(R.id.lockDoor);
 
@@ -435,7 +557,17 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
 
             imagesAnimation = (AnimationDrawable) lockImageView.getBackground();
 
+            auth = FirebaseAuth.getInstance();
+
+            devicePower = itemView.findViewById(R.id.battery_indicator);
+
+            device = itemView.findViewById(R.id.connect_device);
+
             firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+            circleProgressBar = itemView.findViewById(R.id.progress_autolock);
+
+            replaceEmail = firebaseUser.getEmail().replace(".", ",");
 
             itemView.setOnClickListener(this);
 
@@ -443,21 +575,7 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
 
         }
 
-
-    private String getDateToday(){
-
-        DateFormat dateFormat=new SimpleDateFormat("dd/MM/yyyy");
-
-        Date date=new Date();
-
-        String today= dateFormat.format(date);
-
-        return today;
-
-    }
-
-
-    private String getTimeToday(){
+        private String getTimeToday(){
 
             DateFormat dateFormat=new SimpleDateFormat("hh:mm:ss a");
 
@@ -504,7 +622,7 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
 
             if (mListener != null) {
 
-                int position = getAdapterPosition();
+                final int position = getAdapterPosition();
 
                 if (position != RecyclerView.NO_POSITION) {
 
@@ -518,7 +636,42 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
 
                         case 1:
 
-                            mListener.onDeleteItemClick(position);
+                            DatabaseReference checkUser = FirebaseDatabase.getInstance().getReference().child("Users").child(firebaseUser.getEmail()
+                                    .replace(".", ","));
+                            checkUser.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if (getContext() == null){
+
+                                        return;
+
+                                    }
+
+                                    User user = dataSnapshot.getValue(User.class);
+
+                                    String account = user.getTypeAccount();
+
+                                    if (account.equals("Owner")){
+
+                                        mListener.onDeleteItemClick(position);
+
+                                    }
+
+                                    else {
+
+                                        Toast.makeText(mContext, "only owner", Toast.LENGTH_SHORT).show();
+
+                                    }
+
+
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+
+                            });
 
                             return true;
 

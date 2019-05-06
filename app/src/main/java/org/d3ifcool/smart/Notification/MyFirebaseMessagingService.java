@@ -1,24 +1,23 @@
 package org.d3ifcool.smart.Notification;
 
+import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.IBinder;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.util.Pair;
 import android.view.View;
 import android.widget.Toast;
 
@@ -30,24 +29,21 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
-import org.d3ifcool.smart.Data;
 import org.d3ifcool.smart.Home.MainActivity;
-import org.d3ifcool.smart.Home.StreamingActivity;
 import org.d3ifcool.smart.R;
+import org.d3ifcool.smart.Setting.SettingActivity;
 
-import java.util.Map;
+import static org.d3ifcool.smart.Setting.SettingActivity.SWITCH1;
+import static org.d3ifcool.smart.Setting.SettingActivity.SWITCH2;
+import static org.d3ifcool.smart.Setting.SettingActivity.SWITCH3;
 
-import static android.support.constraint.Constraints.TAG;
-import static android.view.View.inflate;
 
-public class MyFirebaseMessagingService extends Service{
+public class MyFirebaseMessagingService extends Service implements SettingActivity.SettingInterface {
 
         private FirebaseDatabase database;
-        private DatabaseReference Door, Doors, guest;
-        private Pair<DatabaseReference, ValueEventListener> mListener;
+        private DatabaseReference Door, guest;
         private FirebaseAuth auth;
         private FirebaseUser firebaseUser;
         private String name, doorName, housename;
@@ -55,6 +51,10 @@ public class MyFirebaseMessagingService extends Service{
         private Vibrator vibrator;
         private MediaPlayer mediaPlayer;
         private DatabaseReference refOnOff;
+        private Boolean isInBackground;
+        private SharedPreferences prefs;
+        private SharedPreferences.Editor editor;
+        private boolean onGuest, onDoor, onThief, thief;
 
         @Override
         public void onCreate() {
@@ -66,108 +66,64 @@ public class MyFirebaseMessagingService extends Service{
 
                 database = FirebaseDatabase.getInstance();
 
-                refOnOff = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getEmail().replace(".", ","))
-                        .child("Notifications");
+                prefs = getSharedPreferences(SettingActivity.GLOBAL_SHARED_PREFS, MODE_PRIVATE);
 
-                guestOn();
+                try {
 
-                doorOnOff();
+                        refOnOff = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getEmail().replace(".", ","))
+                                .child("Notifications");
+
+                }catch (Exception e){
+
+
+                }
+
+                onGuest = prefs.getBoolean(SWITCH1, true);
+
+                onDoor = prefs.getBoolean(SWITCH2, true);
+
+                onThief = prefs.getBoolean(SWITCH3, true);
+//                onOff();
+
+                triggerHouses();
 
                 triggerDoors();
+
+                ActivityManager.RunningAppProcessInfo myProcess = new ActivityManager.RunningAppProcessInfo();
+                ActivityManager.getMyMemoryState(myProcess);
+                isInBackground = myProcess.importance != ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
+                if(isInBackground) {
+//                        guestOn();
+
+//                        triggerHouses();
+//
+//                        triggerDoors();
+//                        Toast.makeText(getApplication(), " is bg", Toast.LENGTH_SHORT).show();
+                }else{
+//                        Toast.makeText(getApplication(), " not bg", Toast.LENGTH_SHORT).show();
+                }
 
                 vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
 
         }
 
-        public void guestOn(){
+        public void onOff(){
 
-                try {
+//                onGuest = prefs.getBoolean(SWITCH1, true);
+//
+//                onDoor = prefs.getBoolean(SWITCH2, true);
+//
+//                onThief = prefs.getBoolean(SWITCH3, true);
+//
+//                Log.d("pref", " : " + onGuest + "\n" + onDoor + "\n" + onThief);
 
-                        refOnOff.keepSynced(true);
-                        refOnOff.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                                        try {
-
-                                                String notif = dataSnapshot.child("guest").getValue(String.class);
-
-                                                Log.d("notif", "data " + notif);
-
-                                                if (notif.equals("enable")) {
-
-                                                        triggerHouses();
-
-                                                }
-
-                                                else {
-
-                                                }
-
-                                        } catch (Exception e) {
-
-                                        }
-
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                }
-
-                        });
-
-                }catch (Exception e){}
 
         }
 
-        public void doorOnOff(){
-
-                try {
-
-                        refOnOff.keepSynced(false);
-                        refOnOff.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                                        try {
-
-                                                String notif = dataSnapshot.child("door").getValue(String.class);
-
-                                                Log.d("notif", "data " + notif);
-
-                                                if (notif.equals("enable")) {
-
-                                                        triggerDoors();
-
-                                                }
-
-                                                else {
-
-                                                }
-
-                                        } catch (Exception e) {
-
-                                        }
-
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                }
-
-                        });
-
-                }catch (Exception e){}
-
-        }
-
-        private void triggerHouses() {
+        public void triggerHouses() {
 
                 guest = FirebaseDatabase.getInstance().getReference();
-                guest.keepSynced(false);
                 guest.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -187,15 +143,23 @@ public class MyFirebaseMessagingService extends Service{
 
                                                                 boolean statusGuset = dataSnapshot.child("guest").getValue(boolean.class);
 
+                                                                boolean thiefDetect = dataSnapshot.child("thief").getValue(boolean.class);
+
+                                                                Log.d("guest ", " :" + statusGuset);
+
                                                                 name = dataSnapshot.child("name").getValue(String.class);
 
-                                                                if (statusGuset == true) {
+                                                                if (statusGuset) {
 
                                                                         notificationDoorKnock();
 
                                                                 }
 
-                                                                return;
+                                                                if (thiefDetect){
+
+                                                                        thiefNotification();
+
+                                                                }
 
                                                         }
 
@@ -220,10 +184,9 @@ public class MyFirebaseMessagingService extends Service{
 
         }
 
-        private void triggerDoors() {
+        public void triggerDoors() {
 
                 Door = FirebaseDatabase.getInstance().getReference();
-                Door.keepSynced(false);
                 Door.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -266,6 +229,8 @@ public class MyFirebaseMessagingService extends Service{
 
                                                                                 doorName = dataSnapshot.child("doorName").getValue(String.class);
 
+
+
                                                                                 if (lock == 1) {
 
                                                                                         notificationDoorOpen();
@@ -304,91 +269,150 @@ public class MyFirebaseMessagingService extends Service{
 
         private void notificationDoorOpen() {
 
-                IntentFilter intentFilter = new IntentFilter();
+                onDoor = prefs.getBoolean(SWITCH2, true);
 
-                intentFilter.addAction("RssPullService");
+                if (onDoor) {
 
-                Intent resultIntent = new Intent(this, MainActivity.class);
+                        IntentFilter intentFilter = new IntentFilter();
 
-                PendingIntent resultPandingIntent = PendingIntent.getActivity(this, 1, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        intentFilter.addAction("RssPullService");
 
-                NotificationCompat.Builder notification = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
+                        Intent resultIntent = new Intent(this, MainActivity.class);
 
-                        .setDefaults(NotificationCompat.DEFAULT_ALL)
+                        PendingIntent resultPandingIntent = PendingIntent.getActivity(this, 1, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                        .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.logo_lock))
+                        NotificationCompat.Builder notification = new NotificationCompat.Builder(this)
 
-                        .setSmallIcon(R.drawable.logo_lock)
+                                .setDefaults(NotificationCompat.DEFAULT_ALL)
 
-                        .setContentTitle("Door")
+                                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.logo_lock))
 
-                        .setContentText("the " + doorName + " door of the " + housename + " house is open!")
+                                .setSmallIcon(R.drawable.logo_lock)
 
-                        .setVibrate(new long[]{0, 500, 1000})
+                                .setContentTitle("Door")
 
-                        .setContentIntent(resultPandingIntent)
+                                .setContentText("the " + doorName + " door of the " + housename + " house is open!")
 
-                        .setAutoCancel(true)
+                                .setVibrate(new long[]{0, 500, 1000})
 
-                        .setLights(0xff0000ff, 300, 1000) // blue color
+                                .setContentIntent(resultPandingIntent)
 
-                        .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                                .setAutoCancel(true)
 
-                        .setPriority(Notification.PRIORITY_MAX);
+                                .setLights(0xff0000ff, 300, 1000) // blue color
+
+                                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+
+                                .setPriority(Notification.PRIORITY_MAX);
 
 //                vibrator.vibrate(600);
 //                play();
 //                Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 //                notification.setSound(uri);
 
-                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-                notificationManager.notify(1, notification.build());
+                        notificationManager.notify(1, notification.build());
+
+                }
 
         }
 
         private void notificationDoorKnock() {
 
-                IntentFilter intentFilter = new IntentFilter();
+                onGuest = prefs.getBoolean(SWITCH1, true);
 
-                intentFilter.addAction("RssPullS3ervice");
+                if (onGuest) {
 
-                Intent resultIntent = new Intent(this, MainActivity.class);
+                        IntentFilter intentFilter = new IntentFilter();
 
-                PendingIntent resultPandingIntent = PendingIntent.getActivity(this, 1, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        intentFilter.addAction("RssPullS3ervice");
 
-                NotificationCompat.Builder notification = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
+                        Intent resultIntent = new Intent(this, MainActivity.class);
 
-                        .setDefaults(NotificationCompat.DEFAULT_ALL)
+                        PendingIntent resultPandingIntent = PendingIntent.getActivity(this, 1, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                        .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.logo_lock))
+                        NotificationCompat.Builder notification = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
 
-                        .setSmallIcon(R.drawable.logo_lock)
+                                .setDefaults(NotificationCompat.DEFAULT_ALL)
 
-                        .setContentTitle("House")
+                                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.logo_lock))
 
-                        .setContentText("guest in the " + name + " house!")
+                                .setSmallIcon(R.drawable.logo_lock)
 
-                        .setVibrate(new long[]{0, 500, 1000})
+                                .setContentTitle("House")
 
-                        .setContentIntent(resultPandingIntent)
+                                .setContentText("guest in the " + name + " house!")
 
-                        .setAutoCancel(true)
+                                .setVibrate(new long[]{0, 500, 1000})
 
-                        .setLights(0xff0000ff, 300, 1000) // blue color
+                                .setContentIntent(resultPandingIntent)
 
-                        .setPriority(Notification.PRIORITY_MAX);
+                                .setAutoCancel(true)
+
+                                .setLights(0xff0000ff, 300, 1000) // blue color
+
+                                .setPriority(Notification.PRIORITY_MAX);
 
 //                vibrator.vibrate(600);
 //                play();
 //                Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 //                notification.setSound(uri);
 
-                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-                notificationManager.notify(1, notification.build());
+                        notificationManager.notify(1, notification.build());
 
+                }
 
+        }
+
+        private void thiefNotification() {
+
+                onThief = prefs.getBoolean(SWITCH3, true);
+
+                if (onThief) {
+
+                        IntentFilter intentFilter = new IntentFilter();
+
+                        intentFilter.addAction("RssPullS3ervice");
+
+                        Intent resultIntent = new Intent(this, MainActivity.class);
+
+                        PendingIntent resultPandingIntent = PendingIntent.getActivity(this, 1, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                        NotificationCompat.Builder notification = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
+
+                                .setDefaults(NotificationCompat.DEFAULT_ALL)
+
+                                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.logo_lock))
+
+                                .setSmallIcon(R.drawable.logo_lock)
+
+                                .setContentTitle("House")
+
+                                .setContentText("thief in the " + name + " house!")
+
+                                .setVibrate(new long[]{0, 500, 1000})
+
+                                .setContentIntent(resultPandingIntent)
+
+                                .setAutoCancel(true)
+
+                                .setLights(0xff0000ff, 300, 1000) // blue color
+
+                                .setPriority(Notification.PRIORITY_MAX);
+
+//                vibrator.vibrate(600);
+//                play();
+//                Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+//                notification.setSound(uri);
+
+                        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+                        notificationManager.notify(1, notification.build());
+
+                }
 
         }
 
@@ -433,4 +457,8 @@ public class MyFirebaseMessagingService extends Service{
 
         }
 
+        @Override
+        public void refresh() {
+
+        }
 }

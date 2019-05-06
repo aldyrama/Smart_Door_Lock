@@ -19,9 +19,13 @@ public class House {
 
     private boolean connect;
 
+    private boolean thief;
+
     private int position;
 
     private String update;
+
+    private int totalDevices;
 
     public House() {
         //empty constructor needed
@@ -56,6 +60,12 @@ public class House {
     }
 
     public House(DataSnapshot devices) {
+
+    }
+
+    public boolean isThief() {
+
+        return thief;
 
     }
 
@@ -99,6 +109,12 @@ public class House {
     public void setKey(String key) {
 
         this.key = key;
+
+    }
+
+    public void setThief(boolean thief) {
+
+        this.thief = thief;
 
     }
 
@@ -156,5 +172,12 @@ public class House {
 
     }
 
+    public int getTotalDevices() {
+        return totalDevices;
+    }
+
+    public void setTotalDevices(int totalDevices) {
+        this.totalDevices = totalDevices;
+    }
 }
 

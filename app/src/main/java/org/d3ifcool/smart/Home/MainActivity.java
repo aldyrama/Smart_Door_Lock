@@ -43,6 +43,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -104,7 +106,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private View fader;
     private int counterInput = 0;
     private int countDown = 30;
-
     private String profileid;
     private ProgressDialog pd;
     private CardView addHome;
@@ -113,8 +114,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView closePoupUp, toolAddHome,
             closePouUpOption, qrOption, inputOption;
     private EditText  deviceCode, houseNameEditTxt;
-    private TextView  emptyInMemer, count;
+    private TextView  emptyInMemer, count, textConnection, retry;
     private IndefinitePagerIndicator indicator;
+    private RelativeLayout rl;
 
 
     public void openDetailActivity(String[] data) {
@@ -156,13 +158,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mStorage = FirebaseStorage.getInstance();
 
-        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-
         database = FirebaseDatabase.getInstance();
 
         mSectionsPageAdapter = new SectionsPageAdapter(getSupportFragmentManager());
 
         Storage = FirebaseStorage.getInstance().getReference();
+
+        pd = new ProgressDialog(this, R.style.MyAlertDialogStyle);
+
 
         //get method
         viewWidget();
@@ -225,21 +228,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
         //Checking internet
-        if (!haveNetwork()) {
+        if (!isOnline()) {
 
-            alertConnection();
+            rl.setVisibility(View.VISIBLE);
 
-            addHome.setVisibility(View.GONE);
+            textConnection.setVisibility(View.VISIBLE);
 
-            recyclerView.setVisibility(View.GONE);
+//            alertConnection();
+
+//            addHome.setVisibility(View.GONE);
+//
+//            recyclerView.setVisibility(View.GONE);
 
         }
 
         else {
 
-            addHome.setVisibility(View.VISIBLE);
+            rl.setVisibility(View.GONE);
 
-            recyclerView.setVisibility(View.VISIBLE);
+            textConnection.setVisibility(View.GONE);
+
+//            addHome.setVisibility(View.VISIBLE);
+//
+//            recyclerView.setVisibility(View.VISIBLE);
 
         }
 
@@ -303,6 +314,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     toolAddHome.setVisibility(View.VISIBLE);
 
+                    recyclerView.setEnabled(true);
+
                 }
 
                 else {
@@ -312,6 +325,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     addHome.setVisibility(View.GONE);
 
                     toolAddHome.setVisibility(View.GONE);
+
+                    recyclerView.setEnabled(false);
 
                 }
 
@@ -471,6 +486,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String today= dateFormat.format(date);
 
         return today;
+
+    }
+
+    private boolean isOnline() {
+
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnectedOrConnecting();
 
     }
 
@@ -876,8 +899,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onClick(View v) {
 
-                pd = new ProgressDialog(MainActivity.this);
-
                 pd.setMessage("Please wait...");
 
                 pd.show();
@@ -917,7 +938,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             House getHouses = deviceSnapshot.getValue(House.class);
 
                             reference1 = FirebaseDatabase.getInstance().getReference().child("Devices").child("ListDevices").child(str_device);
-                            reference1.addValueEventListener(new ValueEventListener() {
+                            reference1.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot listSnapshot) {
 
@@ -1055,6 +1076,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         count = findViewById(R.id.countDownTime);
 
+        textConnection = findViewById(R.id.text_status);
+
         commitHome =  findViewById(R.id.add_home_code);
 
         deviceCode = findViewById(R.id.code_device);
@@ -1066,6 +1089,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         indicator = findViewById(R.id.recyclerview_indicator);
 
         fader.setVisibility(View.VISIBLE);
+
+        rl = findViewById(R.id.internet_status);
+
+        retry = findViewById(R.id.txt_retry);
 
         setLoadingAnimation();
 
@@ -1090,6 +1117,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView.setAdapter(mAdapter);
 
         mAdapter.setOnItemClickListener(MainActivity.this);
+
+        retry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recreate();
+            }
+        });
 
     }
 

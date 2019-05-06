@@ -103,7 +103,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                final ProgressDialog pd = new ProgressDialog(LoginActivity.this);
+                final ProgressDialog pd = new ProgressDialog(LoginActivity.this, R.style.MyAlertDialogStyle);
 
                 pd.setMessage("Please wait...");
 

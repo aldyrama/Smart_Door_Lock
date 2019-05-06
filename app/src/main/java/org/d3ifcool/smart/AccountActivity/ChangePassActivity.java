@@ -57,7 +57,7 @@ public class ChangePassActivity extends AppCompatActivity implements View.OnClic
 
         newpass = findViewById(R.id.pass);
 
-        loading = new ProgressDialog(this);
+        loading = new ProgressDialog(this, R.style.MyAlertDialogStyle);
 
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 

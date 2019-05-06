@@ -267,7 +267,7 @@ public class EsptouchDemoActivity extends AppCompatActivity implements OnClickLi
 
         };
 
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.MyAlertDialogStyle)
 
                 .setTitle(R.string.menu_item_about)
 
@@ -519,7 +519,7 @@ public class EsptouchDemoActivity extends AppCompatActivity implements OnClickLi
 
             Activity activity = mActivity.get();
 
-            mProgressDialog = new ProgressDialog(activity);
+            mProgressDialog = new ProgressDialog(activity, R.style.MyAlertDialogStyle);
 
             mProgressDialog.setMessage(activity.getString(R.string.configuring_message));
 
@@ -620,7 +620,7 @@ public class EsptouchDemoActivity extends AppCompatActivity implements OnClickLi
 
             if (result == null) {
 
-                mResultDialog = new AlertDialog.Builder(activity)
+                mResultDialog = new AlertDialog.Builder(activity, R.style.MyAlertDialogStyle)
 
                         .setMessage(R.string.configure_result_failed_port)
 
@@ -645,7 +645,9 @@ public class EsptouchDemoActivity extends AppCompatActivity implements OnClickLi
 
                     for (IEsptouchResult touchResult : result) {
 
-                        String message = activity.getString(R.string.configure_result_success_item,
+                        String message;
+
+                        message = activity.getString(R.string.configure_result_success_item,
                                 touchResult.getBssid(), touchResult.getInetAddress().getHostAddress());
 
                         resultMsgList.add(message);
@@ -654,7 +656,7 @@ public class EsptouchDemoActivity extends AppCompatActivity implements OnClickLi
 
                     CharSequence[] items = new CharSequence[resultMsgList.size()];
 
-                    mResultDialog = new AlertDialog.Builder(activity)
+                    mResultDialog = new AlertDialog.Builder(activity, R.style.MyAlertDialogStyle)
 
                             .setTitle(R.string.configure_result_success)
 
@@ -668,7 +670,7 @@ public class EsptouchDemoActivity extends AppCompatActivity implements OnClickLi
 
                 } else {
 
-                    mResultDialog = new AlertDialog.Builder(activity)
+                    mResultDialog = new AlertDialog.Builder(activity, R.style.MyAlertDialogStyle)
 
                             .setMessage(R.string.configure_result_failed)
 
@@ -690,7 +692,7 @@ public class EsptouchDemoActivity extends AppCompatActivity implements OnClickLi
 
     @Override
     public void onBackPressed() {
-//        startActivity(new Intent(EsptouchDemoActivity.this, SettingActivity.class));
+        startActivity(new Intent(EsptouchDemoActivity.this, SettingActivity.class));
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
         super.onBackPressed();

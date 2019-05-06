@@ -1,12 +1,10 @@
 package org.d3ifcool.smart.Home;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.Service;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -56,6 +54,7 @@ import org.d3ifcool.smart.Model.House;
 import org.d3ifcool.smart.Model.User;
 import org.d3ifcool.smart.R;
 import org.d3ifcool.smart.WifiConfiguration.EsptouchDemoActivity;
+import org.jetbrains.annotations.NotNull;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -91,9 +90,7 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
     private String replaceEmail;
     private int counter;
     private Context mContext;
-    private LinearLayout lr;
     private String deviceCode;
-    private Button conf;
     private TextView empty, count;
     private int counterInput = 0;
     private int countDown = 30;
@@ -122,7 +119,7 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NotNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.list_door_fragment,container,false);
 
         auth = FirebaseAuth.getInstance();
@@ -151,10 +148,6 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
 
         fader = view.findViewById(R.id.fader);
 
-        lr = view.findViewById(R.id.lr_statur);
-
-        conf = view.findViewById(R.id.config_btn);
-
         empty = view.findViewById(R.id.empty_door);
 
         addDoor.setOnClickListener(this);
@@ -171,6 +164,8 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
 
         mAdapter.setOnItemClickListener(this);
 
+        pd = new ProgressDialog(getActivity(), R.style.MyAlertDialogStyle);
+
         Intent i = getActivity().getIntent();
         deviceCode = i.getExtras().getString("DEVICECODE_KEY");
 
@@ -179,10 +174,9 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
 
         getDoor();
 
-        getDeviceStatus();
+//        getDeviceStatus();
 
         setLoadingAnimation();
-//        notif();
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -218,24 +212,13 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
 
         });
 
-        conf.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                startActivity(new Intent(getActivity(), EsptouchDemoActivity.class));
-
-                getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-
-            }
-
-        });
-
         return view;
 
     }
 
     @SuppressLint("RestrictedApi")
     public void checkDoor(){
+        DatabaseReference total = FirebaseDatabase.getInstance().getReference().child("Devices").child(deviceCode);
 
         if (mAdapter.getItemCount() != 0){
 
@@ -247,6 +230,8 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
 
             empty.setVisibility(View.GONE);
 
+            total.child("totalDevices").setValue(mAdapter.getItemCount());
+
         }
 
         else {
@@ -256,6 +241,8 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
             indicator.setVisibility(View.GONE);
 
             empty.setVisibility(View.VISIBLE);
+
+            total.child("totalDevices").setValue(mAdapter.getItemCount());
 
         }
 
@@ -269,56 +256,45 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                House house = dataSnapshot.getValue(House.class);
-
                 try {
 
-                    String now = getDateToday();
+                    for (DataSnapshot deviceConnection : dataSnapshot.child("Doors").getChildren()) {
 
-                    Log.d("total", "now" + now);
+                        String now = getDateToday();
 
-                    String statusDevice = house.getUpdate();
+                        Door door = deviceConnection.getValue(Door.class);
 
-                    Log.d("total", "update" + statusDevice);
+                        Log.d("child", " :" + deviceConnection);
 
-                    @SuppressLint("SimpleDateFormat")
-                    Date dateNow = new SimpleDateFormat("dd/M/yyyy HH:mm").parse(now);
+                        String statusDevice = door.getConnect();
 
-                    @SuppressLint("SimpleDateFormat")
-                    Date dateCont = new SimpleDateFormat("dd/M/yyyy HH:mm").parse(statusDevice);
+                        Log.d("connect", " : " + statusDevice);
 
-                    long millisNow = dateNow.getTime();
+                        @SuppressLint("SimpleDateFormat")
+                        Date dateNow = new SimpleDateFormat("dd/M/yyyy HH:mm").parse(now);
 
-                    long millisCont = dateCont.getTime();
+                        @SuppressLint("SimpleDateFormat")
+                        Date dateCont = new SimpleDateFormat("dd/M/yyyy HH:mm").parse(statusDevice);
 
-                    long totalMillis = (millisNow - millisCont);
+                        long millisNow = dateNow.getTime();
 
-                    Log.d("total", "millis" + totalMillis);
+                        long millisCont = dateCont.getTime();
 
-                    if (totalMillis >= 12000) {
+                        long totalMillis = (millisNow - millisCont);
 
-                        lr.setVisibility(View.VISIBLE);
+                        Log.d("total", "millis" + totalMillis);
 
-                        addDoor.setEnabled(false);
+                        if (totalMillis >= 18000) {
 
-                        addDoor.setEnabled(false);
+                            addDoor.setEnabled(false);
 
-                        indicator.setVisibility(View.GONE);
+                        } else {
 
-                        ref.child("connect").setValue(false);
+                            addDoor.setEnabled(true);
 
-                    }
-
-                    else {
-
-                        lr.setVisibility(View.GONE);
-
-                        indicator.setVisibility(View.VISIBLE);
-
-                        addDoor.setEnabled(true);
+                        }
 
                     }
-
 
             } catch(
 
@@ -364,15 +340,11 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
 
                     addDoor.setVisibility(View.VISIBLE);
 
-                    conf.setVisibility(View.VISIBLE);
-
                 }
 
                 else {
 
                     addDoor.setVisibility(View.GONE);
-
-                    conf.setVisibility(View.GONE);
 
                 }
 
@@ -386,7 +358,6 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
         });
 
     }
-
 
     public void checkDevices(){
 
@@ -406,8 +377,6 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
 
                 if (!isConnect){
 
-                    lr.setVisibility(View.VISIBLE);
-
                     addDoor.setEnabled(false);
 
                     addDoor.setEnabled(false);
@@ -417,8 +386,6 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
                 }
 
                 else {
-
-                    lr.setVisibility(View.GONE);
 
                     indicator.setVisibility(View.VISIBLE);
 
@@ -549,7 +516,7 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
 
         Date date = new Date();
 
-        String today= dateFormat.format(date);
+        String today = dateFormat.format(date);
 
         return today;
 
@@ -621,16 +588,18 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
             @Override
             public void onClick(final iOSDialog dialog) {
 
-                        reference = FirebaseDatabase.getInstance().getReference().child("Devices").child(deviceCode).child("ListDoor");
+                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Devices").child(deviceCode);
 
-                        reference.child(selectedKey).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        ref.child("ListDoor").child(selectedKey).getRef().removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
 
                                 Toast.makeText(getActivity(), "Item deleted", Toast.LENGTH_SHORT).show();
 
                                 dialog.dismiss();
+
                             }
+
                         });
 
                     }
@@ -664,7 +633,7 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
     }
 
 
-    public void showDialogAddDoor(){
+    private void showDialogAddDoor(){
 
         dialog_Door.setContentView(R.layout.add_door_popup);
 
@@ -701,8 +670,6 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
         commitDoor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                pd = new ProgressDialog(getActivity());
 
                 pd.setMessage("Please wait...");
 
@@ -745,7 +712,7 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
                         public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
 
                             reference0 = FirebaseDatabase.getInstance().getReference().child("Devices").child(deviceCode).child("ListDoor").child(str_pin);
-                            reference0.addValueEventListener(new ValueEventListener() {
+                            reference0.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot listSnapshot) {
 
@@ -779,6 +746,8 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
                                         Toast.makeText(getActivity(), str_door + " door added", Toast.LENGTH_SHORT).show();
 
                                         pd.hide();
+
+                                        return;
 
                                     }
 

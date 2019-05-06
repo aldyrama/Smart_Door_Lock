@@ -48,6 +48,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="No door"
+        android:visibility="gone"
         android:gravity="center"
         android:layout_centerInParent="true"
         android:drawableTop="@drawable/emptyy"/>
@@ -70,49 +71,11 @@
             android:id="@+id/addDoor_floating"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_margin="16dp"
+            android:visibility="gone"
             android:backgroundTint="@color/blackk"
             android:src="@drawable/ic_action_add_white"/>
-
-
-    <LinearLayout
-        android:id="@+id/lr_statur"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:orientation="vertical"
-        android:background="@color/colorWhite"
-        android:visibility="gone"
-        android:gravity="center">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Device not connected!"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@color/blackk"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="check your device and reconnect it."
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:textSize="16sp"/>
-
-        <Button
-            android:id="@+id/config_btn"
-            android:layout_marginTop="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/confirm" />
-
-    </LinearLayout>
-
 
 </RelativeLayout>

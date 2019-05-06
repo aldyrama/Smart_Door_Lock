@@ -1,11 +1,13 @@
 package org.d3ifcool.smart.Adapter;
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
-import android.os.Build;
-import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -21,26 +23,18 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-//import com.squareup.picasso.Picasso;
-
-import com.gdacciaro.iOSDialog.iOSDialog;
-import com.gdacciaro.iOSDialog.iOSDialogBuilder;
-import com.gdacciaro.iOSDialog.iOSDialogClickListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
-import org.d3ifcool.smart.Data;
 import org.d3ifcool.smart.Home.HousesDetail;
-import org.d3ifcool.smart.Home.MainActivity;
-import org.d3ifcool.smart.Model.Door;
 import org.d3ifcool.smart.Model.House;
+import org.d3ifcool.smart.Model.User;
 import org.d3ifcool.smart.R;
-import org.d3ifcool.smart.WifiConfiguration.EsptouchDemoActivity;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DateFormat;
@@ -49,13 +43,19 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import static java.security.AccessController.getContext;
+
 public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterHouse.RecyclerViewHolder> implements View.OnClickListener {
     private Context mContext;
     private List<House> houses;
     private OnItemClickListener mListener;
     private boolean status = false;
     DoorInterfaces doorInterfaces;
-    Activity activity;
+    private Activity activity;
+    private ObjectAnimator textBlinking;
+    private FirebaseUser firebaseUser;
+    private FirebaseAuth auth;
+
 
     public RecyclerAdapterHouse(DoorInterfaces doorInterfaces) {
 
@@ -79,7 +79,6 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
         intent.putExtra("DEVICECODE_KEY", data[1]);
 
         mContext.startActivity(intent);
-//        activity.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
     }
 
@@ -128,68 +127,23 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
 
                 try {
 
-                    boolean connect = house.isConnect();
+                    int totalDevices = house.getTotalDevices();
 
-                    String now = getDateToday();
+                    if (totalDevices > 0) {
 
-                    Log.d("total", "now" + now);
+                        holder.Cdevice.setImageResource(R.drawable.connected);
 
-                    String statusDevice = house.getUpdate();
+                        holder.txtcConnect.setText(String.valueOf(totalDevices) + " Device");
 
-                    Log.d("total", "updateDate" + statusDevice);
+                    } else {
 
-                    Date dateNow = new SimpleDateFormat("dd/M/yyyy HH:mm").parse(now);
+                        holder.Cdevice.setImageResource(R.drawable.disconnected);
 
-                    Date dateCont = new SimpleDateFormat("dd/M/yyyy HH:mm").parse(statusDevice);
-
-                    long millisNow = dateNow.getTime();
-
-                    long millisCont = dateCont.getTime();
-
-                    long totalMillis = (millisNow - millisCont);
-
-                    Log.d("total", "millis" + totalMillis);
-
-                    if (totalMillis >= 12000) {
-
-                        ref.child("connect").setValue(false);
-
-                        holder.Cdevice.setImageResource(R.drawable.ic_not_connect);
-
-                        holder.txtcConnect.setText(R.string.disconnect);
+                        holder.txtcConnect.setText(0 + " Device");
 
                     }
 
-                    else {
-
-                        holder.Cdevice.setImageResource(R.drawable.ic_connect);
-
-                        holder.txtcConnect.setText(R.string.connect);
-
-                    }
-
-//                    if (connect == false){
-//
-//                        holder.Cdevice.setImageResource(R.drawable.ic_not_connect);
-//                        holder.txtcConnect.setText(R.string.disconnect);
-//
-//                    }
-//
-//                    else {
-//
-//                        holder.Cdevice.setImageResource(R.drawable.ic_connect);
-//                        holder.txtcConnect.setText(R.string.connect);
-//
-//                    }
-
-
-                } catch (
-
-                        ParseException e) {
-
-                    e.printStackTrace();
-
-                }
+                }catch (Exception e) {}
 
             }
 
@@ -209,13 +163,13 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
 
                 try {
 
-                    boolean lock = house.isHouse_lock();
+                    boolean thief = house.isThief();
 
                     boolean guestDetect = house.isGuest();
 
-                    boolean connect = house.isConnect();
+                    boolean status = house.isConnect();
 
-                    if (guestDetect == false) {
+                    if (!guestDetect) {
 
                         holder.isGuest.setImageResource(R.drawable.bell_no_guest);
 
@@ -229,19 +183,29 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
 
                     }
 
-//                    if (connect == false){
-//
-//                        holder.Cdevice.setImageResource(R.drawable.ic_not_connect);
-//                        holder.txtcConnect.setText(R.string.disconnect);
-//
-//                    }
-//
-//                    else {
-//
-//                        holder.Cdevice.setImageResource(R.drawable.ic_connect);
-//                        holder.txtcConnect.setText(R.string.connect);
-//
-//                    }
+                    if (!thief || !status){
+
+                        holder.warning.setVisibility(View.GONE);
+
+                    }
+
+                    else {
+
+                       holder.warning.setVisibility(View.VISIBLE);
+
+                        textBlinking = ObjectAnimator.ofInt(holder.warning, "textColor", Color.RED, Color.TRANSPARENT);
+
+                        textBlinking.setDuration(600);
+
+                        textBlinking.setEvaluator(new ArgbEvaluator());
+
+                        textBlinking.setRepeatCount(ValueAnimator.INFINITE);
+
+                        textBlinking.setRepeatMode(ValueAnimator.REVERSE);
+
+                        textBlinking.start();
+
+                    }
 
 
                 }catch (Exception e){
@@ -311,6 +275,7 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
 
     private String getDateToday(){
 
+        @SuppressLint("SimpleDateFormat")
         DateFormat dateFormat=new SimpleDateFormat("dd/M/yyyy HH:mm");
 
         Date date = new Date();
@@ -337,7 +302,7 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
     public class RecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
             View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
 
-        private TextView name_house, guest, locktxt, txtcConnect;
+        private TextView name_house, guest, locktxt, txtcConnect, warning;
         private ImageView Cdevice, allLock, isGuest, door;
         ProgressBar mProgressbar;
         Vibrator vibrator;
@@ -348,6 +313,8 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
             name_house = itemView.findViewById ( R.id.houseName );
 
             Cdevice = itemView.findViewById(R.id.deviceStatus);
+
+            warning = itemView.findViewById(R.id.warning_house);
 
             guest = itemView.findViewById(R.id.txt_guest);
 
@@ -372,6 +339,10 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
             name_house.setTypeface(typeface);
 
             name_house.setTypeface(null, Typeface.BOLD);
+
+            auth = FirebaseAuth.getInstance();
+
+            firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
             itemView.setOnClickListener(this);
 
@@ -412,11 +383,11 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
         }
 
         @Override
-        public boolean onMenuItemClick(MenuItem item) {
+        public boolean onMenuItemClick(final MenuItem item) {
 
             if (mListener != null) {
 
-                int position = getAdapterPosition();
+                final int position = getAdapterPosition();
 
                 if (position != RecyclerView.NO_POSITION) {
 
@@ -430,7 +401,41 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
 
                         case 2:
 
-                            mListener.onDeleteItemClick(position);
+                            DatabaseReference checkUser = FirebaseDatabase.getInstance().getReference().child("Users").child(firebaseUser.getEmail()
+                                    .replace(".", ","));
+                            checkUser.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if (getContext() == null){
+
+                                        return;
+
+                                    }
+
+                                    User user = dataSnapshot.getValue(User.class);
+
+                                    String acount = user.getTypeAccount();
+
+                                    if (acount.equals("Owner")){
+
+                                        mListener.onDeleteItemClick(position);
+
+                                    }
+
+                                    else {
+
+                                        Toast.makeText(mContext, "only owner", Toast.LENGTH_SHORT).show();
+
+                                    }
+
+
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
 
                             return true;
 

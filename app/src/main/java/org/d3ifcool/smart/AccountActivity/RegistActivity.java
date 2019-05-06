@@ -108,7 +108,7 @@ public class RegistActivity extends AppCompatActivity {
 
                 isRegister = true;
 
-                pd = new ProgressDialog(RegistActivity.this);
+                pd = new ProgressDialog(RegistActivity.this, R.style.MyAlertDialogStyle);
 
                 pd.setMessage("Please wait...");
 

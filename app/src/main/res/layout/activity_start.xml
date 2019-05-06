@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_firs"
+    android:background="@drawable/bg"
     tools:context=".AccountActivity.StartActivity"
     android:orientation="vertical"
     android:layout_gravity="center">
@@ -63,7 +63,7 @@
             android:layout_height="40dp"
             android:background="@drawable/transparent_bg_bordered"
             android:text="Sign in"
-            android:textColor="@color/colorWhite"
+            android:textColor="@color/blackk"
             android:textStyle="bold"
             android:textSize="14sp"
             android:clickable="true"

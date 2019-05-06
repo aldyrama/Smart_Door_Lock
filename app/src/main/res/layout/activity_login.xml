@@ -27,7 +27,7 @@
             android:layout_height="fill_parent"
             android:layout_gravity="center|top"
             android:gravity="center|top"
-            android:background="@drawable/banner_login"/>
+            android:background="@drawable/bg_leaf"/>
 
     </android.support.v7.widget.CardView>
 

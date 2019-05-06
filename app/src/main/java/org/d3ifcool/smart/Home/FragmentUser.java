@@ -69,7 +69,7 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
     private Dialog dialog;
     private Button sendInvite;
     private EditText phoneNumber;
-    private ImageView closePopup;
+    private ImageView closePopup, ic;
     private Button invite;
     private LinearLayout lr;
     private TextView expiredUser, empty_members;
@@ -83,6 +83,7 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
     private Calendar myCalendar = Calendar.getInstance();
     private Activity mActivity;
     private SimpleDateFormat simpleDateFormat;
+    private ProgressDialog pd;
 
 
     private void openDetailActivity(String[] data){
@@ -176,6 +177,9 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
         userInfo();
 
         simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy h:mm a", Locale.US);
+
+        pd = new ProgressDialog(getActivity(), R.style.MyAlertDialogStyle);
+
 
         invite.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -312,45 +316,50 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
     }
 
     public void getMember(){
-        Intent i = getActivity().getIntent();
-        final String deviceCode =i.getExtras().getString("DEVICECODE_KEY");
 
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Devices").child(deviceCode).child("Member");
-        mDatabaseRef.addChildEventListener(childEventListener);
-        mDatabaseRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NotNull DataSnapshot dataSnapshot) {
+        try {
 
-                mConnect.clear();
+            Intent i = getActivity().getIntent();
+            final String deviceCode =i.getExtras().getString("DEVICECODE_KEY");
 
-                for (DataSnapshot connectSnapshot : dataSnapshot.getChildren()) {
+            mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Devices").child(deviceCode).child("Member");
+            mDatabaseRef.addChildEventListener(childEventListener);
+            mDatabaseRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NotNull DataSnapshot dataSnapshot) {
 
-                    User upload = connectSnapshot.getValue(User.class);
+                    mConnect.clear();
 
-                    endTime = upload.getExpired();
+                    for (DataSnapshot connectSnapshot : dataSnapshot.getChildren()) {
 
-                    mConnect.add(upload);
+                        User upload = connectSnapshot.getValue(User.class);
+
+                        endTime = upload.getExpired();
+
+                        mConnect.add(upload);
+
+                    }
+
+                    mAdapterInvite.notifyDataSetChanged();
+
+                    mProgressBarInvite.setVisibility(View.GONE);
+
+                    checkMembers();
 
                 }
 
-                mAdapterInvite.notifyDataSetChanged();
+                @Override
+                public void onCancelled(@NotNull DatabaseError databaseError) {
 
-                mProgressBarInvite.setVisibility(View.GONE);
+                    Toast.makeText(getActivity(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
 
-                checkMembers();
+                    mProgressBarInvite.setVisibility(View.INVISIBLE);
 
-            }
+                }
 
-            @Override
-            public void onCancelled(@NotNull DatabaseError databaseError) {
+            });
 
-                Toast.makeText(getActivity(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
-
-                mProgressBarInvite.setVisibility(View.INVISIBLE);
-
-            }
-
-        });
+        }catch (Exception e){}
 
     }
 
@@ -444,11 +453,11 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
 
         dialog.show();
 
+        final String email = firebaseUser.getEmail().replace(".", ",");
+
         sendInvite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                final ProgressDialog pd = new ProgressDialog(getActivity());
 
                 pd.setMessage("Please wait...");
 
@@ -466,7 +475,7 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
 
                 final String str_start = getDateToday();
 
-                if (str_invite.isEmpty()){
+               if (str_invite.isEmpty()){
 
                     phoneNumber.setError(getString(R.string.Email_required));
 
@@ -486,51 +495,82 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
 
                 }
 
-                reference = FirebaseDatabase.getInstance().getReference("Users").child(str_invite.replace(".",","));
-                    reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                reference0 = FirebaseDatabase.getInstance().getReference("Users").child(str_invite.replace(".",","));
+                    reference0.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        public void onDataChange(@NonNull final DataSnapshot userSnapshot) {
                             Intent i = getActivity().getIntent();
-                            String deviceCode = i.getExtras().getString("DEVICECODE_KEY");
+                            final String deviceCode = i.getExtras().getString("DEVICECODE_KEY");
 
                             reference = FirebaseDatabase.getInstance().getReference("Devices").child(deviceCode).child("Member");
+                            reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot memberSnapshot) {
 
-                            reference1 = FirebaseDatabase.getInstance().getReference().child("Users").child(str_invite.replace(".", ","))
-                                    .child("Houses");
+                                    reference1 = FirebaseDatabase.getInstance().getReference().child("Users").child(str_invite.replace(".", ","))
+                                            .child("Houses");
 
-                            reference2 = FirebaseDatabase.getInstance().getReference("Devices").child(deviceCode).child("Member");
+                                    reference2 = FirebaseDatabase.getInstance().getReference("Devices").child(deviceCode).child("Member");
 
-                            reference3 = FirebaseDatabase.getInstance().getReference("Devices").child(deviceCode).child("Member");
+                                    reference3 = FirebaseDatabase.getInstance().getReference("Devices").child(deviceCode).child("Member");
 
-                            if (dataSnapshot.exists()) {
+                                    Log.d("email", "message " + email);
 
-                                User getUser = dataSnapshot.getValue(User.class);
+                                    if (str_invite.replace(".", ",").equals(email)){
 
-                                String uploadId = getUser.getEmail().replace(".", ",");
+                                        phoneNumber.setError(str_invite + " Can not");
 
-                                reference1.child(deviceCode).setValue(deviceCode);
+                                        pd.hide();
 
-                                reference2.child(uploadId).setValue(getUser);
+                                    }
 
-                                reference3.child(uploadId).child("start_access").setValue(str_start);
+                                    else if (userSnapshot.exists() && !memberSnapshot.exists()){
 
-                                reference3.child(uploadId).child("expired").setValue(str_exp);
+                                        User getUser = userSnapshot.getValue(User.class);
 
-                                Toast.makeText(getActivity(), str_invite + "added", Toast.LENGTH_SHORT).show();
+                                        String uploadId = getUser.getEmail().replace(".", ",");
 
-                                dialog.dismiss();
+                                        reference1.child(deviceCode).setValue(deviceCode);
 
-                                pd.hide();
+                                        reference2.child(uploadId).setValue(getUser);
 
-                            }
+                                        reference3.child(uploadId).child("start_access").setValue(str_start);
 
-                            else {
+                                        reference3.child(uploadId).child("expired").setValue(str_exp);
 
-                                pd.hide();
+                                        Toast.makeText(getActivity(), str_invite + "added", Toast.LENGTH_SHORT).show();
 
-                                phoneNumber.setError(str_invite + " Not found");
+                                        dialog.dismiss();
 
-                            }
+                                        pd.hide();
+
+                                    }
+
+                                    else if (userSnapshot.exists() && memberSnapshot.exists()){
+
+                                        phoneNumber.setError("Member " + str_invite + " Already available");
+
+                                        pd.hide();
+
+                                    }
+
+                                    else {
+
+                                        pd.hide();
+
+                                        phoneNumber.setError(str_invite + " Not found");
+
+                                    }
+
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+
+                            });
+
 
                         }
 
@@ -605,6 +645,8 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
         sendInvite = view.findViewById(R.id.send_invite);
 
         closePopup = view.findViewById(R.id.close_popup_phone);
+
+        ic = view.findViewById(R.id.ic_exp);
 
         expiredUser = view.findViewById(R.id.exp);
 
@@ -703,7 +745,6 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
 
     }
 
-
     public void expireUsers(){
 
         Intent i = getActivity().getIntent();
@@ -722,6 +763,7 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
 
                     Log.d("exp", "onDataChange: " + exp);
 
+
                     try {
 
                         String now = getDateToday();
@@ -736,7 +778,7 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
 
                         long millisExp = dateExp.getTime();
 
-                        Log.d("datatime", "test" + dateExp);
+                        Log.d("datatime", "test" + millisExp);
 
                         if (millisExp <= millisNow) {
 

@@ -27,7 +27,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="90dp"
                     android:layout_gravity="center"
-                    android:background="@drawable/bann"
+                    android:background="@drawable/bg_leaf"
                     android:gravity="center"
                     app:layout_scrollFlags="scroll|enterAlways|snap">
 

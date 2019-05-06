@@ -27,6 +27,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.gdacciaro.iOSDialog.iOSDialog;
+import com.gdacciaro.iOSDialog.iOSDialogBuilder;
+import com.gdacciaro.iOSDialog.iOSDialogClickListener;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -57,21 +60,21 @@ import static android.content.Context.MODE_PRIVATE;
 public class FragmentProfile extends Fragment {
 
     private static final String TAG = "History";
-    TextView name, email, password, account;
+    private TextView name, email, password, account;
     private Button logOut, removeAccount;
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener authListener;
-    ProgressDialog pd;
-    ProgressBar load_pict;
-    ImageView image_profile;
+    private ProgressDialog pd;
+    private ProgressBar load_pict;
+    private ImageView image_profile;
     static int PReqCode = 1 ;
     static int REQUESCODE = 1 ;
 
-    FirebaseUser firebaseUser;
-    String profileid;
+    private FirebaseUser firebaseUser;
+    private String profileid;
     private Uri mImageUri;
     private StorageTask<UploadTask.TaskSnapshot> uploadTask;
-    StorageReference storageRef;
+    private StorageReference storageRef;
 
 
     @Nullable
@@ -106,6 +109,8 @@ public class FragmentProfile extends Fragment {
         SharedPreferences prefs = getContext().getSharedPreferences("PREFS", MODE_PRIVATE);
 
         profileid = prefs.getString("profileid", "none");
+
+        pd = new ProgressDialog(getActivity(), R.style.MyAlertDialogStyle);
 
         userInfo();
 
@@ -199,29 +204,25 @@ public class FragmentProfile extends Fragment {
                 final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").
                         child(firebaseUser.getEmail().replace(".",","));
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                new iOSDialogBuilder(getActivity())
 
-                builder.setTitle("DELETE ACCOUNT");
+                .setTitle("DELETE ACCOUNT")
 
-                builder.setMessage("If your unsubscribe, you will lose all information. Doyou want to continue?");
+                .setSubtitle("If your unsubscribe, you will lose all information. Doyou want to continue?")
 
-                builder.setNegativeButton("NO",
+                .setNegativeListener("NO", new iOSDialogClickListener() {
 
-                        new DialogInterface.OnClickListener() {
+                            public void onClick(iOSDialog dialog) {
 
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
+                                dialog.dismiss();
 
                             }
 
-                        });
+                        })
 
-                builder.setPositiveButton("YES",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
+                .setPositiveListener("YES", new iOSDialogClickListener() {
 
-                                pd = new ProgressDialog(getActivity());
+                            public void onClick(iOSDialog dialog) {
 
                                 pd.setMessage("Please wait...");
 
@@ -265,9 +266,7 @@ public class FragmentProfile extends Fragment {
 
                             }
 
-                        });
-
-                builder.show();
+                        }).build().show();
 
             }
 
@@ -351,9 +350,7 @@ public class FragmentProfile extends Fragment {
 
     private void uploadImage(){
 
-        final ProgressDialog pd = new ProgressDialog(getActivity());
-
-        pd.setMessage("Uploading");
+        pd.setMessage("Uploading...");
 
         pd.show();
 

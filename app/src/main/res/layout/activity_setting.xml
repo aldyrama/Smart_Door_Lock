@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     tools:context=".Setting.SettingActivity"
     android:orientation="vertical"
     android:background="@color/blue_gray">
@@ -18,7 +17,7 @@
             android:id="@+id/toolhome"
             android:layout_width="match_parent"
             android:layout_height="90dp"
-            android:background="@drawable/bann"
+            android:background="@drawable/bg_leaf"
             android:gravity="center"
             style="@style/AppTheme.AppBarOverlay">
 
@@ -39,7 +38,7 @@
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="0dp"
                         android:gravity="center"
-                        android:text="Setting"
+                        android:text="@string/settings"
                         android:textColor="@color/colorWhite"
                         android:textSize="20sp"
                         android:textStyle="bold" />
@@ -73,18 +72,20 @@
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
-                    android:text="Guest"
+                    android:text="Guest notification"
                     android:drawableLeft="@drawable/ic_notif"
                     android:drawablePadding="10dp"
                     android:layout_gravity="center"/>
 
-                <ImageView
-                    android:id="@+id/guest_notif"
+                <Switch
+                    android:id="@+id/switch_guest"
                     android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="0.2"
-                    android:layout_height="30dp"
+                    android:gravity="center"
                     android:layout_gravity="center"
-                    android:src="@drawable/switch_on"/>
+                    android:layout_marginRight="15dp"
+                    android:theme="@style/SCBSwitch"/>
             </LinearLayout>
 
 
@@ -103,26 +104,59 @@
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="15dp"
-                        android:text="Door"
+                        android:text="Door notification"
                         android:drawableLeft="@drawable/ic_notif"
                         android:drawablePadding="10dp"
                         android:layout_gravity="center"/>
 
-                    <ImageView
-                        android:id="@+id/door_notif"
+                    <Switch
+                        android:id="@+id/switch_door"
                         android:layout_width="0dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="0.2"
-                        android:layout_height="30dp"
+                        android:gravity="center"
                         android:layout_gravity="center"
-                        android:src="@drawable/switch_on"/>
-                </LinearLayout>
+                        android:layout_marginRight="15dp"
+                        android:theme="@style/SCBSwitch"/>
 
+                </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/colorGrey"/>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:text="Thief notification"
+                        android:drawableLeft="@drawable/ic_notif"
+                        android:drawablePadding="10dp"
+                        android:layout_gravity="center"/>
+
+                    <Switch
+                        android:id="@+id/switch_thief"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.2"
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="15dp"
+                        android:theme="@style/SCBSwitch"/>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorGrey"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"

@@ -55,6 +55,8 @@ public class FindPassword extends AppCompatActivity {
         //Initial firebase
         auth = FirebaseAuth.getInstance();
 
+        pd = new ProgressDialog(this, R.style.MyAlertDialogStyle);
+
         //Action find password
         findPass.setOnClickListener(new View.OnClickListener() {
             @Override

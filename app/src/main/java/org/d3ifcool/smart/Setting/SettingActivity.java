@@ -1,8 +1,12 @@
 package org.d3ifcool.smart.Setting;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -17,8 +21,10 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +43,7 @@ import org.d3ifcool.smart.Home.MainActivity;
 import org.d3ifcool.smart.Model.Notif;
 import org.d3ifcool.smart.Model.Setting;
 import org.d3ifcool.smart.Model.User;
+import org.d3ifcool.smart.Notification.MyFirebaseMessagingService;
 import org.d3ifcool.smart.R;
 import org.d3ifcool.smart.WifiConfiguration.EsptouchDemoActivity;
 
@@ -46,15 +53,33 @@ import java.util.List;
 import static java.security.AccessController.getContext;
 
 public class SettingActivity extends AppCompatActivity {
-    private static final String TAG = "Setting";
 
-    private ImageView doorNotif, guestNotif;
-    private boolean statusDoor, statusGuest;
     private FirebaseAuth auth;
     private FirebaseUser firebaseUser;
-    private DatabaseReference referenceNotif;
     private TextView configur;
+    private Switch guest, door, thief;
+    private boolean onOffGuest, onOffDoor, onOffThief;
+    private SharedPreferences prefs;
+    private SharedPreferences.Editor editor;
 
+    private static final String TAG = "Setting";
+    public static final String GLOBAL_SHARED_PREFS = "org.d3ifcool.smart";
+    public static final String SWITCH1 = "guest";
+    public static final String SWITCH2 = "door";
+    public static final String SWITCH3 = "thief";
+
+
+    public interface SettingInterface{
+
+        void refresh();
+
+        void triggerHouses();
+
+        void triggerDoors();
+
+    }
+
+    @SuppressLint("CommitPrefEdits")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,26 +97,32 @@ public class SettingActivity extends AppCompatActivity {
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        guestNotif = findViewById(R.id.guest_notif);
-
-        doorNotif = findViewById(R.id.door_notif);
-
         configur = findViewById(R.id.conf);
 
-        onOffNotifGuest();
+        guest = findViewById(R.id.switch_guest);
 
-        onOffNotifDoor();
+        door = findViewById(R.id.switch_door);
+
+        thief = findViewById(R.id.switch_thief);
 
         checkAccount();
+
+        switchOnOff();
+
+        prefs = getSharedPreferences(GLOBAL_SHARED_PREFS, MODE_PRIVATE);
+        editor = prefs.edit();
+
+        guest.setChecked(prefs.getBoolean(SWITCH1, true));
+
+        door.setChecked(prefs.getBoolean(SWITCH2, true));
+
+        thief.setChecked(prefs.getBoolean(SWITCH3, true));
 
         Toolbar toolbar = findViewById(R.id.toolsetting);
 
         setSupportActionBar(toolbar);
 
-        referenceNotif = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getEmail().replace(".", ","))
-                .child("Notifications");
-
-        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavView_Bar);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavView_Bar);
 
         BottomNavigationViewHelper.disableShiftMode(bottomNavigationView);
 
@@ -145,53 +176,7 @@ public class SettingActivity extends AppCompatActivity {
 
                 startActivity(new Intent(SettingActivity.this, EsptouchDemoActivity.class));
 
-            }
-
-        });
-
-
-        referenceNotif.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                try {
-
-                    Notif notif = dataSnapshot.getValue(Notif.class);
-
-                    boolean Guest = notif.isGuest();
-
-                    boolean Door = notif.isDoor();
-
-                    if (Guest){
-
-                        guestNotif.setImageResource(R.drawable.switch_on);
-
-                    }
-
-                    else {
-
-                        guestNotif.setImageResource(R.drawable.switch_off);
-
-                    }
-
-                    if (Door){
-
-                        doorNotif.setImageResource(R.drawable.switch_on);
-
-                    }
-
-                    else {
-
-                        doorNotif.setImageResource(R.drawable.switch_off);
-
-                    }
-
-                }catch (Exception e){}
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
             }
 
@@ -240,33 +225,47 @@ public class SettingActivity extends AppCompatActivity {
 
     }
 
-    public void onOffNotifGuest(){
+    public void switchOnOff(){
+        guest.setChecked(true);
 
-        guestNotif.setOnClickListener(new View.OnClickListener() {
+        guest.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @SuppressLint("CommitPrefEdits")
             @Override
-            public void onClick(View v) {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                if (statusGuest){
+                if (isChecked){
 
-                    guestNotif.setImageResource(R.drawable.switch_on);
+                    Log.d("guest : ","true");
 
-                    referenceNotif.child("guest").setValue(statusGuest);
+                    onOffGuest = true;
 
-                    Toast.makeText(SettingActivity.this, "guest notification is active", Toast.LENGTH_SHORT).show();
+                    guest.setChecked(true);
 
-                    statusGuest = false;
+                    editor.putBoolean(SWITCH1, true);
+
+                    editor.apply();
+
+                    editor.commit();
+
+//                    Toast.makeText(SettingActivity.this, "Guest notification On", Toast.LENGTH_SHORT).show();
 
                 }
 
                 else {
 
-                    guestNotif.setImageResource(R.drawable.switch_off);
+                    Log.d("guest : ","false");
 
-                    referenceNotif.child("guest").setValue(statusGuest);
+                    onOffGuest = false;
 
-                    Toast.makeText(SettingActivity.this, "guest notification is not active", Toast.LENGTH_SHORT).show();
+                    guest.setChecked(false);
 
-                    statusGuest = true;
+                    editor.putBoolean(SWITCH1, false);
+
+                    editor.apply();
+
+                    editor.commit();
+
+//                    Toast.makeText(SettingActivity.this, "Guest notification Off", Toast.LENGTH_SHORT).show();
 
                 }
 
@@ -274,35 +273,89 @@ public class SettingActivity extends AppCompatActivity {
 
         });
 
-    }
+        door.setChecked(true);
 
-    public void onOffNotifDoor(){
-
-        doorNotif.setOnClickListener(new View.OnClickListener() {
+        door.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @SuppressLint("CommitPrefEdits")
             @Override
-            public void onClick(View v) {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                if (statusDoor){
+                if (isChecked){
 
-                    doorNotif.setImageResource(R.drawable.switch_on);
+                    Log.d("door : ","true");
 
-                    referenceNotif.child("door").setValue(statusDoor);
+                    onOffDoor = true;
 
-                    Toast.makeText(SettingActivity.this, "guest notification is active", Toast.LENGTH_SHORT).show();
+                    door.setChecked(true);
 
-                    statusDoor = false;
+                    editor.putBoolean(SWITCH2, door.isChecked());
+
+                    editor.apply();
+
+                    editor.commit();
+
+//                    Toast.makeText(SettingActivity.this, "Door notification On", Toast.LENGTH_SHORT).show();
 
                 }
 
                 else {
 
-                    doorNotif.setImageResource(R.drawable.switch_off);
+                    Log.d("door : ","false");
 
-                    referenceNotif.child("door").setValue(statusDoor);
+                    onOffDoor = false;
 
-                    Toast.makeText(SettingActivity.this, "guest notification is not active", Toast.LENGTH_SHORT).show();
+                    door.setChecked(false);
 
-                    statusDoor = true;
+                    editor.putBoolean(SWITCH2, false);
+
+                    editor.apply();
+
+                    editor.commit();
+
+//                    Toast.makeText(SettingActivity.this, "Door notification Off", Toast.LENGTH_SHORT).show();
+
+                }
+            }
+
+        });
+
+        thief.setChecked(true);
+
+        thief.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if (isChecked){
+
+                    Log.d("thief : ","true");
+
+                    onOffThief = true;
+
+                    thief.setChecked(true);
+
+                    editor.putBoolean(SWITCH3, true);
+
+                    editor.apply();
+
+                    editor.commit();
+
+//                    Toast.makeText(SettingActivity.this, "Thief notification On", Toast.LENGTH_SHORT).show();
+
+                }
+
+                else {
+
+                    Log.d("thief : ","false");
+
+                    onOffThief = false;
+
+                    thief.setChecked(false);
+
+                    editor.putBoolean(SWITCH3, false);
+
+                    editor.commit();
+
+//                    Toast.makeText(SettingActivity.this, "Thief notification On", Toast.LENGTH_SHORT).show();
 
                 }
 
@@ -344,6 +397,10 @@ public class SettingActivity extends AppCompatActivity {
             window.setTitleColor(R.color.black);
 
         }
+
+    }
+
+    public void refresh(){
 
     }
 

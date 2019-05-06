@@ -58,7 +58,7 @@
     <string name="configure_result_failed">Config failed</string>
     <string name="configure_result_failed_port">Create Esptouch task failed, the EspTouch port could be used by other thread</string>
     <string name="configure_result_success">Config succes</string>
-    <string name="configure_result_success_item">BSSID = %1$s, InetAddress = %2$s</string>
+    <string name="configure_result_success_item"><font fgcolor="#ffffff">BSSID = %1$s, InetAddress = %2$s</font></string>
     <string name="log_in">Log In</string>
     <string name="your_password">Your password</string>
     <string name="your_email">Your email</string>
@@ -81,5 +81,7 @@
     <string name="full_name">Full Name</string>
     <string name="prolock">PROLOCK</string>
     <string name="sing_up">Sing Up</string>
+    <string name="warning">Warning !</string>
+    <string name="settings">Settings</string>
 
 </resources>
