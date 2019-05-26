@@ -40,7 +40,6 @@ import org.d3ifcool.smart.Model.House;
 import org.d3ifcool.smart.Model.User;
 import org.d3ifcool.smart.R;
 import org.d3ifcool.smart.WifiConfiguration.EsptouchDemoActivity;
-import org.jetbrains.annotations.NotNull;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -72,9 +71,8 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
 
     }
 
-    @NotNull
     @Override
-    public RecyclerAdapterDoor.RecyclerViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
+    public RecyclerAdapterDoor.RecyclerViewHolder onCreateViewHolder( ViewGroup parent, int viewType) {
 
         View v = LayoutInflater.from(mContext).inflate(R.layout.row_model_door, parent, false);
 

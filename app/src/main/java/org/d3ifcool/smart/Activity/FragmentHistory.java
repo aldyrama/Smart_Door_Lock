@@ -29,6 +29,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
 import org.d3ifcool.smart.Adapter.RecyclerViewAdapterHistory;
+import org.d3ifcool.smart.Home.DetailUser;
 import org.d3ifcool.smart.Model.User;
 import org.d3ifcool.smart.R;
 
@@ -59,6 +60,29 @@ public class FragmentHistory extends Fragment implements View.OnClickListener, R
 
     public FragmentHistory() {
         // Required empty public constructor
+    }
+
+    private void openDetailActivity(String[] data){
+
+        Intent intent = new Intent(getActivity(), DetailHistory.class);
+
+        intent.putExtra("NAME_KEY",data[0]);
+
+        intent.putExtra("IMAGE_KEY",data[1]);
+
+        intent.putExtra("START_KEY",data[2]);
+
+        intent.putExtra("EXPIRED", data[3]);
+
+        intent.putExtra("TIME_KEY", data[4]);
+
+        intent.putExtra("TYPEACCOUNT_KEY",data[5]);
+
+        startActivity(intent);
+
+        getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+
+
     }
 
     @Nullable
@@ -237,6 +261,13 @@ public class FragmentHistory extends Fragment implements View.OnClickListener, R
 
     @Override
     public void onItemClick(int position) {
+
+        User clickedUser= mHistory.get(position);
+
+        String[] userData={clickedUser.getFullname(), clickedUser.getImageurl(), clickedUser.getStart_access(),
+                clickedUser.getExpired(), clickedUser.getTime(),clickedUser.getTypeAccount()};
+
+        openDetailActivity(userData);
 
     }
 

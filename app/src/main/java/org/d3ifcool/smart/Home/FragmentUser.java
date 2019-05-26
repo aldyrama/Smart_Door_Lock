@@ -45,7 +45,6 @@ import org.d3ifcool.smart.Adapter.RecylerViewAdapterUserInvite;
 import org.d3ifcool.smart.Data;
 import org.d3ifcool.smart.Model.User;
 import org.d3ifcool.smart.R;
-import org.jetbrains.annotations.NotNull;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -156,7 +155,7 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
 
     @Nullable
     @Override
-    public View onCreateView(@NotNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView( LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.user_fragment, container, false);
 
         auth = FirebaseAuth.getInstance();
@@ -326,7 +325,7 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
             mDatabaseRef.addChildEventListener(childEventListener);
             mDatabaseRef.addValueEventListener(new ValueEventListener() {
                 @Override
-                public void onDataChange(@NotNull DataSnapshot dataSnapshot) {
+                public void onDataChange( DataSnapshot dataSnapshot) {
 
                     mConnect.clear();
 
@@ -349,7 +348,7 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
                 }
 
                 @Override
-                public void onCancelled(@NotNull DatabaseError databaseError) {
+                public void onCancelled( DatabaseError databaseError) {
 
                     Toast.makeText(getActivity(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
 
@@ -495,36 +494,36 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
 
                 }
 
-                reference0 = FirebaseDatabase.getInstance().getReference("Users").child(str_invite.replace(".",","));
-                    reference0.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull final DataSnapshot userSnapshot) {
-                            Intent i = getActivity().getIntent();
-                            final String deviceCode = i.getExtras().getString("DEVICECODE_KEY");
 
-                            reference = FirebaseDatabase.getInstance().getReference("Devices").child(deviceCode).child("Member");
-                            reference.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot memberSnapshot) {
+                reference = FirebaseDatabase.getInstance().getReference().child("Users").child(str_invite.replace(".", ","));
+                reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull final DataSnapshot userSnapshot) {
 
-                                    reference1 = FirebaseDatabase.getInstance().getReference().child("Users").child(str_invite.replace(".", ","))
+                        Intent i = getActivity().getIntent();
+                        final String deviceCode = i.getExtras().getString("DEVICECODE_KEY");
+
+                        reference0 = FirebaseDatabase.getInstance().getReference().child("Devices").child(deviceCode).child("Member");
+                        reference0.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot memberSnapshot) {
+
+                                reference1 = FirebaseDatabase.getInstance().getReference().child("Users").child(str_invite.replace(".", ","))
                                             .child("Houses");
 
                                     reference2 = FirebaseDatabase.getInstance().getReference("Devices").child(deviceCode).child("Member");
 
                                     reference3 = FirebaseDatabase.getInstance().getReference("Devices").child(deviceCode).child("Member");
 
-                                    Log.d("email", "message " + email);
+                                if (memberSnapshot.exists()) {
 
-                                    if (str_invite.replace(".", ",").equals(email)){
+                                    phoneNumber.setError("Member " + str_invite + " Already available");
 
-                                        phoneNumber.setError(str_invite + " Can not");
+                                    pd.hide();
 
-                                        pd.hide();
+                                }
 
-                                    }
-
-                                    else if (userSnapshot.exists() && !memberSnapshot.exists()){
+                                else if (userSnapshot.exists()) {
 
                                         User getUser = userSnapshot.getValue(User.class);
 
@@ -546,52 +545,146 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
 
                                     }
 
-                                    else if (userSnapshot.exists() && memberSnapshot.exists()){
+                                else if (str_invite.replace(".", ",").equals(email)){
 
-                                        phoneNumber.setError("Member " + str_invite + " Already available");
+                                        phoneNumber.setError(str_invite + " Can not");
 
                                         pd.hide();
 
                                     }
 
-                                    else {
-
-                                        pd.hide();
+                                else{
 
                                         phoneNumber.setError(str_invite + " Not found");
 
+                                        pd.hide();
+
+
                                     }
 
                                 }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                                }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                Toast.makeText(getActivity(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
 
-                            });
+                            }
+
+                        });
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Toast.makeText(getActivity(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+
+                    }
+
+                });
 
 
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            pd.hide();
-
-                            phoneNumber.setError(str_invite + " Not found");
-
-                            Toast.makeText(getActivity(), str_invite + " Not found ", Toast.LENGTH_SHORT).show();
-
-                        }
-
-                    });
-
+//                reference0 = FirebaseDatabase.getInstance().getReference().child("Users").child(str_invite.replace(".",","));
+//                    reference0.addListenerForSingleValueEvent(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(@NonNull final DataSnapshot userSnapshot) {
+//                            Intent i = getActivity().getIntent();
+//                            final String deviceCode = i.getExtras().getString("DEVICECODE_KEY");
+//
+//                            reference = FirebaseDatabase.getInstance().getReference().child("Devices").child(deviceCode).child("Member");
+//                            reference.addListenerForSingleValueEvent(new ValueEventListener() {
+//                                @Override
+//                                public void onDataChange(@NonNull DataSnapshot memberSnapshot) {
+//
+//                                    reference1 = FirebaseDatabase.getInstance().getReference().child("Users").child(str_invite.replace(".", ","))
+//                                            .child("Houses");
+//
+//                                    reference2 = FirebaseDatabase.getInstance().getReference("Devices").child(deviceCode).child("Member");
+//
+//                                    reference3 = FirebaseDatabase.getInstance().getReference("Devices").child(deviceCode).child("Member");
+//
+//                                    Log.d("email", "message " + email);
+//
+//                                    Log.d("user ", " : " + userSnapshot);
+//                                    Log.d("user ", " : " + memberSnapshot);
+//
+//                                   if (!memberSnapshot.exists() && userSnapshot.exists()){
+//
+//                                        User getUser = userSnapshot.getValue(User.class);
+//
+//                                        String uploadId = getUser.getEmail().replace(".", ",");
+//
+//                                        reference1.child(deviceCode).setValue(deviceCode);
+//
+//                                        reference2.child(uploadId).setValue(getUser);
+//
+//                                        reference3.child(uploadId).child("start_access").setValue(str_start);
+//
+//                                        reference3.child(uploadId).child("expired").setValue(str_exp);
+//
+//                                        Toast.makeText(getActivity(), str_invite + "added", Toast.LENGTH_SHORT).show();
+//
+//                                        dialog.dismiss();
+//
+//                                        pd.hide();
+//
+//                                    }
+//
+//                                    else if (userSnapshot.exists() && memberSnapshot.exists()){
+//
+//                                        phoneNumber.setError("Member " + str_invite + " Already available");
+//
+//                                        pd.hide();
+//
+//                                    }
+//
+//                                    else if (str_invite.replace(".", ",").equals(email)){
+//
+//                                        phoneNumber.setError(str_invite + " Can not");
+//
+//                                        pd.hide();
+//
+//                                    }
+//
+//                                    else {
+//
+//                                        pd.hide();
+//
+//                                        phoneNumber.setError(str_invite + " Not found");
+//
+//                                    }
+//
+//                                }
+//
+//                                @Override
+//                                public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                                }
+//
+//                            });
+//
+//
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                            pd.hide();
+//
+//                            phoneNumber.setError(str_invite + " Not found");
+//
+//                            Toast.makeText(getActivity(), str_invite + " Not found ", Toast.LENGTH_SHORT).show();
+//
+//                        }
+//
+//                    });
+//
                 }
-
+//
         });
 
     }
+
 
     private void updateLabelEnd() {
 
@@ -625,7 +718,7 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
             }
 
             @Override
-            public void onCancelled(@NotNull DatabaseError databaseError) {
+            public void onCancelled( DatabaseError databaseError) {
 
             }
 
@@ -641,6 +734,8 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
         phoneNumber = view.findViewById(R.id.email_member);
 
         invite = view.findViewById(R.id.invite_btn_user);
+
+        invite.setStateListAnimator(null);
 
         sendInvite = view.findViewById(R.id.send_invite);
 

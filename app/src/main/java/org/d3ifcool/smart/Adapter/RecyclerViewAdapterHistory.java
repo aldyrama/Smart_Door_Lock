@@ -116,6 +116,9 @@ public class RecyclerViewAdapterHistory extends RecyclerView.Adapter<RecyclerVie
 
     public void setOnItemClickListener(OnItemClickListener listener) {
 
+        mListener = listener;
+
+
     }
 
     public interface OnItemClickListener {

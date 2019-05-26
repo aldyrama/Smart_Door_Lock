@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    android:gravity="center"
+    tools:context=".Home.AddStreaming">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/find_password"
+            android:layout_gravity="left"
+            android:layout_marginBottom="5dp"
+            android:textStyle="bold"/>
+
+        <EditText
+            android:id="@+id/email"
+            android:layout_width="300dp"
+            android:layout_height="45dp"
+            android:layout_gravity="center"
+            android:background="@drawable/bg_change"
+            android:hint="@string/enter_your_email"
+            android:drawableStart="@drawable/ic_action_email"
+            android:drawablePadding="8dp"
+            android:padding="15dp"
+            android:imeOptions="actionDone"
+            android:inputType="textEmailAddress"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/find_pass"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:background="@drawable/transparent_bg_bordered"
+            android:text="@string/send"
+            android:textSize="14sp"
+            android:layout_marginTop="45dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackgroundBorderless"/>
+
+    </LinearLayout>
+

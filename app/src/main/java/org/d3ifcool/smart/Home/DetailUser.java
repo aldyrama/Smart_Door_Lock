@@ -35,6 +35,7 @@ public class DetailUser extends AppCompatActivity implements  View.OnClickListen
             startTime,
             endTime;
     private CircleImageView photo;
+    private ImageView close;
 
     private void initializeWidgets(){
 
@@ -49,6 +50,8 @@ public class DetailUser extends AppCompatActivity implements  View.OnClickListen
         startTime = findViewById(R.id.start_time);
 
         endTime = findViewById(R.id.end_time);
+
+        close = findViewById(R.id.close_popup);
 
     }
 
@@ -113,6 +116,15 @@ public class DetailUser extends AppCompatActivity implements  View.OnClickListen
                 .centerCrop()
                 .into(photo);
 
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                onBackPressed();
+
+            }
+        });
+
     }
 
     @Override
@@ -168,4 +180,8 @@ public class DetailUser extends AppCompatActivity implements  View.OnClickListen
 
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }

@@ -73,6 +73,8 @@ import org.d3ifcool.smart.Family.FamilyActivity;
 import org.d3ifcool.smart.Model.House;
 import org.d3ifcool.smart.Model.User;
 import org.d3ifcool.smart.Notification.MyFirebaseMessagingService;
+import org.d3ifcool.smart.Onvif.MainCamera;
+import org.d3ifcool.smart.Onvif.OnvifInput;
 import org.d3ifcool.smart.QrCode.Qr;
 import org.d3ifcool.smart.R;
 import org.d3ifcool.smart.Setting.SettingActivity;
@@ -89,7 +91,7 @@ import static java.security.AccessController.getContext;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, RecyclerAdapterHouse.OnItemClickListener {
 
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "OuutputCamera";
     private SectionsPageAdapter mSectionsPageAdapter;
     private FirebaseDatabase database;
     private FirebaseStorage mStorage;
@@ -414,7 +416,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void getHouse(){
-
+        setLoadingAnimation();
         mDatabaseRef = database.getInstance().getReference();
         mDatabaseRef.keepSynced(true);
         mDBListener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
@@ -556,49 +558,51 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.stream_action :
 
-                Intent launchIntent = getPackageManager().getLaunchIntentForPackage("object.p2pwificam.client");
+                startActivity(new Intent(MainActivity.this, OnvifInput.class));
 
-                if (launchIntent != null) {
+//                Intent launchIntent = getPackageManager().getLaunchIntentForPackage("object.p2pwificam.client");
+//
+//                if (launchIntent != null) {
+//
+//                    startActivity(launchIntent);
+//
+//                }
+//
+//                else {
+//
+//                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//
+//                    builder.setCancelable(false);
+//
+//                    builder.setTitle("DOWNLOAD APP");
+//
+//                    builder.setMessage("download this app for acces wifi camera ?");
+//
+//                    builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+//
+//                                public void onClick(DialogInterface dialog, int which) {
+//
+//                                }
+//
+//                            });
+//
+//                    builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+//
+//                                public void onClick(DialogInterface dialog, int which) {
+//
+//                                    Intent intent = new Intent(Intent.ACTION_VIEW);
+//
+//                                    intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=object.p2pwificam.client"));
+//
+//                                    startActivity(intent);
+//
+//                                }
+//
+//                            });
+//
+//                    builder.show();
 
-                    startActivity(launchIntent);
-
-                }
-
-                else {
-
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-                    builder.setCancelable(false);
-
-                    builder.setTitle("DOWNLOAD APP");
-
-                    builder.setMessage("download this app for acces wifi camera ?");
-
-                    builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-
-                                public void onClick(DialogInterface dialog, int which) {
-
-                                }
-
-                            });
-
-                    builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-
-                                public void onClick(DialogInterface dialog, int which) {
-
-                                    Intent intent = new Intent(Intent.ACTION_VIEW);
-
-                                    intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=object.p2pwificam.client"));
-
-                                    startActivity(intent);
-
-                                }
-
-                            });
-
-                    builder.show();
-
-                }
+//                }
 
                 break;
 
@@ -674,6 +678,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        String[] houseData={clickedHouse.getName(), clickedHouse.getDeviceCode()};
 
 //        openDetailActivity(houseData);
+
+
 
     }
 

@@ -75,6 +75,7 @@
             android:layout_alignParentBottom="true"
             android:layout_margin="16dp"
             android:visibility="gone"
+            style="?android:attr/borderlessButtonStyle"
             android:backgroundTint="@color/blackk"
             android:src="@drawable/ic_action_add_white"/>
 

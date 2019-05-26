@@ -15,7 +15,8 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.firebase.database.DatabaseReference;
+import com.ToxicBakery.viewpager.transforms.CubeOutTransformer;
+import com.ToxicBakery.viewpager.transforms.RotateDownTransformer;
 
 import org.d3ifcool.smart.Activity.FragmentHistory;
 import org.d3ifcool.smart.BottomNavigation.SectionsPageAdapter;
@@ -55,7 +56,7 @@ public class HousesDetail extends AppCompatActivity implements  View.OnClickList
 
         mViewPager = (ViewPager) findViewById(R.id.container);
 
-        mViewPager.setPageTransformer(true, new ZoomAnimation());
+        mViewPager.setPageTransformer(true, new CubeOutTransformer());
 
         setupViewPager(mViewPager);
 

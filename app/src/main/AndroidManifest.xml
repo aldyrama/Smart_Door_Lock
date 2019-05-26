@@ -9,7 +9,11 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera2.full" />
+    <uses-feature android:name="android.hardware.camera2.autofocus" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- Samsung -->
     <uses-permission android:name="com.sec.android.provider.badge.permission.READ" />
     <uses-permission android:name="com.sec.android.provider.badge.permission.WRITE" /> <!-- Sony -->
@@ -23,13 +27,22 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/logo_app"
+        android:icon="@mipmap/retangle_prolock"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/logo_app_round"
+        android:roundIcon="@mipmap/circlelock"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".QrCode.Qr"></activity>
+        <activity android:name=".Onvif.Cam"></activity>
+        <!--<activity-->
+            <!--android:name=".Onvif.OutputCamera"-->
+            <!--android:configChanges="orientation|screenSize"-->
+            <!--android:label="susu"-->
+            <!--android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />-->
+        <activity android:name=".Home.AddStreaming" />
+        <activity android:name=".Onvif.MainCamera" />
+        <activity android:name=".Onvif.OnvifConfig" />
+        <activity android:name=".QrCode.Qr" />
         <activity android:name=".AccountActivity.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -45,6 +58,9 @@
             android:screenOrientation="portrait" />
         <activity android:name=".AccountActivity.FindPassword" />
         <activity android:name=".Family.FamilyActivity" />
+        <activity
+            android:name=".Activity.DetailHistory"
+            android:theme="@style/AppTheme.CustomTheme" />
         <activity
             android:name=".Home.DetailUser"
             android:theme="@style/AppTheme.CustomTheme" />
@@ -64,8 +80,7 @@
             android:name=".Home.StreamingActivity"
             android:configChanges="orientation|screenSize|locale" />
         <activity android:name=".AccountActivity.ChangePassActivity" />
-
-        <activity android:name=".WifiConfiguration.EsptouchDemoActivity"/>
+        <activity android:name=".WifiConfiguration.EsptouchDemoActivity" />
 
         <service
             android:name=".Notification.MyFirebaseMessagingService"
@@ -81,6 +96,8 @@
                 <action android:name="org.d3ifcool.smart" />
             </intent-filter>
         </receiver>
+
+        <activity android:name=".Onvif.OnvifInput" />
     </application>
 
 </manifest>

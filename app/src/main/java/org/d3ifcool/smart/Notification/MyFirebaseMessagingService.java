@@ -85,9 +85,9 @@ public class MyFirebaseMessagingService extends Service implements SettingActivi
                 onThief = prefs.getBoolean(SWITCH3, true);
 //                onOff();
 
-                triggerHouses();
-
-                triggerDoors();
+//                triggerHouses();
+//
+//                triggerDoors();
 
                 ActivityManager.RunningAppProcessInfo myProcess = new ActivityManager.RunningAppProcessInfo();
                 ActivityManager.getMyMemoryState(myProcess);
@@ -95,9 +95,9 @@ public class MyFirebaseMessagingService extends Service implements SettingActivi
                 if(isInBackground) {
 //                        guestOn();
 
-//                        triggerHouses();
-//
-//                        triggerDoors();
+                        triggerHouses();
+
+                        triggerDoors();
 //                        Toast.makeText(getApplication(), " is bg", Toast.LENGTH_SHORT).show();
                 }else{
 //                        Toast.makeText(getApplication(), " not bg", Toast.LENGTH_SHORT).show();

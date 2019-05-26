@@ -54,7 +54,6 @@ import org.d3ifcool.smart.Model.House;
 import org.d3ifcool.smart.Model.User;
 import org.d3ifcool.smart.R;
 import org.d3ifcool.smart.WifiConfiguration.EsptouchDemoActivity;
-import org.jetbrains.annotations.NotNull;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -119,7 +118,7 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
 
     @Nullable
     @Override
-    public View onCreateView(@NotNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView( LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.list_door_fragment,container,false);
 
         auth = FirebaseAuth.getInstance();
@@ -143,6 +142,8 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
         final RelativeLayout rl = view.findViewById(R.id.rl);
 
         addDoor = view.findViewById(R.id.addDoor_floating);
+
+        addDoor.setStateListAnimator(null);
 
         indicator = view.findViewById(R.id.recyclerview_indicator_door);
 
@@ -177,40 +178,40 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
 //        getDeviceStatus();
 
         setLoadingAnimation();
-
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-
-                super.onScrollStateChanged(recyclerView, newState);
-
-            }
-
-            @SuppressLint("RestrictedApi")
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-
-                if (dy < 0){
-
-                    addDoor.setVisibility(View.VISIBLE);
-
-                }
-
-                else if (dy > 0){
-
-                    addDoor.setVisibility(View.GONE);
-
-                }
-
-                else if (dy == 0){
-
-                    addDoor.setVisibility(View.VISIBLE);
-
-                }
-
-            }
-
-        });
+//
+//        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+//
+//                super.onScrollStateChanged(recyclerView, newState);
+//
+//            }
+//
+//            @SuppressLint("RestrictedApi")
+//            @Override
+//            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+//
+//                if (dy < 0){
+//
+//                    addDoor.setVisibility(View.VISIBLE);
+//
+//                }
+//
+//                else if (dy > 0){
+//
+//                    addDoor.setVisibility(View.GONE);
+//
+//                }
+//
+//                else if (dy == 0){
+//
+//                    addDoor.setVisibility(View.VISIBLE);
+//
+//                }
+//
+//            }
+//
+//        });
 
         return view;
 
@@ -613,7 +614,7 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
 
         super.onDestroy();
 
-        mDatabaseRef.removeEventListener(mDBListener);
+//        mDatabaseRef.removeEventListener(mDBListener);
 
     }
 

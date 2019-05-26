@@ -34,8 +34,9 @@ import com.google.firebase.database.ValueEventListener;
 import org.d3ifcool.smart.Home.HousesDetail;
 import org.d3ifcool.smart.Model.House;
 import org.d3ifcool.smart.Model.User;
+import org.d3ifcool.smart.Onvif.MainCamera;
+import org.d3ifcool.smart.Onvif.OnvifInput;
 import org.d3ifcool.smart.R;
-import org.jetbrains.annotations.NotNull;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -82,6 +83,18 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
 
     }
 
+    private void openDetailCamera(String[] data) {
+
+        Intent intent = new Intent(mContext, MainCamera.class);
+
+        intent.putExtra("NAME_KEY", data[0]);
+
+        intent.putExtra("DEVICECODE_KEY", data[1]);
+
+        mContext.startActivity(intent);
+
+    }
+
     public RecyclerAdapterHouse (Context context, List<House> uploads) {
 
         mContext = context;
@@ -90,16 +103,15 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
 
     }
 
-    @NotNull
     @Override
-    public RecyclerViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
+    public RecyclerViewHolder onCreateViewHolder( ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(mContext).inflate(R.layout.row_model_house, parent, false);
         return new RecyclerViewHolder(v);
 
     }
 
     @Override
-    public void onBindViewHolder(@NotNull final RecyclerViewHolder holder, @SuppressLint("RecyclerView") final int position) {
+    public void onBindViewHolder( final RecyclerViewHolder holder, @SuppressLint("RecyclerView") final int position) {
 
         final House currentHouse = houses.get(position);
 
@@ -116,6 +128,20 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
         holder.vibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
 
         activity = (Activity) mContext;
+
+        holder.cam.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                House clickedHouse = houses.get(position);
+
+                String[] houseData={clickedHouse.getName(), clickedHouse.getDeviceCode()};
+
+                openDetailCamera(houseData);
+
+                activity.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+            }
+        });
 
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Devices").child(currentHouse.getDeviceCode());
         ref.addValueEventListener(new ValueEventListener() {
@@ -303,7 +329,7 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
             View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
 
         private TextView name_house, guest, locktxt, txtcConnect, warning;
-        private ImageView Cdevice, allLock, isGuest, door;
+        private ImageView Cdevice, allLock, isGuest, door, cam;
         ProgressBar mProgressbar;
         Vibrator vibrator;
 
@@ -321,6 +347,8 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
             txtcConnect = itemView.findViewById(R.id.txt_device);
 
             allLock = itemView.findViewById(R.id.all_lockHouse);
+
+            cam = itemView.findViewById(R.id.stream_action);
 
             isGuest = itemView.findViewById(R.id.guest);
 

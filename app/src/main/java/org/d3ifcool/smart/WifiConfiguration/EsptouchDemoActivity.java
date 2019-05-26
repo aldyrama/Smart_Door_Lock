@@ -12,6 +12,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
+import android.media.MediaPlayer;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
@@ -60,6 +61,7 @@ public class EsptouchDemoActivity extends AppCompatActivity implements OnClickLi
     private RadioGroup mPackageModeGroup;
     private TextView mMessageTV;
     private Button mConfirmBtn;
+    private MediaPlayer mediaPlayer;
 
     private IEsptouchListener myListener = new IEsptouchListener() {
 
@@ -152,6 +154,8 @@ public class EsptouchDemoActivity extends AppCompatActivity implements OnClickLi
         mConfirmBtn.setEnabled(false);
 
         mConfirmBtn.setOnClickListener(this);
+
+
 
         if (isSDKAtLeastP()) {
 
@@ -484,9 +488,14 @@ public class EsptouchDemoActivity extends AppCompatActivity implements OnClickLi
 
         private IEsptouchTask mEsptouchTask;
 
+        private MediaPlayer mediaPlayer;
+
         EsptouchAsyncTask4(EsptouchDemoActivity activity) {
 
             mActivity = new WeakReference<>(activity);
+
+            mediaPlayer = MediaPlayer.create(activity, R.raw.search_device);
+
 
         }
 
@@ -518,6 +527,13 @@ public class EsptouchDemoActivity extends AppCompatActivity implements OnClickLi
         protected void onPreExecute() {
 
             Activity activity = mActivity.get();
+
+            mediaPlayer.start();
+
+            mediaPlayer.setVolume(2, 2);
+//
+//            mediaPlayer.setLooping(true);
+
 
             mProgressDialog = new ProgressDialog(activity, R.style.MyAlertDialogStyle);
 
