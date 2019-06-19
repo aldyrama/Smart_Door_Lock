@@ -82,9 +82,6 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
 
                             sleep(100);
 
-//                            checking.setVisibility(View.GONE);
-//                            fadingTextView.setVisibility(View.GONE);
-
                         }
 
                     }

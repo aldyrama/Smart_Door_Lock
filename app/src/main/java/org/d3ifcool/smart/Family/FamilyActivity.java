@@ -9,7 +9,6 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -17,7 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ImageView;
 
 import org.d3ifcool.smart.AccountActivity.ChangePassActivity;
 import org.d3ifcool.smart.BottomNavigation.BottomNavigationViewHelper;
@@ -55,19 +53,6 @@ public class FamilyActivity extends AppCompatActivity {
         loadFragmentValue();
 
         mSectionsPageAdapter = new SectionsPageAdapter(getSupportFragmentManager());
-
-        // Set up the ViewPager with the sections adapter.
-//        mViewPager = (ViewPager) findViewById(R.id.container);
-//        mViewPager.setPageTransformer(true, new ZoomAnimation());
-//        setupViewPager(mViewPager);
-//
-//        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-//        tabLayout.setupWithViewPager(mViewPager);
-
-
-//        tabLayout.getTabAt(0).setText("User");
-//        tabLayout.getTabAt(1).setText("Profile");
-
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavView_Bar);
 

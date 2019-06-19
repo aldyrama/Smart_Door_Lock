@@ -18,11 +18,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
-
-import com.github.arturogutierrez.Badges;
-import com.github.arturogutierrez.BadgesNotSupportedException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -83,40 +78,22 @@ public class MyFirebaseMessagingService extends Service implements SettingActivi
                 onDoor = prefs.getBoolean(SWITCH2, true);
 
                 onThief = prefs.getBoolean(SWITCH3, true);
-//                onOff();
-
-//                triggerHouses();
-//
-//                triggerDoors();
 
                 ActivityManager.RunningAppProcessInfo myProcess = new ActivityManager.RunningAppProcessInfo();
                 ActivityManager.getMyMemoryState(myProcess);
                 isInBackground = myProcess.importance != ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
                 if(isInBackground) {
-//                        guestOn();
 
                         triggerHouses();
 
                         triggerDoors();
-//                        Toast.makeText(getApplication(), " is bg", Toast.LENGTH_SHORT).show();
-                }else{
-//                        Toast.makeText(getApplication(), " not bg", Toast.LENGTH_SHORT).show();
                 }
 
-                vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-
-
-        }
-
-        public void onOff(){
-
-//                onGuest = prefs.getBoolean(SWITCH1, true);
+//                }else{
 //
-//                onDoor = prefs.getBoolean(SWITCH2, true);
-//
-//                onThief = prefs.getBoolean(SWITCH3, true);
-//
-//                Log.d("pref", " : " + onGuest + "\n" + onDoor + "\n" + onThief);
+//                }
+
+//                vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
 
         }
@@ -305,11 +282,6 @@ public class MyFirebaseMessagingService extends Service implements SettingActivi
 
                                 .setPriority(Notification.PRIORITY_MAX);
 
-//                vibrator.vibrate(600);
-//                play();
-//                Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-//                notification.setSound(uri);
-
                         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
                         notificationManager.notify(1, notification.build());
@@ -353,11 +325,6 @@ public class MyFirebaseMessagingService extends Service implements SettingActivi
                                 .setLights(0xff0000ff, 300, 1000) // blue color
 
                                 .setPriority(Notification.PRIORITY_MAX);
-
-//                vibrator.vibrate(600);
-//                play();
-//                Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-//                notification.setSound(uri);
 
                         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -403,11 +370,6 @@ public class MyFirebaseMessagingService extends Service implements SettingActivi
 
                                 .setPriority(Notification.PRIORITY_MAX);
 
-//                vibrator.vibrate(600);
-//                play();
-//                Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-//                notification.setSound(uri);
-
                         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
                         notificationManager.notify(1, notification.build());
@@ -415,18 +377,6 @@ public class MyFirebaseMessagingService extends Service implements SettingActivi
                 }
 
         }
-
-        public void play(){
-
-                if (mediaPlayer == null){
-
-                        mediaPlayer = MediaPlayer.create(this, R.raw.iphone_notif);
-
-                }
-
-                mediaPlayer.start();
-        }
-
 
         @Nullable
         @Override
@@ -440,20 +390,6 @@ public class MyFirebaseMessagingService extends Service implements SettingActivi
         public void onDestroy() {
 
                 super.onDestroy();
-
-        }
-
-        public void countNotif(View view){
-
-                try {
-
-                        Badges.setBadge(MyFirebaseMessagingService.this, 1);
-
-                }catch (BadgesNotSupportedException e){
-
-                        Toast.makeText(this, "That was error!", Toast.LENGTH_SHORT).show();
-
-                }
 
         }
 

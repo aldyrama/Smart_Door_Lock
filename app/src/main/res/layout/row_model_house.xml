@@ -4,271 +4,184 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/tools"
     android:foreground="?attr/selectableItemBackgroundBorderless"
-    card_view:cardCornerRadius="0dp"
+    card_view:cardCornerRadius="8dp"
     android:clickable="true"
     android:focusable="true"
-    android:layout_marginBottom="5dp"
+    android:layout_marginTop="12dp"
+    android:layout_marginRight="6dp"
+    android:layout_marginLeft="6dp"
     android:layout_gravity="center"
     android:background="?attr/selectableItemBackgroundBorderless"
-    android:layout_height="match_parent"
+    android:layout_height="200dp"
     app:ignore="NamespaceTypo">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="10dp"
+            android:layout_height="match_parent"
+            android:background="@color/darkColor">
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_home_device"/>
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:gravity="center_horizontal">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="180dp"
-                        android:background="@drawable/room"/>
-
-                    <android.support.v7.widget.CardView
-                        android:layout_width="120dp"
-                        android:layout_height="120dp"
-                        card_view:cardCornerRadius="60dp"
-                        android:layout_centerHorizontal="true"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginTop="120dp">
-
-                        <ImageView
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
-                            android:src="@drawable/home_page"
-                            android:layout_gravity="center"/>
-
-                    </android.support.v7.widget.CardView>
-                </RelativeLayout>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="House Name"
-                        android:drawablePadding="6dp"
-                        android:id="@+id/houseName"
-                        android:textSize="20sp"
-                        android:padding="5dp"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:textColor="@color/black" />
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:layout_gravity="center"
-                    android:gravity="center">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/warning_house"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/holo_red_dark"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:layout_marginLeft="16dp"
+                        android:visibility="visible"
+                        android:text="@string/warning"/>
 
                     <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:visibility="gone"
+                        android:layout_gravity="center"
+                        android:orientation="vertical"
+                        android:gravity="center">
+
+                        <ImageView
+                            android:id="@+id/deviceStatus"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:padding="2dp"
+                            android:layout_marginEnd="10dp"
+                            android:scaleType="centerInside"
+                            android:layout_gravity="center"
+                            android:src="@drawable/connected"/>
+
+                        <TextView
+                            android:id="@+id/txt_device"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@+id/guest"
+                            android:textColor="@color/blackk"
+                            android:layout_marginEnd="10dp"
+                            android:text="0"
+                            android:textSize="12sp"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_gravity="center"
                         android:orientation="vertical"
                         android:gravity="center">
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginTop="20dp">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_gravity="center"
-                            android:orientation="vertical"
-                            android:gravity="center">
-
-                            <ImageView
-                                android:id="@+id/deviceStatus"
-                                android:layout_width="40dp"
-                                android:layout_height="40dp"
-                                android:padding="2dp"
-                                android:layout_marginEnd="10dp"
-                                android:scaleType="centerInside"
-                                android:layout_gravity="center"
-                                android:src="@drawable/connected"/>
-
-                            <TextView
-                                android:id="@+id/txt_device"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignBottom="@+id/guest"
-                                android:textColor="@color/blackk"
-                                android:layout_marginEnd="10dp"
-                                android:text="0"
-                                android:textSize="12sp"/>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_gravity="center"
-                            android:orientation="vertical"
-                            android:gravity="center">
-
-                            <ImageView
-                                android:id="@+id/guest"
-                                android:layout_width="35dp"
-                                android:layout_height="35dp"
-                                android:padding="2dp"
-                                android:layout_marginStart="10dp"
-                                android:scaleType="centerInside"
-                                android:layout_gravity="center"
-                                android:src="@drawable/bell_no_guest"/>
-
-                            <TextView
-                                android:id="@+id/txt_guest"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignBottom="@+id/guest"
-                                android:textColor="@color/blackk"
-                                android:layout_marginStart="10dp"
-                                android:text=" "
-                                android:textSize="12sp"/>
-
-                             </LinearLayout>
-                        </LinearLayout>
-
-                        <TextView
-                            android:id="@+id/warning_house"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@android:color/holo_red_dark"
-                            android:layout_gravity="center"
-                            android:gravity="center"
-                            android:visibility="gone"
-                            android:text="@string/warning"/>
+                        <ImageView
+                            android:id="@+id/guest"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:padding="2dp"
+                            android:layout_margin="12dp"
+                            android:layout_marginStart="10dp"
+                            android:scaleType="centerInside"
+                            android:layout_gravity="center|right"
+                            android:src="@drawable/bell_no_guest"/>
 
                     </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:layout_gravity="center|bottom"
-                            android:gravity="bottom|center">
+                </LinearLayout>
+            </LinearLayout>
 
-                            <View
-                                android:layout_width="match_parent"
-                                android:layout_height="0.5dp"
-                                android:background="@color/gray200"
-                                android:layout_marginBottom="10dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
 
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:gravity="center"
-                                android:layout_marginBottom="15dp"
-                                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="House Name"
+                    android:drawablePadding="6dp"
+                    android:id="@+id/houseName"
+                    android:textSize="18sp"
+                    android:padding="16dp"
+                    android:gravity="center|left"
+                    android:textColor="@color/black" />
 
-                                <LinearLayout
-                                    android:layout_width="0dp"
-                                    android:layout_weight="1"
-                                    android:gravity="center"
-                                    android:orientation="vertical"
-                                    android:layout_height="wrap_content">
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:layout_gravity="right|center"
+                android:gravity="right|center">
 
-                                    <ImageView
-                                        android:id="@+id/stream_action"
-                                        android:layout_width="35dp"
-                                        android:layout_height="35dp"
-                                        android:onClick="onClickView"
-                                        android:src="@drawable/ip_cam"
-                                        android:layout_marginTop="6dp"
-                                        android:layout_gravity="center"
-                                        android:layout_marginEnd="15dp"/>
+                <LinearLayout
+                    android:layout_width="45dp"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/ic_circle"
+                    android:layout_height="45dp">
 
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="Wifi camera"
-                                        android:textSize="12sp"
-                                        android:gravity="center"
-                                        android:layout_marginEnd="15dp"
-                                        android:layout_gravity="center"/>
+                    <ImageView
+                        android:id="@+id/stream_action"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:onClick="onClickView"
+                        android:src="@drawable/black_cam"
+                        android:layout_gravity="center"/>
 
-                                </LinearLayout>
+                </LinearLayout>
 
-                                <LinearLayout
-                                    android:layout_width="0dp"
-                                    android:layout_weight="1"
-                                    android:gravity="center"
-                                    android:orientation="vertical"
-                                    android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_width="45dp"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/ic_circle"
+                    android:layout_height="45dp">
 
-                                    <ImageView
-                                        android:id="@+id/doorDetail"
-                                        android:layout_width="40dp"
-                                        android:layout_height="40dp"
-                                        android:src="@drawable/door"
-                                        android:onClick="onClickView"
-                                        android:layout_marginStart="15dp"
-                                        android:layout_gravity="center"/>
+                    <ImageView
+                        android:id="@+id/doorDetail"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/door_item"
+                        android:onClick="onClickView"
+                        android:layout_gravity="center"/>
 
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="Doors"
-                                        android:textSize="12sp"
-                                        android:layout_marginStart="15dp"/>
-
-                                </LinearLayout>
-                            </LinearLayout>
-                        </LinearLayout>
-                    </LinearLayout>
-
-                            <RelativeLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:gravity="center"
-                                android:visibility="visible">
-
-                                <ProgressBar
-                                    android:id="@+id/progress_lock"
-                                    android:layout_width="40dp"
-                                    android:layout_height="40dp"
-                                    android:visibility="gone"
-                                    android:layout_centerInParent="true"/>
-
-                                <ImageView
-                                    android:id="@+id/all_lockHouse"
-                                    android:layout_width="70dp"
-                                    android:layout_height="70dp"
-                                    android:visibility="gone"
-                                    android:src="@drawable/lock_door"
-                                    android:layout_margin="6dp" />
-
-                                <TextView
-                                    android:id="@+id/allock"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="House locked"
-                                    android:visibility="gone"
-                                    android:layout_marginBottom="20dp"/>
-                            </RelativeLayout>
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

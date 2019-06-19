@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    tools:shrinkMode="strict"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     tools:context=".Home.MainActivity"
-    android:orientation="vertical"
-    android:background="@color/blue_gray">
+    android:background="@color/blue_gray"
+    android:orientation="vertical">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBarLayout"
@@ -17,8 +17,8 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolhome"
         android:layout_width="match_parent"
-        android:layout_height="90dp"
-        android:background="@drawable/bg_leaf"
+        android:layout_height="74dp"
+        android:background="@color/darkColor"
         android:gravity="center"
         style="@style/AppTheme.AppBarOverlay">
 
@@ -26,7 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="36dp"
             android:gravity="center|bottom">
 
             <RelativeLayout
@@ -44,7 +44,7 @@
                     android:gravity="center|bottom"
                     android:text="@string/home"
                     android:textColor="@color/colorWhite"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
 
             <ImageView
@@ -59,11 +59,8 @@
                 android:layout_marginEnd="15dp"/>
 
             </RelativeLayout>
-
         </LinearLayout>
-
     </android.support.v7.widget.Toolbar>
-
     </android.support.design.widget.AppBarLayout>
 
     <FrameLayout
@@ -78,69 +75,42 @@
         android:layout_gravity="center"
         android:gravity="center">
 
-        <TextView
-            android:id="@+id/empty_device"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="No Device"
-            android:visibility="gone"
-            android:layout_centerInParent="true"
-            android:drawableTop="@drawable/emptyy"/>
-
         <android.support.v7.widget.RecyclerView
             android:id="@+id/mRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="3dp"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="45dp"/>
+            android:layout_marginBottom="52dp"/>
 
-        <RelativeLayout
-            android:layout_below="@+id/topBar"
-            android:layout_above="@+id/bottomBar"
+        <LinearLayout
+            android:id="@+id/empty"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_centerInParent="true"
             android:gravity="center">
 
-            <android.support.v7.widget.CardView
+            <android.support.design.widget.FloatingActionButton
                 android:id="@+id/cards_add_home"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="48dp"
-                android:layout_marginBottom="48dp"
-                android:layout_marginRight="26dp"
-                android:layout_marginLeft="26dp"
-                app:cardCornerRadius="35dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:onClick="onClickView"
-                android:foreground="?attr/selectableItemBackgroundBorderless"
-                android:elevation="8dp"
-                android:divider="@android:color/transparent"
-                android:dividerHeight="0.0px"
-                android:clipToPadding="false"
-                android:clipChildren="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="16dp"
                 android:visibility="visible"
-                card_view:cardElevation="10dp"
-                card_view:cardPreventCornerOverlap="false">
+                android:onClick="onClickView"
+                android:backgroundTint="@color/darkColor"
+                android:src="@drawable/ic_action_add_white"/>
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/profile_image"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:src="@drawable/ck"
-                    android:layout_gravity="center"
-                    app:civ_border_width="0dp" />
+            <TextView
+                android:id="@+id/txt_empty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ADD DEVICE"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="@color/darkColor"/>
 
-                <ImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:src="@drawable/ic_action_add_white"
-                    android:layout_gravity="center" />
-
-            </android.support.v7.widget.CardView>
-
-        </RelativeLayout>
+        </LinearLayout>
 
         <View
             android:id="@+id/fader"
@@ -158,23 +128,11 @@
                 style="@style/AVLoadingIndicatorView.Large"
                 android:visibility="visible"
                 app:indicatorName="BallPulseIndicator"
-                app:indicatorColor="@android:color/darker_gray"
+                app:indicatorColor="@color/darkColor"
                 android:elevation="3dp"
                 android:layout_centerInParent="true"
                 android:layout_gravity="center"
                 />
-
-        <com.rbrooks.indefinitepagerindicator.IndefinitePagerIndicator
-            android:id="@+id/recyclerview_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:dotColor="@color/gray400"
-            app:supportRTL="true"
-            app:selectedDotColor="@color/blackk"
-            app:selectedDotRadius="5dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="55dp"
-            android:layout_centerHorizontal="true"/>
 
         <RelativeLayout
             android:id="@+id/internet_status"
@@ -221,7 +179,7 @@
                 android:background="@drawable/white_grey_border_top"
                 app:menu="@menu/bottom_navigation_menu"
                 app:itemIconTint="@color/tab_color"
-                app:itemTextColor="@color/black"
+                app:itemTextColor="@color/blackk"
                 app:labelVisibilityMode="labeled">
             </android.support.design.widget.BottomNavigationView>
 

@@ -568,6 +568,9 @@ public class EsptouchDemoActivity extends AppCompatActivity implements OnClickLi
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+
+                            mediaPlayer.stop();
+
                             synchronized (mLock) {
 
                                 if (__IEsptouchTask.DEBUG) {

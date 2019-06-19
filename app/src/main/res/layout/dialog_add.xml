@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:gravity="center">
 
     <ImageView
@@ -28,7 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="@color/blue_gray"
+            android:background="@drawable/bg_dialog"
             android:orientation="vertical">
 
             <LinearLayout
@@ -65,7 +66,7 @@
                             android:layout_width="54dp"
                             android:layout_height="50dp"
                             android:layout_gravity="center"
-                            android:src="@drawable/ic_action_qrcode" />
+                            android:src="@drawable/ic_qr" />
 
                         <TextView
                             android:layout_width="wrap_content"

@@ -29,7 +29,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
 import org.d3ifcool.smart.Adapter.RecyclerViewAdapterHistory;
-import org.d3ifcool.smart.Home.DetailUser;
 import org.d3ifcool.smart.Model.User;
 import org.d3ifcool.smart.R;
 
@@ -77,6 +76,8 @@ public class FragmentHistory extends Fragment implements View.OnClickListener, R
         intent.putExtra("TIME_KEY", data[4]);
 
         intent.putExtra("TYPEACCOUNT_KEY",data[5]);
+
+        intent.putExtra("DOOR_KEY",data[6]);
 
         startActivity(intent);
 
@@ -265,7 +266,7 @@ public class FragmentHistory extends Fragment implements View.OnClickListener, R
         User clickedUser= mHistory.get(position);
 
         String[] userData={clickedUser.getFullname(), clickedUser.getImageurl(), clickedUser.getStart_access(),
-                clickedUser.getExpired(), clickedUser.getTime(),clickedUser.getTypeAccount()};
+                clickedUser.getExpired(), clickedUser.getTime(),clickedUser.getTypeAccount(), clickedUser.getDoor()};
 
         openDetailActivity(userData);
 

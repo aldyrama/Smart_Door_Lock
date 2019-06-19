@@ -422,7 +422,7 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
 
                     expiredUser.setVisibility(View.GONE);
 
-                    expiredUser.setText(" ");
+                    expiredUser.setText("Is no expiration");
 
                 }
 
@@ -515,9 +515,17 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
 
                                     reference3 = FirebaseDatabase.getInstance().getReference("Devices").child(deviceCode).child("Member");
 
-                                if (memberSnapshot.exists()) {
+                                if (memberSnapshot.child(str_invite.replace(".", ",")).exists()) {
 
                                     phoneNumber.setError("Member " + str_invite + " Already available");
+
+                                    pd.hide();
+
+                                }
+
+                                else if (str_invite.replace(".", ",").equals(email)){
+
+                                    phoneNumber.setError(str_invite + " Can not");
 
                                     pd.hide();
 
@@ -540,14 +548,6 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
                                         Toast.makeText(getActivity(), str_invite + "added", Toast.LENGTH_SHORT).show();
 
                                         dialog.dismiss();
-
-                                        pd.hide();
-
-                                    }
-
-                                else if (str_invite.replace(".", ",").equals(email)){
-
-                                        phoneNumber.setError(str_invite + " Can not");
 
                                         pd.hide();
 
@@ -583,102 +583,6 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
 
                 });
 
-
-//                reference0 = FirebaseDatabase.getInstance().getReference().child("Users").child(str_invite.replace(".",","));
-//                    reference0.addListenerForSingleValueEvent(new ValueEventListener() {
-//                        @Override
-//                        public void onDataChange(@NonNull final DataSnapshot userSnapshot) {
-//                            Intent i = getActivity().getIntent();
-//                            final String deviceCode = i.getExtras().getString("DEVICECODE_KEY");
-//
-//                            reference = FirebaseDatabase.getInstance().getReference().child("Devices").child(deviceCode).child("Member");
-//                            reference.addListenerForSingleValueEvent(new ValueEventListener() {
-//                                @Override
-//                                public void onDataChange(@NonNull DataSnapshot memberSnapshot) {
-//
-//                                    reference1 = FirebaseDatabase.getInstance().getReference().child("Users").child(str_invite.replace(".", ","))
-//                                            .child("Houses");
-//
-//                                    reference2 = FirebaseDatabase.getInstance().getReference("Devices").child(deviceCode).child("Member");
-//
-//                                    reference3 = FirebaseDatabase.getInstance().getReference("Devices").child(deviceCode).child("Member");
-//
-//                                    Log.d("email", "message " + email);
-//
-//                                    Log.d("user ", " : " + userSnapshot);
-//                                    Log.d("user ", " : " + memberSnapshot);
-//
-//                                   if (!memberSnapshot.exists() && userSnapshot.exists()){
-//
-//                                        User getUser = userSnapshot.getValue(User.class);
-//
-//                                        String uploadId = getUser.getEmail().replace(".", ",");
-//
-//                                        reference1.child(deviceCode).setValue(deviceCode);
-//
-//                                        reference2.child(uploadId).setValue(getUser);
-//
-//                                        reference3.child(uploadId).child("start_access").setValue(str_start);
-//
-//                                        reference3.child(uploadId).child("expired").setValue(str_exp);
-//
-//                                        Toast.makeText(getActivity(), str_invite + "added", Toast.LENGTH_SHORT).show();
-//
-//                                        dialog.dismiss();
-//
-//                                        pd.hide();
-//
-//                                    }
-//
-//                                    else if (userSnapshot.exists() && memberSnapshot.exists()){
-//
-//                                        phoneNumber.setError("Member " + str_invite + " Already available");
-//
-//                                        pd.hide();
-//
-//                                    }
-//
-//                                    else if (str_invite.replace(".", ",").equals(email)){
-//
-//                                        phoneNumber.setError(str_invite + " Can not");
-//
-//                                        pd.hide();
-//
-//                                    }
-//
-//                                    else {
-//
-//                                        pd.hide();
-//
-//                                        phoneNumber.setError(str_invite + " Not found");
-//
-//                                    }
-//
-//                                }
-//
-//                                @Override
-//                                public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                                }
-//
-//                            });
-//
-//
-//                        }
-//
-//                        @Override
-//                        public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                            pd.hide();
-//
-//                            phoneNumber.setError(str_invite + " Not found");
-//
-//                            Toast.makeText(getActivity(), str_invite + " Not found ", Toast.LENGTH_SHORT).show();
-//
-//                        }
-//
-//                    });
-//
                 }
 //
         });

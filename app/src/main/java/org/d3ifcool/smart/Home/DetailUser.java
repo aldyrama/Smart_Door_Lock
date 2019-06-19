@@ -1,17 +1,12 @@
 package org.d3ifcool.smart.Home;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.ColorRes;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,10 +15,6 @@ import com.squareup.picasso.Picasso;
 
 import org.d3ifcool.smart.Adapter.RecylerViewAdapterUserInvite;
 import org.d3ifcool.smart.R;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -144,39 +135,6 @@ public class DetailUser extends AppCompatActivity implements  View.OnClickListen
 
     @Override
     public void onDeleteItemClick(int position) {
-
-    }
-
-    @SuppressLint("ResourceAsColor")
-    private void setStatustBarColor(@ColorRes int statustBarColor) {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-
-            int color = ContextCompat.getColor(this, statustBarColor);
-
-            Window window = getWindow();
-
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-
-            window.setStatusBarColor(color);
-
-            window.setTitleColor(R.color.black);
-
-        }
-
-    }
-
-    private String getDateToday(){
-
-        DateFormat dateFormat=new SimpleDateFormat("yyyy/MM/dd");
-
-        Date date = new Date();
-
-        String today= dateFormat.format(date);
-
-        return today;
 
     }
 

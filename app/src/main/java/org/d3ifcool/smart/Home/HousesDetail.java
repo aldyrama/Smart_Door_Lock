@@ -12,15 +12,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ToxicBakery.viewpager.transforms.CubeOutTransformer;
-import com.ToxicBakery.viewpager.transforms.RotateDownTransformer;
-
 import org.d3ifcool.smart.Activity.FragmentHistory;
 import org.d3ifcool.smart.BottomNavigation.SectionsPageAdapter;
-import org.d3ifcool.smart.Family.ZoomAnimation;
 import org.d3ifcool.smart.R;
 
 public class HousesDetail extends AppCompatActivity implements  View.OnClickListener {

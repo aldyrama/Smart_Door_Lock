@@ -1,6 +1,7 @@
 package org.d3ifcool.smart.Home;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.Service;
@@ -27,14 +28,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.gdacciaro.iOSDialog.iOSDialog;
-import com.gdacciaro.iOSDialog.iOSDialogBuilder;
-import com.gdacciaro.iOSDialog.iOSDialogClickListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -78,7 +75,7 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
     private FloatingActionButton addDoor;
 
     private Dialog dialog_Door;
-    private Button commitDoor;
+    private Button commitDoor, sure, cancel;
     private EditText addDoorEdtxt, doorPin;
     private CardView addDoorCard;
     private ImageView closePoupUpDoor, door;
@@ -90,9 +87,10 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
     private int counter;
     private Context mContext;
     private String deviceCode;
-    private TextView empty, count;
+    private TextView empty, count, title;
     private int counterInput = 0;
     private int countDown = 30;
+    AlertDialog dialog;
 
 
     @SuppressLint("ValidFragment")
@@ -170,12 +168,9 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
         Intent i = getActivity().getIntent();
         deviceCode = i.getExtras().getString("DEVICECODE_KEY");
 
-//        checkDevices();
         checkAccount();
 
         getDoor();
-
-//        getDeviceStatus();
 
         setLoadingAnimation();
 //
@@ -412,37 +407,6 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
 
     }
 
-    public void alert(){
-
-      new iOSDialogBuilder(getActivity())
-
-              .setTitle(getActivity().getResources().getString(R.string.device_not_connected))
-
-              .setSubtitle(getActivity().getResources().getString(R.string.connect_the_device))
-
-              .setBoldPositiveLabel(true)
-
-              .setCancelable(false)
-
-              .setPositiveListener(getActivity().getResources().getString(R.string.yes), new iOSDialogClickListener() {
-                  @Override
-                  public void onClick(iOSDialog dialog) {
-
-                      getActivity().startActivity(new Intent(getActivity(), EsptouchDemoActivity.class));
-
-                  }
-              }).setNegativeListener(getActivity().getResources().getString(R.string.Canncel), new iOSDialogClickListener() {
-
-                  @Override
-                  public void onClick(iOSDialog dialog) {
-
-                      getActivity().startActivity(new Intent(getActivity(), MainActivity.class));
-
-                  }
-              }).build().show();
-
-    }
-
 
     public void getDoor() {
 
@@ -541,24 +505,10 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
 
     public void onItemClick(int position) {
 
-//        Door clickedDoors= mDoor.get(position);
-
-//        String[] doorsData={clickedDoors.getDoorName(), String.valueOf(clickedDoors.getDoorLock())};
-
-//        Toast.makeText(getActivity(),clickedDoors.getDoorName(), Toast.LENGTH_SHORT).show();
-
-////        openDetailActivity(doorsData);
-
     }
 
     @Override
     public void onShowItemClick(int position) {
-
-//        Door clickedDoors= mDoor.get(position);
-
-//        String[] doorsData={clickedDoors.getDoorName(), String.valueOf(clickedDoors.getDoorLock())};
-
-////        openDetailActivity(doorsData);
 
     }
 
@@ -569,43 +519,53 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
 
         final String selectedKey = selectedItem.getDoorPin();
 
-        new iOSDialogBuilder(getActivity())
+        final Dialog dialog = new Dialog(getActivity());
 
-        .setCancelable(false)
+        dialog.setTitle(" ");
 
-        .setTitle("DELETE DOOR")
+        dialog.setContentView(R.layout.allert_dialog_delete);
 
-        .setSubtitle("are you sure to delete this door ?")
+        dialog.show();
 
-        .setNegativeListener("Cancel",  new iOSDialogClickListener() {
+        title = dialog.findViewById(R.id.txt_alert_delete);
+
+        title.setText("Are you sure to delete this door?");
+
+        sure = dialog.findViewById(R.id.btn_sure_delete);
+
+        cancel = dialog.findViewById(R.id.btn_cancel_delete);
+
+        sure.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(iOSDialog dialog) {
+            public void onClick(View v) {
 
-                dialog.dismiss();
-            }
-        })
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Devices").child(deviceCode);
 
-        .setPositiveListener("YES", new iOSDialogClickListener() {
-            @Override
-            public void onClick(final iOSDialog dialog) {
+                ref.child("ListDoor").child(selectedKey).getRef().removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
 
-                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Devices").child(deviceCode);
+                        dialog.dismiss();
 
-                        ref.child("ListDoor").child(selectedKey).getRef().removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
+                        getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
-                                Toast.makeText(getActivity(), "Item deleted", Toast.LENGTH_SHORT).show();
-
-                                dialog.dismiss();
-
-                            }
-
-                        });
+                        Toast.makeText(getActivity(), "Item deleted", Toast.LENGTH_SHORT).show();
 
                     }
 
-                }).build().show();
+                });
+
+            }
+        });
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                dialog.cancel();
+
+            }
+        });
 
     }
 

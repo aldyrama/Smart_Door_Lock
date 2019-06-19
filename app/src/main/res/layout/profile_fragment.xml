@@ -77,35 +77,11 @@
                 android:layout_width="0dp"
                 android:layout_weight="3"
                 android:text=""
+                android:layout_marginRight="20dp"
                 android:hint=""
                 android:gravity="right"
-                android:layout_height="wrap_content"
-                android:drawableRight="@drawable/ic_action_arrow_right"/>
+                android:layout_height="wrap_content"/>
             </LinearLayout>
-
-            <!--<LinearLayout-->
-                <!--android:layout_width="fill_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginRight="16dp"-->
-                <!--android:layout_marginLeft="16dp"-->
-                <!--android:layout_marginTop="32dp">-->
-                <!--<TextView-->
-                    <!--android:id="@+id/username_txt"-->
-                    <!--android:layout_width="0dp"-->
-                    <!--android:layout_weight="1"-->
-                    <!--android:text="Username"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--/>-->
-                <!--<TextView-->
-                    <!--android:id="@+id/setusername"-->
-                    <!--android:layout_width="0dp"-->
-                    <!--android:layout_weight="3"-->
-                    <!--android:text=""-->
-                    <!--android:hint=""-->
-                    <!--android:layout_marginRight="20dp"-->
-                    <!--android:gravity="right"-->
-                    <!--android:layout_height="wrap_content"/>-->
-            <!--</LinearLayout>-->
 
             <LinearLayout
                 android:layout_width="fill_parent"

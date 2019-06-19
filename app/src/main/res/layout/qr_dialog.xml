@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        tools:ignore="MissingConstraints">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:background="@drawable/bg_alert_dialog">
+
+            <EditText
+                android:id="@+id/house_name"
+                android:layout_width="250dp"
+                android:layout_height="45dp"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_change"
+                android:hint="House Name"
+                android:padding="15dp"
+                android:layout_margin="24dp"
+                style="@style/editTextEntryName"
+                android:scrollHorizontally="true"
+                android:ellipsize="end"
+                android:imeOptions="actionDone"
+                android:maxLines="1"
+                android:textSize="14sp"
+                android:layout_marginTop="10dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:background="@color/gray400">
+
+            <Button
+                android:id="@+id/btn_sure_delete"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:text="Add"
+                android:textAllCaps="false"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"/>
+
+            <Button
+                android:id="@+id/btn_cancel_delete"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:textAllCaps="false"
+                android:text="@string/Canncel"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

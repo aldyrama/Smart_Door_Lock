@@ -1,6 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
 
@@ -12,8 +13,8 @@
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolhome"
             android:layout_width="match_parent"
-            android:layout_height="90dp"
-            android:background="@drawable/bg_leaf"
+            android:layout_height="74dp"
+            android:background="@color/darkColor"
             android:gravity="center"
             style="@style/AppTheme.AppBarOverlay">
 
@@ -21,6 +22,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:layout_marginTop="36dp"
                 android:gravity="center|bottom">
 
                 <RelativeLayout
@@ -38,7 +40,7 @@
                         android:gravity="center|bottom"
                         android:text="Wifi configuration"
                         android:textColor="@color/colorWhite"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
 
                 </RelativeLayout>
@@ -199,6 +201,8 @@
         android:id="@+id/confirm_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/darkColor"
+        android:textColor="@color/colorWhite"
         android:text="@string/confirm" />
 
     </LinearLayout>

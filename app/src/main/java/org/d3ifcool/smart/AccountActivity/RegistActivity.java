@@ -3,18 +3,15 @@ package org.d3ifcool.smart.AccountActivity;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Patterns;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -32,15 +29,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
 
-import org.d3ifcool.smart.Data;
 import org.d3ifcool.smart.Home.MainActivity;
 import org.d3ifcool.smart.R;
 
 import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class RegistActivity extends AppCompatActivity {
 
@@ -169,14 +162,6 @@ public class RegistActivity extends AppCompatActivity {
 
     }
 
-
-//    public static boolean isEmailValid(String email){
-//        Pattern pattern = Patterns.EMAIL_ADDRESS;
-//        Matcher matcher = pattern.matcher(email);
-//        return matcher.matches();
-//    }
-
-
     private void view(){
 
         email = findViewById(R.id.email_edittxt);
@@ -284,23 +269,6 @@ public class RegistActivity extends AppCompatActivity {
         return "";
 
     }
-
-
-//    private void sendEmailVerification() {
-//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-//        if (user!=null){
-//            user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
-//                @Override
-//                public void onComplete(@NonNull Task<Void> task) {
-//                    if (task.isSuccessful()){
-//                        Toast.makeText(RegistActivity.this,"Check your Email for verification",Toast.LENGTH_SHORT).show();
-//                        FirebaseAuth.getInstance().signOut();
-//                    }
-//                }
-//            });
-//        }
-//    }
-
 
     @Override
     protected void onStop() {

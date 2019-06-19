@@ -17,8 +17,8 @@
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolregist"
             android:layout_width="match_parent"
-            android:layout_height="90dp"
-            android:background="@drawable/bg_leaf"
+            android:layout_height="74dp"
+            android:background="@color/darkColor"
             android:gravity="center"
             android:layout_gravity="center"
             style="@style/AppTheme.AppBarOverlay">
@@ -27,6 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:layout_marginTop="36dp"
                 android:gravity="center">
 
                 <RelativeLayout
@@ -42,7 +43,7 @@
                         android:gravity="center"
                         android:text="@string/change_password"
                         android:textColor="@color/colorWhite"
-                        android:textSize="20sp"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
 
                     <ImageView
@@ -50,7 +51,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:onClick="onClickView"
-                        android:src="@drawable/ic_left"
                         android:layout_alignParentStart="true" />
 
                 </RelativeLayout>
@@ -104,18 +104,19 @@
             android:padding="15dp"
             android:textSize="14sp"/>
 
-            <Button
-                android:id="@+id/submit_pass"
-                android:layout_width="300dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center"
-                android:background="@drawable/transparent_bg_bordered"
-                android:text="Change Password"
-                android:textSize="14sp"
-                android:layout_marginTop="45dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?attr/selectableItemBackgroundBorderless"/>
-        </LinearLayout>
+        <Button
+            android:id="@+id/submit_pass"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:background="@drawable/transparent_bg_bordered"
+            android:text="Change Password"
+            android:textSize="14sp"
+            android:layout_marginTop="45dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackgroundBorderless"/>
+
     </LinearLayout>
+</LinearLayout>
 

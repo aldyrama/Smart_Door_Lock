@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:layout_gravity="center"
     android:gravity="center"
-    android:background="@color/colorWhite"
+    android:background="@color/darkColor"
     android:id="@+id/lr"
     tools:context=".AccountActivity.SplashActivity">
 
@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="PROLOCK"
-        android:textColor="@color/blackk"
+        android:textColor="@color/colorWhite"
         android:textSize="32sp"
         android:textStyle="bold"/>
 
@@ -31,13 +31,14 @@
         android:layout_height="wrap_content"
         android:text="made in by "
         android:layout_marginLeft="20sp"
+        android:textColor="@color/colorWhite"
         android:textSize="10sp"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Processor"
-        android:textColor="@color/blackk"
+        android:textColor="@color/colorWhite"
         android:layout_toRightOf="@+id/power"
         android:textStyle="bold"
         android:textSize="12sp"/>

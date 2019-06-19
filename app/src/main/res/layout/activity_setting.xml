@@ -16,34 +16,27 @@
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolhome"
             android:layout_width="match_parent"
-            android:layout_height="90dp"
-            android:background="@drawable/bg_leaf"
+            android:layout_height="74dp"
+            android:layout_gravity="center"
+            android:background="@color/darkColor"
             android:gravity="center"
-            style="@style/AppTheme.AppBarOverlay">
+            app:layout_scrollFlags="scroll|enterAlways|snap">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center">
+                android:gravity="center"
+                android:layout_marginTop="36dp">
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/settings"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="0dp"
-                        android:gravity="center"
-                        android:text="@string/settings"
-                        android:textColor="@color/colorWhite"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-
-                </RelativeLayout>
             </LinearLayout>
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
@@ -60,7 +53,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginTop="10dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -83,6 +77,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0.2"
                     android:gravity="center"
+                    android:checked="false"
                     android:layout_gravity="center"
                     android:layout_marginRight="15dp"
                     android:theme="@style/SCBSwitch"/>
@@ -115,6 +110,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="0.2"
                         android:gravity="center"
+                        android:checked="false"
                         android:layout_gravity="center"
                         android:layout_marginRight="15dp"
                         android:theme="@style/SCBSwitch"/>
@@ -147,6 +143,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="0.2"
                         android:gravity="center"
+                        android:checked="false"
                         android:layout_gravity="center"
                         android:layout_marginRight="15dp"
                         android:theme="@style/SCBSwitch"/>
@@ -169,7 +166,7 @@
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="15dp"
-                        android:text="Wifi Configuration"
+                        android:text="Intelegent Config"
                         android:drawableLeft="@drawable/ic_connect"
                         android:drawablePadding="10dp"
                         android:layout_gravity="center"/>

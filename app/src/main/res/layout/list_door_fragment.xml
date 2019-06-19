@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:card_view="http://schemas.android.com/tools"
     android:layout_centerInParent="true"
     android:layout_gravity="center"
     android:gravity="center"
@@ -24,7 +23,7 @@
         style="@style/AVLoadingIndicatorView.Large"
         android:visibility="visible"
         app:indicatorName="BallPulseIndicator"
-        app:indicatorColor="@android:color/darker_gray"
+        app:indicatorColor="@color/darkColor"
         android:elevation="3dp"
         android:layout_centerInParent="true"
         android:layout_gravity="center"
@@ -51,7 +50,7 @@
         android:visibility="gone"
         android:gravity="center"
         android:layout_centerInParent="true"
-        android:drawableTop="@drawable/emptyy"/>
+        android:drawableTop="@drawable/door_item"/>
 
     <com.rbrooks.indefinitepagerindicator.IndefinitePagerIndicator
         android:id="@+id/recyclerview_indicator_door"
@@ -63,7 +62,7 @@
         app:verticalSupport="true"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
-        app:selectedDotColor="@color/blackk"
+        app:selectedDotColor="@color/darkColor"
         app:selectedDotRadius="5dp"
         />
 
@@ -74,9 +73,9 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_margin="16dp"
-            android:visibility="gone"
+            android:visibility="visible"
             style="?android:attr/borderlessButtonStyle"
-            android:backgroundTint="@color/blackk"
+            android:backgroundTint="@color/darkColor"
             android:src="@drawable/ic_action_add_white"/>
 
 </RelativeLayout>

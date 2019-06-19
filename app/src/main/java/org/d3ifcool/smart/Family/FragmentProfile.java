@@ -1,9 +1,10 @@
 package org.d3ifcool.smart.Family;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -15,7 +16,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,9 +27,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.gdacciaro.iOSDialog.iOSDialog;
-import com.gdacciaro.iOSDialog.iOSDialogBuilder;
-import com.gdacciaro.iOSDialog.iOSDialogClickListener;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -60,8 +57,8 @@ import static android.content.Context.MODE_PRIVATE;
 public class FragmentProfile extends Fragment {
 
     private static final String TAG = "History";
-    private TextView name, email, password, account;
-    private Button logOut, removeAccount;
+    private TextView name, email, password, account, title;
+    private Button logOut, removeAccount, sure, cancel;
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener authListener;
     private ProgressDialog pd;
@@ -69,10 +66,10 @@ public class FragmentProfile extends Fragment {
     private ImageView image_profile;
     static int PReqCode = 1 ;
     static int REQUESCODE = 1 ;
-
     private FirebaseUser firebaseUser;
     private String profileid;
     private Uri mImageUri;
+    Activity activity;
     private StorageTask<UploadTask.TaskSnapshot> uploadTask;
     private StorageReference storageRef;
 
@@ -80,7 +77,7 @@ public class FragmentProfile extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.profile_fragment,container,false);
+        final View view = inflater.inflate(R.layout.profile_fragment,container,false);
 
         image_profile = view.findViewById(R.id.image_profile);
 
@@ -204,69 +201,77 @@ public class FragmentProfile extends Fragment {
                 final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").
                         child(firebaseUser.getEmail().replace(".",","));
 
-                new iOSDialogBuilder(getActivity())
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-                .setTitle("DELETE ACCOUNT")
+                v = LayoutInflater.from(getActivity()).inflate(R.layout.allert_dialog_delete, null);
 
-                .setSubtitle("If your unsubscribe, you will lose all information. Doyou want to continue?")
+                title = v.findViewById(R.id.txt_alert_delete);
 
-                .setNegativeListener("NO", new iOSDialogClickListener() {
+                title.setText("If your unsubscribe, you will lose all information. Doyou want to continue?");
 
-                            public void onClick(iOSDialog dialog) {
+                sure = v.findViewById(R.id.btn_sure_delete);
 
-                                dialog.dismiss();
+                cancel = v.findViewById(R.id.btn_cancel_delete);
 
-                            }
+                sure.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 
-                        })
+                        pd.setMessage("Please wait...");
 
-                .setPositiveListener("YES", new iOSDialogClickListener() {
+                        pd.setCancelable(false);
 
-                            public void onClick(iOSDialog dialog) {
+                        pd.setCanceledOnTouchOutside(false);
 
-                                pd.setMessage("Please wait...");
+                        pd.show();
 
-                                pd.setCancelable(false);
+                        if (firebaseUser != null) {
 
-                                pd.setCanceledOnTouchOutside(false);
+                            firebaseUser.delete()
 
-                                pd.show();
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
 
-                                if (firebaseUser != null) {
+                                            pd.hide();
 
-                                    firebaseUser.delete()
+                                            if (task.isSuccessful()) {
 
-                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
+                                                Toast.makeText(getActivity(), "Your profile is deleted:( Create a account now!", Toast.LENGTH_SHORT).show();
 
-                                                    pd.hide();
+                                                startActivity(new Intent(getActivity(), RegistActivity.class));
 
-                                                    if (task.isSuccessful()) {
+                                                getActivity().finish();
 
-                                                        Toast.makeText(getActivity(), "Your profile is deleted:( Create a account now!", Toast.LENGTH_SHORT).show();
+                                            } else {
 
-                                                        startActivity(new Intent(getActivity(), RegistActivity.class));
+                                                pd.hide();
 
-                                                        getActivity().finish();
+                                                Toast.makeText(getActivity(), "Failed to delete your account!", Toast.LENGTH_SHORT).show();
 
-                                                    } else {
+                                            }
 
-                                                        pd.hide();
+                                        }
 
-                                                        Toast.makeText(getActivity(), "Failed to delete your account!", Toast.LENGTH_SHORT).show();
+                                    });
 
-                                                    }
+                        }
 
-                                                }
+                }
+                });
 
-                                            });
+                cancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 
-                                }
+                        startActivity(new Intent(getContext(), FamilyActivity.class));
+                        getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
-                            }
 
-                        }).build().show();
+                    }
+                });
+                builder.setView(v);
+                builder.show();
 
             }
 

@@ -1,12 +1,9 @@
 package org.d3ifcool.smart.Setting;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
-import android.preference.PreferenceManager;
 import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -20,13 +17,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -36,19 +29,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.d3ifcool.smart.Adapter.SettingAdapter;
 import org.d3ifcool.smart.BottomNavigation.BottomNavigationViewHelper;
 import org.d3ifcool.smart.Family.FamilyActivity;
 import org.d3ifcool.smart.Home.MainActivity;
-import org.d3ifcool.smart.Model.Notif;
-import org.d3ifcool.smart.Model.Setting;
 import org.d3ifcool.smart.Model.User;
-import org.d3ifcool.smart.Notification.MyFirebaseMessagingService;
 import org.d3ifcool.smart.R;
 import org.d3ifcool.smart.WifiConfiguration.EsptouchDemoActivity;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static java.security.AccessController.getContext;
 
@@ -112,11 +98,11 @@ public class SettingActivity extends AppCompatActivity {
         prefs = getSharedPreferences(GLOBAL_SHARED_PREFS, MODE_PRIVATE);
         editor = prefs.edit();
 
-        guest.setChecked(prefs.getBoolean(SWITCH1, true));
+        guest.setChecked(prefs.getBoolean(SWITCH1, false));
 
-        door.setChecked(prefs.getBoolean(SWITCH2, true));
+        door.setChecked(prefs.getBoolean(SWITCH2, false));
 
-        thief.setChecked(prefs.getBoolean(SWITCH3, true));
+        thief.setChecked(prefs.getBoolean(SWITCH3, false));
 
         Toolbar toolbar = findViewById(R.id.toolsetting);
 

@@ -83,5 +83,6 @@
     <string name="sing_up">Sing Up</string>
     <string name="warning">Warning !</string>
     <string name="settings">Settings</string>
+    <string name="camera_is_offline">Camera is offline</string>
 
 </resources>

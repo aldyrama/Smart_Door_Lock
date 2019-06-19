@@ -4,27 +4,21 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-
-import org.d3ifcool.smart.Home.HousesDetail;
 import org.d3ifcool.smart.R;
 
 public class DetailHistory extends AppCompatActivity {
 
     private ImageView photo, close;
     private TextView detailNameTextView, detailTypeAccount,
-            startTime,endTime, today;
+            startTime,endTime, today, door;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,12 +61,16 @@ public class DetailHistory extends AppCompatActivity {
 
         String typeaccount = i.getExtras().getString("TYPEACCOUNT_KEY");
 
+        String doors = i.getExtras().getString("DOOR_KEY");
+
 
         detailNameTextView.setText(name);
 
         detailTypeAccount.setText(typeaccount);
 
         today.setText(time);
+
+        door.setText(doors);
 
         Picasso.with(this)
                 .load(image)
@@ -100,6 +98,8 @@ public class DetailHistory extends AppCompatActivity {
         detailNameTextView = findViewById(R.id.detailNameUser);
 
         detailTypeAccount = findViewById(R.id.typeaccount);
+
+        door = findViewById(R.id.door);
 
         today = findViewById(R.id.todaytime);
 

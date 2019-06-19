@@ -34,7 +34,6 @@ public class ChangePassActivity extends AppCompatActivity implements View.OnClic
     //Firebase
     private FirebaseAuth auth;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,7 +98,6 @@ public class ChangePassActivity extends AppCompatActivity implements View.OnClic
                     else {
 
                         user.updatePassword(newpass.getText().toString().trim())
-
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {

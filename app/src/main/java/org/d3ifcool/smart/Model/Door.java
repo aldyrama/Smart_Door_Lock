@@ -41,8 +41,6 @@ public class Door {
 
         this.doorName = doorName;
 
-//        this.madeDate = madeDate;
-
     }
 
     public Door(String str_door, String str_pin) {

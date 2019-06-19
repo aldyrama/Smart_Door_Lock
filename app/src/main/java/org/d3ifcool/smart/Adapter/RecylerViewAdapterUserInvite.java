@@ -1,8 +1,6 @@
 package org.d3ifcool.smart.Adapter;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -20,8 +18,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -35,7 +31,6 @@ import org.d3ifcool.smart.Model.User;
 import org.d3ifcool.smart.R;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -115,17 +110,17 @@ public class RecylerViewAdapterUserInvite extends RecyclerView.Adapter<RecylerVi
 
                     Log.d("exp", "onDataChange: " + exp);
 
-                    if (exp.equals(" ")){
-
-                        holder.icon.setVisibility(View.GONE);
-
-                    }
-
-                    else {
-
-                        holder.icon.setVisibility(View.VISIBLE);
-
-                    }
+//                    if (exp.equals("Is no expiration")){
+//
+//                        holder.icon.setVisibility(View.GONE);
+//
+//                    }
+//
+//                    else {
+//
+//                        holder.icon.setVisibility(View.VISIBLE);
+//
+//                    }
 
                 }
 

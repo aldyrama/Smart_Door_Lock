@@ -11,7 +11,6 @@ import android.graphics.Typeface;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -34,12 +33,10 @@ import com.google.firebase.database.ValueEventListener;
 import org.d3ifcool.smart.Home.HousesDetail;
 import org.d3ifcool.smart.Model.House;
 import org.d3ifcool.smart.Model.User;
-import org.d3ifcool.smart.Onvif.MainCamera;
-import org.d3ifcool.smart.Onvif.OnvifInput;
+import org.d3ifcool.smart.Onvif.MainCam;
 import org.d3ifcool.smart.R;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -85,7 +82,7 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
 
     private void openDetailCamera(String[] data) {
 
-        Intent intent = new Intent(mContext, MainCamera.class);
+        Intent intent = new Intent(mContext, MainCam.class);
 
         intent.putExtra("NAME_KEY", data[0]);
 
@@ -119,11 +116,11 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
 
         currentHouse.getDeviceCode();
 
-        holder.allLock.setOnClickListener(this);
+//        holder.allLock.setOnClickListener(this);
 
-        holder.mProgressbar.setVisibility(View.VISIBLE);
+//        holder.mProgressbar.setVisibility(View.VISIBLE);
 
-        holder.mProgressbar.setSecondaryProgress(50000);
+//        holder.mProgressbar.setSecondaryProgress(50000);
 
         holder.vibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
 
@@ -199,13 +196,9 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
 
                         holder.isGuest.setImageResource(R.drawable.bell_no_guest);
 
-                        holder.guest.setText(R.string.no_guest);
-
                     } else {
 
                         holder.isGuest.setImageResource(R.drawable.bell_guest);
-
-                        holder.guest.setText(R.string.guest);
 
                     }
 
@@ -263,40 +256,6 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
 
         });
 
-        holder.allLock.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Devices").child(currentHouse.getDeviceCode());
-
-                if (!status){
-
-                    status = true;
-
-                    reference.child("house_lock").setValue(status);
-
-                    holder.locktxt.setText(R.string.house_not_locket);
-
-                    Toast.makeText(mContext, "House unlocked", Toast.LENGTH_SHORT).show();
-
-                }
-
-                else {
-
-                    status = false;
-
-                    reference.child("house_lock").setValue(status);
-
-                    holder.locktxt.setText(R.string.house_locket);
-
-                    Toast.makeText(mContext, "House locked", Toast.LENGTH_SHORT).show();
-
-                }
-
-            }
-
-        });
-
     }
 
     private String getDateToday(){
@@ -342,23 +301,15 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
 
             warning = itemView.findViewById(R.id.warning_house);
 
-            guest = itemView.findViewById(R.id.txt_guest);
-
             txtcConnect = itemView.findViewById(R.id.txt_device);
-
-            allLock = itemView.findViewById(R.id.all_lockHouse);
 
             cam = itemView.findViewById(R.id.stream_action);
 
             isGuest = itemView.findViewById(R.id.guest);
 
-            locktxt = itemView.findViewById(R.id.allock);
-
             door = itemView.findViewById(R.id.doorDetail);
 
-            mProgressbar = itemView.findViewById(R.id.progress_lock);
-
-            mProgressbar.setSecondaryProgress(50000);
+//            mProgressbar.setSecondaryProgress(50000);
 
             vibrator = (Vibrator) itemView.getContext().getSystemService(Context.VIBRATOR_SERVICE);
 

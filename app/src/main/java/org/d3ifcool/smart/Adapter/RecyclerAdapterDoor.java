@@ -17,9 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,7 +37,6 @@ import org.d3ifcool.smart.Model.Door;
 import org.d3ifcool.smart.Model.House;
 import org.d3ifcool.smart.Model.User;
 import org.d3ifcool.smart.R;
-import org.d3ifcool.smart.WifiConfiguration.EsptouchDemoActivity;
 
 import java.text.DateFormat;
 import java.text.ParseException;

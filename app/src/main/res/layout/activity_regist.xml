@@ -15,8 +15,8 @@
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolregist"
             android:layout_width="match_parent"
-            android:layout_height="90dp"
-            android:background="@drawable/bg_leaf"
+            android:layout_height="74dp"
+            android:background="@color/darkColor"
             android:gravity="center"
             style="@style/AppTheme.AppBarOverlay">
 
@@ -24,6 +24,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:layout_marginTop="36dp"
                 android:gravity="center">
 
                 <RelativeLayout
@@ -39,7 +40,7 @@
                         android:gravity="center|bottom"
                         android:text="@string/sing_up"
                         android:textColor="@color/colorWhite"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
 
                     <ImageView
@@ -47,7 +48,6 @@
                         android:layout_width="30dp"
                         android:layout_height="50dp"
                         android:visibility="gone"
-                        android:src="@drawable/ic_left"
                         android:layout_alignParentStart="true"
                         android:layout_marginEnd="5dp"/>
 
