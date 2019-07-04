@@ -57,6 +57,7 @@ dependencies {
     implementation 'com.github.pedroSG94.vlc-example-streamplayer:pedrovlc:2.5.14v3'
     implementation 'ua.polohalo.zoomabletextureview:zoomabletextureview:1.0.0'
     implementation 'com.ToxicBakery.viewpager.transforms:view-pager-transforms:2.0.24'
+    implementation 'com.github.abumoallim:Android-Multi-Select-Dialog:v1.9'
     implementation project(':esptouch')
 
     testImplementation 'junit:junit:4.12'

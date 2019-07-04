@@ -83,6 +83,7 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
     private Activity mActivity;
     private SimpleDateFormat simpleDateFormat;
     private ProgressDialog pd;
+    private TextView item;
 
 
     private void openDetailActivity(String[] data){
@@ -656,6 +657,8 @@ public class FragmentUser extends Fragment implements View.OnClickListener, Recy
         empty_members = view.findViewById(R.id.empty_member);
 
         mConnect = new ArrayList<>();
+
+        item = view.findViewById(R.id.select_door);
 
         mRecyclerViewInvite = view.findViewById(R.id.recycler_view_invite);
 

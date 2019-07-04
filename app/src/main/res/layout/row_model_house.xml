@@ -65,7 +65,7 @@
                         android:layout_gravity="center"
                         android:gravity="center"
                         android:layout_marginLeft="16dp"
-                        android:visibility="visible"
+                        android:visibility="gone"
                         android:text="@string/warning"/>
 
                     <LinearLayout
@@ -77,25 +77,6 @@
                         android:orientation="vertical"
                         android:gravity="center">
 
-                        <ImageView
-                            android:id="@+id/deviceStatus"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:padding="2dp"
-                            android:layout_marginEnd="10dp"
-                            android:scaleType="centerInside"
-                            android:layout_gravity="center"
-                            android:src="@drawable/connected"/>
-
-                        <TextView
-                            android:id="@+id/txt_device"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignBottom="@+id/guest"
-                            android:textColor="@color/blackk"
-                            android:layout_marginEnd="10dp"
-                            android:text="0"
-                            android:textSize="12sp"/>
 
                     </LinearLayout>
 

@@ -11,6 +11,7 @@ import android.graphics.Typeface;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -140,42 +141,34 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
             }
         });
 
-        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Devices").child(currentHouse.getDeviceCode());
-        ref.addValueEventListener(new ValueEventListener() {
-            @SuppressLint("ResourceType")
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                House house = dataSnapshot.getValue(House.class);
-
-                try {
-
-                    int totalDevices = house.getTotalDevices();
-
-                    if (totalDevices > 0) {
-
-                        holder.Cdevice.setImageResource(R.drawable.connected);
-
-                        holder.txtcConnect.setText(String.valueOf(totalDevices) + " Device");
-
-                    } else {
-
-                        holder.Cdevice.setImageResource(R.drawable.disconnected);
-
-                        holder.txtcConnect.setText(0 + " Device");
-
-                    }
-
-                }catch (Exception e) {}
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-
-        });
+//        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Devices").child(currentHouse.getDeviceCode());
+//        ref.addValueEventListener(new ValueEventListener() {
+//            @SuppressLint("ResourceType")
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//
+//                House house = dataSnapshot.getValue(House.class);
+//
+//                try {
+//
+//                    int totalDevices = house.getTotalDevices();
+//
+//                    if (totalDevices > 0) {
+//
+//                    } else {
+//
+//                    }
+//
+//                }catch (Exception e) {}
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//
+//        });
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Devices").child(currentHouse.getDeviceCode());
         reference.addValueEventListener(new ValueEventListener() {
@@ -288,7 +281,7 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
             View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
 
         private TextView name_house, guest, locktxt, txtcConnect, warning;
-        private ImageView Cdevice, allLock, isGuest, door, cam;
+        private ImageView allLock, isGuest, door, cam;
         ProgressBar mProgressbar;
         Vibrator vibrator;
 
@@ -297,11 +290,7 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
 
             name_house = itemView.findViewById ( R.id.houseName );
 
-            Cdevice = itemView.findViewById(R.id.deviceStatus);
-
             warning = itemView.findViewById(R.id.warning_house);
-
-            txtcConnect = itemView.findViewById(R.id.txt_device);
 
             cam = itemView.findViewById(R.id.stream_action);
 
@@ -364,11 +353,16 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
         @Override
         public boolean onMenuItemClick(final MenuItem item) {
 
+            Intent i = ((Activity) mContext).getIntent();
+//            final String name =i.getExtras().getString("NAME_KEY");
+
             if (mListener != null) {
 
                 final int position = getAdapterPosition();
 
                 if (position != RecyclerView.NO_POSITION) {
+
+                    House house = houses.get(position);
 
                     switch (item.getItemId()) {
 
@@ -380,8 +374,8 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
 
                         case 2:
 
-                            DatabaseReference checkUser = FirebaseDatabase.getInstance().getReference().child("Users").child(firebaseUser.getEmail()
-                                    .replace(".", ","));
+                            DatabaseReference checkUser = FirebaseDatabase.getInstance().getReference().child("Devices").child(house.getDeviceCode()).
+                                    child("Owner");
                             checkUser.addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -391,11 +385,13 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
 
                                     }
 
-                                    User user = dataSnapshot.getValue(User.class);
+//                                    User user = dataSnapshot.getValue(User.class);
+//
+//                                    String acount = user.getTypeAccount();
 
-                                    String acount = user.getTypeAccount();
-
-                                    if (acount.equals("Owner")){
+                                    String email = (String) dataSnapshot.getValue();
+                                    Log.d("email", "data" + email);
+                                    if (firebaseUser.getEmail().replace(".", ",").equals(email)) {
 
                                         mListener.onDeleteItemClick(position);
 
@@ -406,7 +402,6 @@ public  class RecyclerAdapterHouse extends RecyclerView.Adapter<RecyclerAdapterH
                                         Toast.makeText(mContext, "only owner", Toast.LENGTH_SHORT).show();
 
                                     }
-
 
                                 }
 

@@ -18,7 +18,7 @@ public class Door {
 
     private String connect;
 
-    private int power;
+    private int voltage;
 
     public Door() {
 
@@ -143,11 +143,11 @@ public class Door {
         this.connect = connect;
     }
 
-    public int getPower() {
-        return power;
+    public int getVoltage() {
+        return voltage;
     }
 
-    public void setPower(int power) {
-        this.power = power;
+    public void setVoltage(int voltage) {
+        this.voltage = voltage;
     }
 }

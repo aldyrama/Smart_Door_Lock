@@ -35,16 +35,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".Onvif.MainCam"></activity>
-        <activity android:name=".Onvif.CameraActivity" />
-        <!-- <activity -->
+        <activity android:name=".Home.MemberDoor"></activity>
+        <activity android:name=".Onvif.MainCam" />
+        <activity android:name=".Onvif.CameraActivity" /> <!-- <activity -->
         <!-- android:name=".Onvif.OutputCamera" -->
         <!-- android:configChanges="orientation|screenSize" -->
         <!-- android:label="susu" -->
         <!-- android:theme="@android:style/Theme.NoTitleBar.Fullscreen" /> -->
-        <activity android:name=".QrCode.Qr"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".AccountActivity.SplashActivity"
+        <activity
+            android:name=".QrCode.Qr"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".AccountActivity.SplashActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -52,27 +54,32 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Setting.SettingActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".AccountActivity.StartActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".Setting.SettingActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".AccountActivity.StartActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".AccountActivity.LoginActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".AccountActivity.FindPassword"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".AccountActivity.FindPassword"
+            android:screenOrientation="portrait" />
         <activity android:name=".Family.FamilyActivity" />
         <activity
             android:name=".Activity.DetailHistory"
-            android:theme="@style/AppTheme.CustomTheme"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.CustomTheme" />
         <activity
             android:name=".Home.DetailUser"
-            android:theme="@style/AppTheme.CustomTheme"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".Home.HousesDetail"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".Home.MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.CustomTheme" />
+        <activity
+            android:name=".Home.HousesDetail"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Home.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.media.action.DISPLAY_NOTIFICATION" />
@@ -80,15 +87,17 @@
         </activity>
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
-            android:theme="@style/Base.Theme.AppCompat"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/Base.Theme.AppCompat" />
         <activity
             android:name=".AccountActivity.RegistActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".AccountActivity.ChangePassActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".WifiConfiguration.EsptouchDemoActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".AccountActivity.ChangePassActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".WifiConfiguration.EsptouchDemoActivity"
+            android:screenOrientation="portrait" />
 
         <service
             android:name=".Notification.MyFirebaseMessagingService"

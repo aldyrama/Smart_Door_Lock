@@ -134,7 +134,7 @@ public class MessageDialogFragment extends DialogFragment {
 
                             reference1 = FirebaseDatabase.getInstance().getReference().child("Devices").child("ListDevices").child(mMessage);
 
-                            reference1.addValueEventListener(new ValueEventListener() {
+                            reference1.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot listSnapshot) {
 
@@ -143,7 +143,7 @@ public class MessageDialogFragment extends DialogFragment {
 
                                     reference2 = FirebaseDatabase.getInstance().getReference().child("Devices").child(mMessage);
 
-                                    if (listSnapshot.exists() && deviceSnapshot.exists()){
+                                    if (listSnapshot.exists()){
 
                                         Toast.makeText(getContext(), "Device " + mMessage + " Already available", Toast.LENGTH_SHORT).show();
 
@@ -166,15 +166,17 @@ public class MessageDialogFragment extends DialogFragment {
 
                                         reference1.child("name").setValue(txt);
 
+                                        reference2.child("Owner").setValue(firebaseUser.getEmail().replace(".", ","));
+
                                         reference2.child("deviceCode").setValue(mMessage);
 
                                         reference2.child("name").setValue(txt);
 
-                                        startActivity(new Intent(getContext(), MainActivity.class));
+                                        Toast.makeText(getContext(), txt + " added", Toast.LENGTH_SHORT).show();
+
+                                        startActivity(new Intent(getActivity(), MainActivity.class));
 
                                         getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-
-                                        Toast.makeText(getContext(), txt + " added", Toast.LENGTH_SHORT).show();
 
                                         return;
 

@@ -36,6 +36,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -96,7 +97,7 @@ public class FragmentHistory extends Fragment implements View.OnClickListener, R
         viewWidget(view);
 
         getHistory();
-        
+
         mFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -237,6 +238,9 @@ public class FragmentHistory extends Fragment implements View.OnClickListener, R
                     mProgressBarHistory.setVisibility(View.INVISIBLE);
 
                     checkHistory();
+
+                    Collections.reverse(mHistory);
+
 
                 }catch (Exception e){}
 

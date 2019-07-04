@@ -241,6 +241,10 @@ public class RecylerViewAdapterUserInvite extends RecyclerView.Adapter<RecylerVi
         @Override
         public boolean onMenuItemClick(MenuItem item) {
 
+            Intent i = ((Activity) mContext).getIntent();
+            final String name =i.getExtras().getString("NAME_KEY");
+            final String deviceCode =i.getExtras().getString("DEVICECODE_KEY");
+
             if (mListener != null) {
 
                 final int position = getAdapterPosition();
@@ -257,8 +261,8 @@ public class RecylerViewAdapterUserInvite extends RecyclerView.Adapter<RecylerVi
 
                         case 2:
 
-                            DatabaseReference checkUser = FirebaseDatabase.getInstance().getReference().child("Users").child(firebaseUser.getEmail()
-                                    .replace(".", ","));
+                            DatabaseReference checkUser = FirebaseDatabase.getInstance().getReference().child("Devices").child(deviceCode).
+                                    child("Owner");
                             checkUser.addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -268,10 +272,12 @@ public class RecylerViewAdapterUserInvite extends RecyclerView.Adapter<RecylerVi
 
                                     }
 
-                                    User user = dataSnapshot.getValue(User.class);
+//                                    User user = dataSnapshot.getValue(User.class);
 
-                                    String account = user.getTypeAccount();
-                                    if (account.equals("Owner")) {
+//                                    String account = user.getTypeAccount();
+                                    String email = (String) dataSnapshot.getValue();
+                                    Log.d("email", "data" + email);
+                                    if (firebaseUser.getEmail().replace(".", ",").equals(email)) {
 
                                         mListener.onDeleteItemClick(position);
 

@@ -1,9 +1,13 @@
 package org.d3ifcool.smart.Adapter;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -33,6 +37,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import org.d3ifcool.smart.Home.MemberDoor;
 import org.d3ifcool.smart.Model.Door;
 import org.d3ifcool.smart.Model.House;
 import org.d3ifcool.smart.Model.User;
@@ -53,12 +58,29 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
         implements View.OnClickListener, RecyclerAdapterHouse.DoorInterfaces, CircleProgressBar.ProgressFormatter {
     private Context mContext;
     private List<Door> mDoor;
+    private List<House> mHouse;
     private OnItemClickListener mListener;
     private FirebaseUser firebaseUser;
+    private ObjectAnimator textBlinking;
     int status;
     private boolean statusDevice;
     private FirebaseAuth auth;
     private static final String DEFAULT_PATTERN = "%d%%";
+
+    private void openDetailActivity(String[] data) {
+
+        Intent i = ((Activity) mContext).getIntent();
+        final String deviceCode =i.getExtras().getString("DEVICECODE_KEY");
+
+        i = new Intent(mContext, MemberDoor.class);
+
+        i.putExtra("PIN", data[0]);
+
+        i.putExtra("DEVICE_CODE",deviceCode);
+
+        mContext.startActivity(i);
+
+    }
 
     public RecyclerAdapterDoor (FragmentActivity activity, List<Door> uploads) {
 
@@ -77,7 +99,7 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final RecyclerViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final RecyclerViewHolder holder, final int position) {
 
         final Door currentDoor = mDoor.get(position);
 
@@ -131,7 +153,7 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
 
                     status = lock;
 
-                    int power = door.getPower();
+                    int oVoltage = door.getVoltage();
 
                     String nameDoor = door.getDoorName();
 
@@ -181,35 +203,57 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
 
                     }
 
-                    if (power == 100){
+                    if (oVoltage >= 689000 ){
 
                         holder.devicePower.setImageResource(R.drawable.b100);
 
                         holder.textIndicator.setText("100%");
 
+                        holder.low.setVisibility(View.GONE);
+
                     }
 
-                    else if (power == 75){
+                    else if (oVoltage > 559000 && oVoltage < 689000){
 
                         holder.devicePower.setImageResource(R.drawable.b75);
 
                         holder.textIndicator.setText("75%");
 
+                        holder.low.setVisibility(View.GONE);
+
                     }
 
-                    else if (power == 50){
+                    else if (oVoltage > 420000 && oVoltage < 559000){
 
                         holder.devicePower.setImageResource(R.drawable.b50);
 
                         holder.textIndicator.setText("50%");
 
+                        holder.low.setVisibility(View.GONE);
+
                     }
 
-                    else if (power == 25){
+                    else if (oVoltage > 190000 && oVoltage < 420000){
 
                         holder.devicePower.setImageResource(R.drawable.b25);
 
                         holder.textIndicator.setText("25%");
+
+                        holder.low.setVisibility(View.VISIBLE);
+
+                        textBlinking = ObjectAnimator.ofInt(holder.low, "textColor", Color.RED, Color.TRANSPARENT);
+
+                        textBlinking.setDuration(600);
+
+                        textBlinking.setEvaluator(new ArgbEvaluator());
+
+                        textBlinking.setRepeatCount(ValueAnimator.INFINITE);
+
+                        textBlinking.setRepeatMode(ValueAnimator.REVERSE);
+
+                        textBlinking.start();
+
+
                     }
 
                     else {
@@ -217,6 +261,22 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
                         holder.devicePower.setImageResource(R.drawable.b0);
 
                         holder.textIndicator.setText("0%");
+
+                        holder.low.setText("No Battery");
+
+                        holder.low.setVisibility(View.VISIBLE);
+
+                        textBlinking = ObjectAnimator.ofInt(holder.low, "textColor", Color.RED, Color.TRANSPARENT);
+
+                        textBlinking.setDuration(600);
+
+                        textBlinking.setEvaluator(new ArgbEvaluator());
+
+                        textBlinking.setRepeatCount(ValueAnimator.INFINITE);
+
+                        textBlinking.setRepeatMode(ValueAnimator.REVERSE);
+
+                        textBlinking.start();
 
                     }
 
@@ -233,6 +293,19 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
 
             }
 
+        });
+
+        holder.member.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Door clickedDoor = mDoor.get(position);
+
+                String[] houseData={clickedDoor.getDoorPin()};
+
+                openDetailActivity(houseData);
+
+            }
         });
 
         BounceView.addAnimTo(holder.lockImageView)
@@ -252,7 +325,7 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
                 reference0.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
+                        try {
                         final Intent i = ((Activity) mContext).getIntent();
 
                         String name = i.getExtras().getString("NAME_KEY");
@@ -270,7 +343,13 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
 
                         final String lock;
 
-                        String uploadId = reference1.push().getKey();
+                        String now = getDateTodayHistory();
+
+                        Date dateNow = new SimpleDateFormat("dd/M/yyyy HH:mm:ss").parse(now);
+
+                        long millisNow = dateNow.getTime();
+
+//                        String uploadId = reference1.push().getKey();
 
                         String system = door.getStatus();
 
@@ -296,17 +375,17 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
 
                             reference.child("doorLock").setValue(status);
 
-                            reference1.child(uploadId).setValue(getUser);
+                            reference1.child(String.valueOf(millisNow)).setValue(getUser);
 
-                            reference1.child(uploadId).child("lock").setValue(lock);
+                            reference1.child(String.valueOf(millisNow)).child("lock").setValue(lock);
 
-                            reference1.child(uploadId).child("lockImage").setValue(url1);
+                            reference1.child(String.valueOf(millisNow)).child("lockImage").setValue(url1);
 
-                            reference1.child(uploadId).child("door").setValue(currentDoor.getDoorName());
+                            reference1.child(String.valueOf(millisNow)).child("door").setValue(currentDoor.getDoorName());
 
-                            reference1.child(uploadId).child("time").setValue(time);
+                            reference1.child(String.valueOf(millisNow)).child("time").setValue(time);
 
-                            reference1.child(uploadId).child("date").setValue(date);
+                            reference1.child(String.valueOf(millisNow)).child("date").setValue(date);
 
 
                         } else {
@@ -319,20 +398,22 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
 
                             reference.child("doorLock").setValue(status);
 
-                            reference1.child(uploadId).setValue(getUser);
+                            reference1.child(String.valueOf(millisNow)).setValue(getUser);
 
-                            reference1.child(uploadId).child("lock").setValue(lock);
+                            reference1.child(String.valueOf(millisNow)).child("lock").setValue(lock);
 
-                            reference1.child(uploadId).child("lockImage").setValue(url);
+                            reference1.child(String.valueOf(millisNow)).child("lockImage").setValue(url);
 
-                            reference1.child(uploadId).child("door").setValue(currentDoor.getDoorName());
+                            reference1.child(String.valueOf(millisNow)).child("door").setValue(currentDoor.getDoorName());
 
-                            reference1.child(uploadId).child("time").setValue(time);
+                            reference1.child(String.valueOf(millisNow)).child("time").setValue(time);
 
-                            reference1.child(uploadId).child("date").setValue(date);
+                            reference1.child(String.valueOf(millisNow)).child("date").setValue(date);
 
                         }
 
+                    }catch (ParseException e) {
+                        }
                     }
 
                     @Override
@@ -453,6 +534,19 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
 
     }
 
+    private String getDateTodayHistory() {
+
+        @SuppressLint("SimpleDateFormat")
+        DateFormat dateFormat=new SimpleDateFormat("dd/M/yyyy HH:mm:ss");
+
+        Date date = new Date();
+
+        String today= dateFormat.format(date);
+
+        return today;
+
+    }
+
     public final boolean isInternetOn()
     {
 
@@ -526,8 +620,8 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
     public class RecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
             View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
 
-        private TextView name_door, statusdoor, textConnection, status, textIndicator;
-        private ImageView lockImageView, device, devicePower;
+        private TextView name_door, statusdoor, textConnection, status, textIndicator, low;
+        private ImageView lockImageView, device, devicePower, member;
         private AnimationDrawable imagesAnimation;
         private CircleProgressBar circleProgressBar;
         private ProgressBar mProgressbar;
@@ -550,6 +644,8 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
 
             status = itemView.findViewById(R.id.status_lock);
 
+            member = itemView.findViewById(R.id.door_member);
+
             imagesAnimation = (AnimationDrawable) lockImageView.getBackground();
 
             auth = FirebaseAuth.getInstance();
@@ -563,6 +659,8 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
             circleProgressBar = itemView.findViewById(R.id.progress_autolock);
 
             replaceEmail = firebaseUser.getEmail().replace(".", ",");
+
+            low = itemView.findViewById(R.id.battery);
 
             itemView.setOnClickListener(this);
 
@@ -615,6 +713,10 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
         @Override
         public boolean onMenuItemClick(MenuItem item) {
 
+            Intent i = ((Activity) mContext).getIntent();
+            final String name =i.getExtras().getString("NAME_KEY");
+            final String deviceCode =i.getExtras().getString("DEVICECODE_KEY");
+
             if (mListener != null) {
 
                 final int position = getAdapterPosition();
@@ -631,8 +733,8 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
 
                         case 1:
 
-                            DatabaseReference checkUser = FirebaseDatabase.getInstance().getReference().child("Users").child(firebaseUser.getEmail()
-                                    .replace(".", ","));
+                            DatabaseReference checkUser = FirebaseDatabase.getInstance().getReference().child("Devices").child(deviceCode).
+                                    child("Owner");
                             checkUser.addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -642,11 +744,13 @@ public class RecyclerAdapterDoor extends RecyclerView.Adapter<RecyclerAdapterDoo
 
                                     }
 
-                                    User user = dataSnapshot.getValue(User.class);
+//                                    User user = dataSnapshot.getValue(User.class);
+//
+//                                    String account = user.getTypeAccount();
 
-                                    String account = user.getTypeAccount();
-
-                                    if (account.equals("Owner")){
+                                    String email = (String) dataSnapshot.getValue();
+                                    Log.d("email", "data" + email);
+                                    if (firebaseUser.getEmail().replace(".", ",").equals(email)) {
 
                                         mListener.onDeleteItemClick(position);
 

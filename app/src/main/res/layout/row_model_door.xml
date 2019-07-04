@@ -4,7 +4,6 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/tools"
     android:foreground="?attr/selectableItemBackgroundBorderless"
-    card_view:cardCornerRadius="6dp"
     android:clickable="true"
     android:layout_centerInParent="true"
     android:layout_alignParentTop="true"
@@ -63,7 +62,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:visibility="gone"
+                            android:visibility="visible"
                             android:textSize="12sp"/>
 
                         <ImageView
@@ -72,7 +71,7 @@
                             android:layout_height="20dp"
                             android:src="@drawable/b25"
                             android:layout_alignParentRight="true"
-                            android:visibility="gone"
+                            android:visibility="visible"
                             android:layout_gravity="center"/>
 
                         <LinearLayout
@@ -97,7 +96,25 @@
                     android:layout_height="1dp"
                     android:background="@color/gray_50"/>
 
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="6dp">
 
+                    <ImageView
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:layout_centerInParent="true"
+                        android:src="@drawable/ic_circle"/>
+
+                    <ImageView
+                        android:id="@+id/door_member"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_centerInParent="true"
+                        android:src="@drawable/user_member"
+                        />
+                </RelativeLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -153,7 +170,7 @@
                         android:layout_gravity="center"
                         android:orientation="horizontal"
                         android:layout_marginTop="15dp"
-                        android:layout_marginBottom="50dp"
+                        android:layout_marginBottom="30dp"
                         android:gravity="center">
 
                     <TextView
@@ -186,6 +203,20 @@
                             android:text="Locket"/>
 
                 </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="40dp">
+
+                        <TextView
+                            android:id="@+id/battery"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Battery Low"
+                            android:textColor="@color/red"
+                            android:visibility="gone"/>
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
 

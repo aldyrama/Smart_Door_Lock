@@ -226,8 +226,6 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
 
             empty.setVisibility(View.GONE);
 
-            total.child("totalDevices").setValue(mAdapter.getItemCount());
-
         }
 
         else {
@@ -237,8 +235,6 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
             indicator.setVisibility(View.GONE);
 
             empty.setVisibility(View.VISIBLE);
-
-            total.child("totalDevices").setValue(mAdapter.getItemCount());
 
         }
 
@@ -410,7 +406,7 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
 
     public void getDoor() {
 
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Devices").child(deviceCode).child("ListDoor");
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("Devices").child(deviceCode);
         mDBListener = mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -429,23 +425,39 @@ public class Fragment_List_Door extends Fragment implements View.OnClickListener
 
                     mDoor.clear();
 
-                    for (DataSnapshot doorSnapshot : dataSnapshot.getChildren()) {
+                    for (DataSnapshot doorSnapshot : dataSnapshot.child("ListDoor").getChildren()) {
 
-                        GenericTypeIndicator<Map<String, Object>> genericTypeIndicator = new GenericTypeIndicator<Map<String, Object>>() {
-
-                        };
-
-                        Map<String, Object> map = doorSnapshot.getValue(genericTypeIndicator);
-
-                        Door uploadDoor = new Door();
-
-                        uploadDoor.setDoorName((String) map.get("doorName"));
-
-                        uploadDoor.setDoorPin((String) map.get("doorPin"));
+//                        GenericTypeIndicator<Map<String, Object>> genericTypeIndicator = new GenericTypeIndicator<Map<String, Object>>() {
+//
+//                        };
+//
+//                        Map<String, Object> map = doorSnapshot.getValue(genericTypeIndicator);
+//
+//                        Door uploadDoor = new Door();
+//
+//                        uploadDoor.setDoorName((String) map.get("doorName"));
+//
+//                        uploadDoor.setDoorPin((String) map.get("doorPin"));
 
                         Door door = doorSnapshot.getValue(Door.class);
 
-                        mDoor.add(door);
+                        String pin = door.getDoorPin();
+
+                        DataSnapshot userSnapshot = dataSnapshot.child("Doors").child(pin).child("Member");
+
+                        DataSnapshot owner =  dataSnapshot.child("Owner");
+
+                        if (firebaseUser.getEmail().replace(".", ",").equals(owner.getValue())){
+
+                            mDoor.add(door);
+
+                        }
+
+                        else if (userSnapshot.child(firebaseUser.getEmail().replace(".", ",")).exists()) {
+
+                            mDoor.add(door);
+
+                        }
 
                     }
 

@@ -34,6 +34,8 @@ public class User {
 
     private String key;
 
+    private boolean isChecked;
+
     public User(String id, String username, String fullname, String imageurl, String typeAccount, String houseName, String password) {
 
         this.id = id;
@@ -257,4 +259,11 @@ public class User {
 
     }
 
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
+    }
 }

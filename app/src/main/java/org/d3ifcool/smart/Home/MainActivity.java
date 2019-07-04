@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.bluetooth.BluetoothClass;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -71,6 +72,7 @@ import org.d3ifcool.smart.Setting.SettingActivity;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -392,6 +394,53 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                         mHouses.add(house);
 
+                        DataSnapshot owner = dataSnapshot.child("Devices").child(kode_device).child("Owner");
+
+                        Log.d("data", "email" + dataSnapshot);
+
+                        if (!owner.getValue(String.class).equals(firebaseUser.getEmail().replace(".", ","))) {
+
+                            User user = dataSnapshot.child("Devices").child(kode_device).child("Member").child(firebaseUser.getEmail().
+                                    replace(".", ",")).getValue(User.class);
+
+                            String exp = user.getExpired();
+                            String now = getDateToday();
+
+                            Log.d(TAG, "exp: " + exp);
+
+//                        @SuppressLint("SimpleDateFormat")
+//                        Date dateNow=new SimpleDateFormat(getString(R.string.formatDate)).parse(now);
+                            @SuppressLint("SimpleDateFormat")
+                            Date dateExp = new SimpleDateFormat(getString(R.string.formatDate)).parse(exp);
+
+                            long millisNow = Calendar.getInstance().getTimeInMillis();
+
+                            long millisExp = dateExp.getTime();
+
+                            Log.d(TAG, "dateNOw" + millisNow);
+                            Log.d(TAG, "dateExp" + millisExp);
+
+                            if (millisExp <= millisNow) {
+
+                                dataSnapshot.child("Devices").child(kode_device).child("Member").child(firebaseUser.getEmail().
+                                        replace(".", ",")).getRef().removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+
+                                    }
+                                });
+                                dataSnapshot.child("Users").child(firebaseUser.getEmail().replace(".", ",")).child("Houses").
+                                        getRef().removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+
+                                    }
+                                });
+
+                            }
+
+                        }
+
                     }
 
                 }catch (Exception e){}
@@ -424,6 +473,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String getDateToday(){
 
         DateFormat dateFormat=new SimpleDateFormat("dd/M/yyyy h:mm");
+
+        Date date = new Date();
+
+        String today= dateFormat.format(date);
+
+        return today;
+
+    }
+
+    private String getDateExp(){
+
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat dateFormat=new SimpleDateFormat("dd/MM/yyyy h:mm a");
+
+        Log.d("typeString", "date" + dateFormat);
 
         Date date = new Date();
 
@@ -507,113 +571,97 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onDeleteItemClick(int position) {
+        if (mHouses.size() > 0){
+            House selectedItem = mHouses.get(position);
 
-        House selectedItem = mHouses.get(position);
+            final String selectedKey = selectedItem.getDeviceCode();
 
-        final String selectedKey = selectedItem.getDeviceCode();
+            final String selectEmail = firebaseUser.getEmail().replace(".", ",");
 
-        final String selectEmail = firebaseUser.getEmail().replace(".", ",");
+            final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 
-        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            final View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.allert_dialog_delete, null);
 
-        final View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.allert_dialog_delete, null);
+            title = view.findViewById(R.id.txt_alert_delete);
 
-        title = view.findViewById(R.id.txt_alert_delete);
+            title.setText("Are you sure to delete this device?");
 
-        title.setText("Are you sure to delete this device?");
+            sure = view.findViewById(R.id.btn_sure_delete);
 
-        sure = view.findViewById(R.id.btn_sure_delete);
+            cancel = view.findViewById(R.id.btn_cancel_delete);
 
-        cancel = view.findViewById(R.id.btn_cancel_delete);
+            sure.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-        sure.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                    final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Users").child(selectEmail).child("Houses");
+                    ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-//                final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Users").child(selectEmail).child("Houses");
-//                        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-//                            @Override
-//                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//
 //                                for(DataSnapshot data : dataSnapshot.getChildren()) {
-//
-//                                    if(data.getValue(String.class).equals(deviceCode)){
-//
-//                                        ref.child(data.getKey()).removeValue();
-//
-//                                        Log.d("key", "data " + data);
-//
-//                                    }
-//
-//                                }
-                final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Users").child(selectEmail).child("Houses");
-                ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
 
-                        for(DataSnapshot data : dataSnapshot.getChildren()) {
+                            dataSnapshot.child(selectedKey).getRef().removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
 
-                            if(data.getValue(String.class).equals(deviceCode)){
+                                }
+                            });
 
-                                ref.child(data.getKey()).removeValue();
+                            reference = FirebaseDatabase.getInstance().getReference().child("Devices").child("ListDevices");
 
-                            }
+                            reference0 = FirebaseDatabase.getInstance().getReference().child("Devices").child(selectedKey);
+
+                            reference1 = FirebaseDatabase.getInstance().getReference().child("Devices").child(selectedKey);
+
+                            reference.child(selectedKey).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+
+                                    reference0.child("Member").getRef().removeValue();
+
+                                    reference1.child("ListDoor").getRef().removeValue();
+
+                                    Toast.makeText(MainActivity.this, "Item deleted " + selectedKey, Toast.LENGTH_SHORT).show();
+
+                                    dialog.dismiss();
+
+                                    startActivity(new Intent(MainActivity.this, MainActivity.class));
+
+                                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+
+
+                                }
+
+                            });
 
                         }
 
-                                reference = FirebaseDatabase.getInstance().getReference().child("Devices").child("ListDevices");
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                                reference0 = FirebaseDatabase.getInstance().getReference().child("Devices").child(selectedKey);
+                        }
 
-                                reference1 = FirebaseDatabase.getInstance().getReference().child("Devices").child(selectedKey);
+                    });
 
-                                reference.child(selectedKey).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-
-                                        reference0.child("Member").getRef().removeValue();
-
-                                        reference1.child("ListDoor").getRef().removeValue();
-
-                                        Toast.makeText(MainActivity.this, "Item deleted " + selectedKey, Toast.LENGTH_SHORT).show();
-
-                                        dialog.dismiss();
-
-                                        startActivity(new Intent(MainActivity.this, MainActivity.class));
-
-                                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                }
 
 
-                                    }
+            });
 
-                                });
+            cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-
-                        });
-
-            }
+                    startActivity(new Intent(MainActivity.this, MainActivity.class));
+                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
 
-        });
-
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                startActivity(new Intent(MainActivity.this, MainActivity.class));
-                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-
-
-            }
-        });
-        builder.setView(view);
-        builder.show();
+                }
+            });
+            builder.setView(view);
+            builder.show();
+        }
 
     }
 
@@ -810,6 +858,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                         reference1.setValue(house);
 
                                         reference2.child("name").setValue(str_house);
+
+                                        reference2.child("Owner").setValue(firebaseUser.getEmail().replace(".", ","));
 
                                         dialog.dismiss();
 
